@@ -2,6 +2,7 @@
 
 namespace tpext\lyatadmin\common;
 
+use think\facade\View;
 use tpext\common\Module as baseModule;
 
 class Module extends baseModule
@@ -12,10 +13,18 @@ class Module extends baseModule
         'admin' => ['index'],
     ];
 
-    public static function moduleInit()
+    public static function moduleInit($info = [])
     {
-        static::$assets = realpath(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'assets';
+        $rootPath = realpath(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR;
 
-        parent::moduleInit();
+        static::$assets = $rootPath . 'assets';
+
+        config('exception_tmpl', $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'error.html']));
+
+        $config = config(static::getId());
+
+        View::share('admin', $config);
+
+        return parent::moduleInit($info);
     }
 }

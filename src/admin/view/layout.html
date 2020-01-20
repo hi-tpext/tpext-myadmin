@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>首页 - {$admin.page_title}</title>
+  <link rel="icon" href="{$admin.favicon}" type="image/ico">
+  <meta name="description" content="{$admin.desc}">
+  <link href="__ASSETS__/__MDULE__/css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ASSETS__/__MDULE__/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="__ASSETS__/__MDULE__/css/style.min.css" rel="stylesheet">
+  {block name="style"}
+  <!--stylesheets-->
+  {/block}
+  <style>
+    .lyear-layout-content {
+      padding-left: 0;
+      padding-top: 0;
+    }
+  </style>
+</head>
+
+<body>
+   <!--页面主要内容-->
+   <main class="lyear-layout-content">
+    <div class="container-fluid">
+      {block name="content"}{/block}
+    </div>
+  </main>
+  <!--End 页面主要内容-->
+
+  <script type="text/javascript" src="__ASSETS__/__MDULE__/js/jquery.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="__ASSETS__/__MDULE__/js/bootstrap.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="__ASSETS__/__MDULE__/js/main.min.js" charset="utf-8"></script>
+  {block name="script"}
+  <!--scripts-->
+  {/block}
+</body>
+
+</html>
