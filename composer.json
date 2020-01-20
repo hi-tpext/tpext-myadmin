@@ -1,0 +1,24 @@
+{
+    "name": "ichynul/lyatadmin",
+    "description": "the new thinkphp framework",
+    "type": "project",
+    "keywords": [
+        "thinkphp"
+    ],
+    "homepage": "http://thinkphp.cn/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "ichynul",
+            "email": "ichynul@outlook.com"
+        }
+    ],
+    "require": {
+        "topthink/framework": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "tpext\\lyatadmin\\": "src/"
+        }
+    }
+}
