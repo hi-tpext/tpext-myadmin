@@ -7,9 +7,9 @@
   <title>首页 - {$admin.page_title}</title>
   <link rel="icon" href="{$admin.favicon}" type="image/ico">
   <meta name="description" content="{$admin.desc}">
-  <link href="__ASSETS__/__MDULE__/css/bootstrap.min.css" rel="stylesheet">
-  <link href="__ASSETS__/__MDULE__/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="__ASSETS__/__MDULE__/css/style.min.css" rel="stylesheet">
+  <link href="__MODULE__/css/bootstrap.min.css" rel="stylesheet">
+  <link href="__MODULE__/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="__MODULE__/css/style.min.css" rel="stylesheet">
   {block name="style"}
   <!--stylesheets-->
   {/block}
@@ -17,6 +17,13 @@
     .lyear-layout-content {
       padding-left: 0;
       padding-top: 0;
+    }
+    .page-footer
+    {
+      height: 25px;
+      line-height: 25px;
+      width: 100%;
+      text-align: right;
     }
   </style>
 </head>
@@ -26,13 +33,16 @@
    <main class="lyear-layout-content">
     <div class="container-fluid">
       {block name="content"}{/block}
+      <footer class="page-footer">
+        <span class="copyright">{$admin.copyright|raw}</span>
+      </footer>
     </div>
   </main>
   <!--End 页面主要内容-->
 
-  <script type="text/javascript" src="__ASSETS__/__MDULE__/js/jquery.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__ASSETS__/__MDULE__/js/bootstrap.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__ASSETS__/__MDULE__/js/main.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="__MODULE__/js/jquery.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="__MODULE__/js/bootstrap.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="__MODULE__/js/main.min.js" charset="utf-8"></script>
   {block name="script"}
   <!--scripts-->
   {/block}

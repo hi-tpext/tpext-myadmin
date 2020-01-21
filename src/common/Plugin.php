@@ -6,7 +6,7 @@ use tpext\common\Plugin as basePlugin;
 
 class Plugin extends basePlugin
 {
-    public static function pluginInit($info = [])
+    public function pluginInit($info = [])
     {
         return true;
     }

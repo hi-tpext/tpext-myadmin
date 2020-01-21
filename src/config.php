@@ -1,9 +1,12 @@
 <?php
+use tpext\lyatadmin\common\Module;
+
+$assetsDir = Module::getInstance()->assetsDir();
 
 return [
-    'page_title' => '光年(Light Year Admin)后台管理系统模板',
-    'desc' => '光年(Light Year Admin)后台管理系统模板',
-    'logo' => '<img src="/assets/' . tpext\lyatadmin\common\Module::assetsDir() . '/images/logo-sidebar.png" alt="Admin logo" title="光年(Light Year Admin)后台管理系统模板">',
-    'favicon' => '/assets/' . tpext\lyatadmin\common\Module::assetsDir() . '/favicon.ico',
-    'copyright' => 'Copyright &copy; 2019. <a target="_blank" href="http://lyear.itshubao.com">IT书包</a> All rights reserved.',
+    'page_title' => 'Tpext后台管理系统',
+    'desc' => 'Tpext后台管理系统',
+    'logo' => '<img src="/assets/' . $assetsDir . '/images/logo.png" alt="Admin logo" title="Tpext后台管理系统">',
+    'favicon' => '/assets/' . $assetsDir . '/favicon.ico',
+    'copyright' => 'Copyright &copy; 2020. <a target="_blank" href="#">Tpext后台管理系统</a> All rights reserved.',
 ];
