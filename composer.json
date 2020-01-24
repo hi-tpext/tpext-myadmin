@@ -19,6 +19,9 @@
     "autoload": {
         "psr-4": {
             "tpext\\lyatadmin\\": "src/"
-        }
+        },
+        "files": [
+            "src/helper.php"
+        ]
     }
 }

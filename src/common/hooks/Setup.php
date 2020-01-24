@@ -2,9 +2,10 @@
 namespace tpext\lyatadmin\common\hooks;
 
 use think\facade\Request;
+use think\facade\View;
 use tpext\lyatadmin\common\Module;
 
-class Tpl
+class Setup
 {
     public function run($data = [])
     {
@@ -21,6 +22,11 @@ class Tpl
             config('exception_tmpl', $tplPath . 'exception_tmpl.tpl');
             config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
             config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
+
+            $config = Module::getInstance()->loadConfig();
+
+            View::share(['admin' => $config]);
+
         }
     }
 }

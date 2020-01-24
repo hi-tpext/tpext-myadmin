@@ -18,8 +18,6 @@ class Module extends baseModule
 
     public function moduleInit($info = [])
     {
-        parent::moduleInit($info);
-
         return parent::moduleInit($info);
     }
 }
