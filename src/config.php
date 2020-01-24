@@ -1,7 +1,7 @@
 <?php
 use tpext\lyatadmin\common\Module;
 
-$assetsDir = Module::getInstance()->assetsDir();
+$assetsDir = Module::getInstance()->assetsDirName();
 
 return [
     'page_title' => 'Tpext后台管理系统',
