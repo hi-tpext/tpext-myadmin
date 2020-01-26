@@ -1,7 +1,7 @@
 <?php
-use tpext\lyatadmin\common\Module;
+use tpext\lightyearadmin\common\Plugin;
 
-$assetsDir = Module::getInstance()->assetsDirName();
+$assetsDir = Plugin::getInstance()->assetsDirName();
 
 return [
     'page_title' => 'Tpext后台管理系统',

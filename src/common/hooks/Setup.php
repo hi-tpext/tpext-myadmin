@@ -1,9 +1,9 @@
 <?php
-namespace tpext\lyatadmin\common\hooks;
+namespace tpext\myadmin\common\hooks;
 
 use think\facade\Request;
 use think\facade\View;
-use tpext\lyatadmin\common\Module;
+use tpext\myadmin\common\Module;
 
 class Setup
 {
@@ -13,20 +13,9 @@ class Setup
 
         if ($module == 'admin') { //admin模块， 替换错误和跳转模板
 
-            $instance = Module::getInstance();
-
-            $rootPath = $instance->getRoot();
-
-            $tplPath = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'tpl', '']);
-
-            config('exception_tmpl', $tplPath . 'exception_tmpl.tpl');
-            config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
-            config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
-
             $config = Module::getInstance()->loadConfig();
 
             View::share(['admin' => $config]);
-
         }
     }
 }

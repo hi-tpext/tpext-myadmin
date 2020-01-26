@@ -1,5 +1,5 @@
 {
-    "name": "ichynul/lyatadmin",
+    "name": "ichynul/tpextmyadmin",
     "description": "the new thinkphp framework",
     "type": "project",
     "keywords": [
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "tpext\\lyatadmin\\": "src/"
+            "tpext\\myadmin\\": "src/"
         },
         "files": [
             "src/helper.php"

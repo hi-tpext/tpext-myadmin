@@ -1,5 +1,5 @@
 <?php
-namespace tpext\lyatadmin\admin\controller;
+namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 

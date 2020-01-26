@@ -1,14 +1,14 @@
 <?php
 
-namespace tpext\lyatadmin\common;
+namespace tpext\myadmin\common;
 
 use tpext\common\ExtLoader;
 use tpext\common\Plugin as basePlugin;
-use tpext\lyatadmin\common\hooks\Setup;
+use tpext\myadmin\common\hooks\Setup;
 
 class Plugin extends basePlugin
 {
-    protected $name = 'tpext.lyatadmin.plugin';
+    protected $name = 'tpext.admin.plugin';
 
     protected $__root__ = __DIR__ . '/../../';
 
@@ -16,6 +16,6 @@ class Plugin extends basePlugin
     {
         ExtLoader::watch('module_init', Setup::class, '替换错误及跳转模板', false);
 
-        return true;
+        return parent::pluginInit($info);
     }
 }

@@ -1,16 +1,14 @@
 <?php
 
-namespace tpext\lyatadmin\common;
+namespace tpext\myadmin\common;
 
 use tpext\common\Module as baseModule;
 
 class Module extends baseModule
 {
-    protected $name = 'tpext.lyatadmin';
+    protected $name = 'tpext.myadmin';
 
     protected $__root__ = __DIR__ . '/../../';
-
-    protected $assets = 'assets';
 
     protected $modules = [
         'admin' => ['index'],
@@ -18,6 +16,8 @@ class Module extends baseModule
 
     public function moduleInit($info = [])
     {
-        return parent::moduleInit($info);
+        parent::moduleInit($info);
+
+        return true;
     }
 }

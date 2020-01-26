@@ -11,8 +11,8 @@
 use tpext\common\ExtLoader;
 
 $classMap = [
-    'tpext\\lyatadmin\\common\\Module',
-    'tpext\\lyatadmin\common\\Plugin',
+    'tpext\\myadmin\\common\\Module',
+    'tpext\\myadmin\common\\Plugin',
 ];
 
 ExtLoader::addClassMap($classMap);
