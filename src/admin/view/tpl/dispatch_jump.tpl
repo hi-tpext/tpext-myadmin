@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>跳转提示</title>
   <meta name="author" content="yinqi">
-  <link href="/assets/tpextlyatadmin/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/assets/tpextlyatadmin/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="/assets/tpextlyatadmin/css/style.min.css" rel="stylesheet">
+  <link href="__LIGHTYEARADMIN__/css/bootstrap.min.css" rel="stylesheet">
+  <link href="__LIGHTYEARADMIN__/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="__LIGHTYEARADMIN__/css/style.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #fff;
