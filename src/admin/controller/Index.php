@@ -25,13 +25,13 @@ class Index extends Controller
     {
         $builder = Builder::getInstance();
 
-        $form = $builder->form(8);
+        $form = $builder->form(10);
 
-        $form->datetimeRange('datetimeRange','时间日期范围');
-        $form->dateRange('dateRange','日期范围');
-        $form->timeRange('timeRange','时间范围');
+        //$form->datetimeRange('datetimeRange','时间日期范围');
+        //$form->dateRange('dateRange','日期范围');
+        //$form->timeRange('timeRange','时间范围');
 
-        $form->text('name', '姓名', 12, 'hell', 'width="1000"')->maxlength(10)->default('小明')->befor('<span class="input-group-addon" id="basic-addon1">@</span>');
+        $form->text('name', '姓名', 12, 'hell', 'width="1000"')->maxlength(10)->default('小明')->afterSymbol('%');
         $form->text('phone', '电话')->default('1234500006789')->readonly();
         $form->textarea('note', '备注')->default('大家好！')->maxlength(50);
         //$form->html('<p style="color:red;">hello world !</p>');
@@ -75,21 +75,65 @@ class Index extends Controller
 
         $form->hidden('text', '24234324');
 
-        $form->switchBtn('hellowww', 'swithc')->default(1);
+        /*   $form->switchBtn('hellowww', 'swithc')->default(1);
 
         $form->tags('hjsfhd', 'tags')->default('hell,world');
 
         $form->datetime('datetime', '日期时间');
 
-        $form->date('date','日期');
+        $form->date('date','日期')->timespan()->value(strtotime('-20day'));
 
         $form->time('tiem','时间');
 
-        
+        $form->color('color','颜色');
+
+        $form->number('number','数字');
+
+        $form->icon('icon','图标');
+         */
+        //$form->wangEditor('wang','wang编辑器');
+
+        //$form->tinymce('tinymce','tinymce编辑器');
+
+        //$form->ueditor('ueditor','ueditor编辑器');
+
+        //$form->ckeditor('ckeditor','ckeditor编辑器');
+
+        //$form->mdeditor('mdeditor','mdeditor编辑器');
 
         //$row->column(6)->table();
 
+        //$form->rate('rate','rate');
+        //$form->month('month','month');
+        //$form->year('year','year');
+
+        $form->multipleFile('multipleFile', 'multipleFile')->value('/upload/images/202002/file5e3c1b015b04d.png,/upload/images/202002/file5e3c29670e3c2.zip')->limit(3);
+        //$form->file('file','file')->value('/upload/images/202002/file5e3c1b015b04d.png')->image();
+        $form->image('iage', 'image')->value('/upload/images/202002/file5e3c1b015b04d.png');
+        $form->rangeSlider('slider', 'slider')->default([20, 30]);
+
         return $builder->render();
+    }
+
+    public function test2()
+    {
+        $builder = Builder::getInstance('人员管理', '列表');
+
+        $table = $builder->table(6);
+
+        $table->text('name', '姓名');
+        $table->textarea('age', '年龄');
+        $table->radio('gender', '性别')->options(['1' => '男', '2' => '女'])->inline(true);
+        $table->field('birthday', '生日');
+        $table->field('hoby', '爱好');
+
+        $table->data([
+            ['name' => '小明', 'age' => 18, 'gender' => '1', 'birthday' => '1989-10', 'hoby' => '游泳'],
+            ['name' => '小红', 'age' => 17, 'gender' => '2', 'birthday' => '1991-10', 'hoby' => '唱歌'],
+        ]);
+
+        return $builder->render();
+
     }
 
     public function testdata()

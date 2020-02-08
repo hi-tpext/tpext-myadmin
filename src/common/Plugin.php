@@ -8,7 +8,7 @@ use tpext\myadmin\common\hooks\Setup;
 
 class Plugin extends basePlugin
 {
-    protected $name = 'tpext.admin.plugin';
+    protected $name = 'tpext.myadmin';
 
     protected $__root__ = __DIR__ . '/../../';
 

@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>{$admin.position} - {$admin.page_title}</title>
+  <title>{$admin.position}{notempty name="$admin.page_title"} - {$admin.page_title}{/notempty}</title>
   <link rel="icon" href="{$admin.favicon}" type="image/ico">
   <meta name="description" content="{$admin.desc}">
-  <link href="__LIGHTYEARADMIN__/css/bootstrap.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/css/style.min.css" rel="stylesheet">
+  {volist name="admin_css" id="item"}
+<link href="{$item}" rel="stylesheet">
+  {/volist}
   {block name="style"}
   <!--stylesheets-->
   {/block}
@@ -40,12 +40,14 @@
   </main>
   <!--End 页面主要内容-->
 
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/jquery.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/bootstrap.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/main.min.js" charset="utf-8"></script>
+  {volist name="admin_js" id="item"}
+<script type="text/javascript" src="{$item}" charset="utf-8"></script>
+  {/volist}
+  
   {block name="script"}
   <!--scripts-->
   {/block}
+  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/main.min.js" charset="utf-8"></script>
 </body>
 
 </html>
