@@ -25,7 +25,7 @@ class Index extends Controller
     {
         $builder = Builder::getInstance();
 
-        $form = $builder->form(10);
+        $form = $builder->form();
 
         //$form->datetimeRange('datetimeRange','时间日期范围');
         //$form->dateRange('dateRange','日期范围');
@@ -41,7 +41,7 @@ class Index extends Controller
         $form->checkbox('hobi', '爱好')->options([
             '1' => '游泳',
             '2' => '爬山',
-        ])->default([1])->readonly();
+        ])->default([1]);
 
         $form->radio('goodat', '擅长')->options([
             '1' => '写作',
@@ -112,6 +112,10 @@ class Index extends Controller
         $form->image('iage', 'image')->value('/upload/images/202002/file5e3c1b015b04d.png');
         $form->rangeSlider('slider', 'slider')->default([20, 30]);
 
+        if (request()->isPost()) {
+            $form->fill(input('post.'));
+        }
+
         return $builder->render();
     }
 
@@ -119,21 +123,135 @@ class Index extends Controller
     {
         $builder = Builder::getInstance('人员管理', '列表');
 
-        $table = $builder->table(6);
+        $form = $builder->form();
 
-        $table->text('name', '姓名');
-        $table->textarea('age', '年龄');
-        $table->radio('gender', '性别')->options(['1' => '男', '2' => '女'])->inline(true);
+        $form->text('name', '姓名', 3)->maxlength(10)->default('小明')->afterSymbol('%');
+
+        $form->checkbox('hobi1', '爱好', 3)->options([
+            '1' => '游泳',
+            '2' => '爬山',
+        ])->default([1]);
+
+        $form->radio('goodat', '擅长', 3)->options([
+            '1' => '写作',
+            '2' => '唱歌',
+        ])->default(2);
+
+        $form->select('eat', '吃的', 3)->options([
+            '1' => '苹果',
+            '2' => '香蕉',
+        ])->default(2)->dataUrl(url('testdata'));
+
+        $table = $builder->table();
+
+        $table->searchForm($form);
+
+        $table->text('name', '姓名')->autoPost(url('postBack'));
+        $table->text('idcard_no', '身份证')->autoPost(url('postBack'));
+        $table->field('age', '年龄');
+        $table->radio('gender', '性别')->options(['1' => '男', '2' => '女'])->autoPost(url('postBack'));
         $table->field('birthday', '生日');
-        $table->field('hoby', '爱好');
+
+        $table->checkbox('hoby', '爱好')->options([
+            '1' => '游泳',
+            '2' => '爬山',
+        ])->autoPost(url('postBack'));
+
+        $table->select('todo', '任务')->options([
+            '1' => '吃饭',
+            '2' => '睡觉',
+        ])->select2(false)->autoPost(url('postBack'));
+
+        $table->field('photo', '照片');
 
         $table->data([
-            ['name' => '小明', 'age' => 18, 'gender' => '1', 'birthday' => '1989-10', 'hoby' => '游泳'],
-            ['name' => '小红', 'age' => 17, 'gender' => '2', 'birthday' => '1991-10', 'hoby' => '唱歌'],
+            ['id' => 1, 'name' => '小明', 'idcard_no' => '5012345678199901011234', 'age' => 18, 'gender' => '1', 'birthday' => '1989-10', 'hoby' => '1', 'todo' => 1, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
+            ['id' => 2, 'name' => '小红', 'idcard_no' => '5012345678199901014567', 'age' => 17, 'gender' => '2', 'birthday' => '1991-10', 'hoby' => '1,2', 'todo' => 2, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
         ]);
+
+        $table->paginator(1000);
+
+        if (request()->isAjax()) {
+
+            $table->data([
+                ['id' => 1, 'name' => '小明' . input('__page__'), 'idcard_no' => '5012345678199901011234', 'age' => 18, 'gender' => '1', 'birthday' => '1989-10', 'hoby' => '1', 'todo' => 1, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
+                ['id' => 2, 'name' => '小红' . input('__page__'), 'idcard_no' => '5012345678199901014567', 'age' => 17, 'gender' => '2', 'birthday' => '1990-10', 'hoby' => '1,2', 'todo' => 2, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
+                ['id' => 3, 'name' => '小刚' . input('__page__'), 'idcard_no' => '5012345678199901014599', 'age' => 19, 'gender' => '1', 'birthday' => '1988-10', 'hoby' => '1', 'todo' => 2, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
+            ]);
+
+            return $table->partial()->render(false);
+        }
 
         return $builder->render();
 
+    }
+
+    public function test3()
+    {
+        $builder = Builder::getInstance('人员管理', '列表');
+        /*$tab = $builder->tab();
+        $form = $tab->add('测试1')->form();
+        $form->text('name', '姓名')->maxlength(10)->default('小明')->afterSymbol('%');
+
+        $tab->add('测试2')->content()->display('xxxxxxx');*/
+        $form = $builder->form(10);
+
+        $form->tab('tab1');
+        $form->text('aaa', 'aaa');
+
+        $form->tab('tab2');
+        $form->text('bbb', 'bbb');
+
+        $form->tab('tab3');
+        $form->text('ccc', 'ccc');
+
+        $form->tab('tab4');
+        $form->text('ddd', 'ddd');
+
+        $form->tab('tab5');
+        $form->text('eee', 'eee');
+
+        return $builder->render();
+    }
+
+    public function test4()
+    {
+        $builder = Builder::getInstance('人员管理', '列表');
+        $form = $builder->form();
+
+        $form->step('step1');
+        $form->text('aaa', 'aaa');
+
+        $form->step('step2');
+        $form->text('bbb', 'bbb');
+
+        $form->step('step3');
+        $form->text('ccc', 'ccc');
+
+        $form->getStep()->active(3)->anchor();
+
+        return $builder->render();
+    }
+
+    public function postBack()
+    {
+        return json(['status' => 1]);
+    }
+
+    public function enable()
+    {
+        return json(['status' => 1]);
+    }
+
+    public function disable()
+    {
+        return json(['status' => 1]);
+    }
+
+
+    public function delete()
+    {
+        return json(['status' => 1]);
     }
 
     public function testdata()

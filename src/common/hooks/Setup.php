@@ -14,7 +14,7 @@ class Setup
         '/assets/lightyearadmin/js/bootstrap-notify.min.js',
         '/assets/lightyearadmin/js/lightyear.js',
         '/assets/lightyearadmin/js/main.min.js',
-        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js'
+        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js',
     ];
 
     protected static $css = [
@@ -22,7 +22,7 @@ class Setup
         '/assets/lightyearadmin/css/materialdesignicons.min.css',
         '/assets/lightyearadmin/css/animate.css',
         '/assets/lightyearadmin/css/style.min.css',
-        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css'
+        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css',
     ];
 
     /**
@@ -56,20 +56,27 @@ class Setup
 
             $rootPath = $instance->getRoot();
 
+            $instance->copyAssets();
+
             $tplPath = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'tpl', '']);
 
             //config('exception_tmpl', $tplPath . 'exception_tmpl.tpl');
             config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
             config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
 
-            $config = $instance->loadConfig();
-            $layoutPath = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'layout.html']);
+            $config = $instance->getConfig();
+            $admin_layout = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'layout.html']);
 
             View::share([
-                'admin' => $config,
-                'admin_layout' => $layoutPath,
+                'admin_page_position' => '',
+                'admin_page_title' => $config['name'],
+                'admin_page_description' => $config['description'],
+                'admin_logo' => $config['logo'],
+                'admin_favicon' => $config['favicon'],
+                'admin_copyright' => $config['copyright'],
                 'admin_js' => static::$js,
                 'admin_css' => static::$css,
+                'admin_layout' => $admin_layout,
             ]);
         }
     }

@@ -9,6 +9,7 @@
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
 use tpext\common\ExtLoader;
+use tpext\myadmin\common\hooks\Setup;
 
 $classMap = [
     'tpext\\myadmin\\common\\Module',
@@ -16,3 +17,5 @@ $classMap = [
 ];
 
 ExtLoader::addClassMap($classMap);
+
+ExtLoader::watch('module_init', Setup::class, '替换错误及跳转模板', false);

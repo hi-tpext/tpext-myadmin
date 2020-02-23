@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>首页 - {$admin.page_title}</title>
-  <link rel="icon" href="{$admin.favicon}" type="image/ico">
-  <meta name="description" content="{$admin.desc}">
-  <link href="__LIGHTYEARADMIN__/css/bootstrap.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/js/bootstrap-multitabs/multitabs.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/css/style.min.css" rel="stylesheet">
+  <title>首页 - {$admin_page_title|default=''}</title>
+  <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
+  <meta name="description" content="{$admin_page_description|default=''}">
+  <link href="/assets/lightyearadmin/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/lightyearadmin/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="/assets/lightyearadmin/js/bootstrap-multitabs/multitabs.min.css" rel="stylesheet">
+  <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -22,7 +22,7 @@
         <!-- logo -->
         <div id="logo" class="sidebar-header">
           <a href="#">
-            {$admin.logo|raw}
+            {$admin_logo|raw}
           </a>
         </div>
         <div class="lyear-layout-sidebar-scroll">
@@ -49,14 +49,14 @@
                 <span class="lyear-toggler-bar"></span>
                 <span class="lyear-toggler-bar"></span>
               </div>
-              <span class="navbar-page-title">{$admin.page_title}</span>
+              <span class="navbar-page-title">{$admin_page_title}</span>
             </div>
 
             <ul class="topbar-right">
               <li class="dropdown dropdown-profile">
                 <a href="javascript:void(0)" data-toggle="dropdown">
                   <img class="img-avatar img-avatar-48 m-r-10"
-                    src="{$adminuser.avatar|default='__LIGHTYEARADMIN__/images/logo-ico.png'}"
+                    src="{$adminuser.avatar|default='/assets/lightyearadmin/images/logo-ico.png'}"
                     alt="{$adminuser.nickname|default='Tpext'}" />
                   <span>{$adminuser.nickname|default='Tpext'}<span class="caret"></span></span>
                 </a>
@@ -206,12 +206,12 @@
       <!--End 页面主要内容-->
     </div>
   </div>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/jquery.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/bootstrap.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/perfect-scrollbar.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/bootstrap-multitabs/multitabs.js" charset="utf-8">
+  <script type="text/javascript" src="/assets/lightyearadmin/js/jquery.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/assets/lightyearadmin/js/bootstrap.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/assets/lightyearadmin/js/perfect-scrollbar.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/assets/lightyearadmin/js/bootstrap-multitabs/multitabs.js" charset="utf-8">
   </script>
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/index.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/assets/lightyearadmin/js/index.min.js" charset="utf-8"></script>
   <script>
     /**
      * 菜单
@@ -300,16 +300,24 @@
       is_home: 0,
     }, {
       id: '4',
-      name: '卡片',
-      url: 'lyear_ui_cards.html',
+      name: '表格',
+      url: "{:url('admin/index/test2')}",
       pid: 2,
       icon: '',
       is_out: 0,
       is_home: 0,
     }, {
       id: '5',
-      name: '格栅',
-      url: 'lyear_ui_grid.html',
+      name: 'test3',
+      url: "{:url('admin/index/test3')}",
+      pid: 2,
+      icon: '',
+      is_out: 0,
+      is_home: 0,
+    }, {
+      id: '55',
+      name: 'test4',
+      url: "{:url('admin/index/test4')}",
       pid: 2,
       icon: '',
       is_out: 0,

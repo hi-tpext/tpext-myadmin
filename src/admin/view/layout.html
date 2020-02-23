@@ -1,53 +1,71 @@
 <!DOCTYPE html>
 <html lang="zh">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>{$admin.position}{notempty name="$admin.page_title"} - {$admin.page_title}{/notempty}</title>
-  <link rel="icon" href="{$admin.favicon}" type="image/ico">
-  <meta name="description" content="{$admin.desc}">
-  {volist name="admin_css" id="item"}
-<link href="{$item}" rel="stylesheet">
-  {/volist}
-  {block name="style"}
-  <!--stylesheets-->
-  {/block}
-  <style>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,
+      maximum-scale=1, user-scalable=no" />
+    <title>{$admin_page_position|default=''} - {$admin_page_title|default=''}</title>
+    <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
+    <meta name="description" content="{$admin_page_description|default=''}">
+    {notempty name="$admin_css"}
+    {volist name="admin_css" id="item"}
+    <link href="{$item}" rel="stylesheet">
+    {/volist}
+    {/notempty}
+    {block name="style"}
+    <!--stylesheets-->
+    {/block}
+    <style>
+
     .lyear-layout-content {
       padding-left: 0;
       padding-top: 0;
+    }
+    .container-fluid
+    {
+      height: 100%;
+    }
+    .container-fluid .content
+    {
+      min-height: 96%;
+      margin-bottom:0;
     }
     .page-footer
     {
       height: 25px;
       line-height: 25px;
       width: 100%;
-      text-align: right;
+      margin-top: 10px;
     }
+
   </style>
-</head>
+  </head>
 
-<body>
-   <!--页面主要内容-->
-   <main class="lyear-layout-content">
-    <div class="container-fluid">
-      {block name="content"}{/block}
-      <footer class="page-footer">
-        <span class="copyright">{$admin.copyright|raw}</span>
-      </footer>
-    </div>
-  </main>
-  <!--End 页面主要内容-->
-
-  {volist name="admin_js" id="item"}
-<script type="text/javascript" src="{$item}" charset="utf-8"></script>
-  {/volist}
-  
-  {block name="script"}
-  <!--scripts-->
-  {/block}
-  <script type="text/javascript" src="__LIGHTYEARADMIN__/js/main.min.js" charset="utf-8"></script>
-</body>
+  <body>
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        {block name="content"}{/block}
+        <footer class="page-footer">
+          <span class="copyright">{$admin_copyright|raw|default=''}</span>
+        </footer>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+    {notempty name="$admin_js"}
+    {volist name="admin_js" id="item"}
+    <script type="text/javascript" src="{$item}" charset="utf-8"></script>
+    {/volist}
+    {/notempty}
+    <script>
+      window.__token__ = "{$__token__|default=''}";
+    </script>
+    {block name="script"}
+    <!--scripts-->
+    {/block}
+    <script type="text/javascript" src="/assets/lightyearadmin/js/main.min.js"
+      charset="utf-8"></script>
+  </body>
 
 </html>
