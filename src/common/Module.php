@@ -7,7 +7,7 @@ use tpext\common\Module as baseModule;
 class Module extends baseModule
 {
     protected $version = '1.0.1';
-    
+
     protected $name = 'tpext.myadmin';
 
     protected $title = '后台框架';
@@ -17,7 +17,7 @@ class Module extends baseModule
     protected $root = __DIR__ . '/../../';
 
     protected $modules = [
-        'admin' => ['index'],
+        'admin' => ['index', 'auth'],
     ];
 
     public function moduleInit($info = [])
