@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>登录页面 - {$admin.page_title}</title>
-    <link rel="icon" href="{$admin.favicon}" type="image/ico">
-    <meta name="description" content="{$admin.desc}">
-    <link href="__LIGHTYEARADMIN__/css/bootstrap.min.css" rel="stylesheet">
-    <link href="__LIGHTYEARADMIN__/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="__LIGHTYEARADMIN__/css/style.min.css" rel="stylesheet">
-    <style>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1,
+            maximum-scale=1, user-scalable=no" />
+        <title>登录 - {$admin_page_title}</title>
+        <link rel="icon" href="{$admin.favicon}" type="image/ico">
+        <meta name="description" content="{$admin.desc}">
+        <link href="/assets/lightyearadmin/css/bootstrap.min.css"
+            rel="stylesheet">
+        <link href="/assets/lightyearadmin/css/materialdesignicons.min.css"
+            rel="stylesheet">
+        <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
+        <style>
         .lyear-wrapper {
             position: relative;
         }
@@ -59,53 +62,71 @@
             height: 38px;
         }
     </style>
-</head>
+    </head>
 
-<body>
-    <div class="row lyear-wrapper">
-        <div class="lyear-login">
-            <div class="login-center">
-                <div class="login-header text-center">
-                    <a href="index.html"> <img alt="light year admin" src="__LIGHTYEARADMIN__/images/logo-sidebar.png"> </a>
+    <body>
+        <div class="row lyear-wrapper">
+            <div class="lyear-login">
+                <div class="login-center">
+                    <div class="login-header text-center">
+                        <a href="index.html"> <img alt="light year admin"
+                                src="__LIGHTYEARADMIN__/images/logo-sidebar.png">
+                        </a>
+                    </div>
+                    <form action="#!" method="post">
+                        <div class="form-group has-feedback feedback-left">
+                            <input type="text" placeholder="请输入您的用户名"
+                                class="form-control" name="username"
+                                id="username" />
+                            <span class="mdi mdi-account form-control-feedback"
+                                aria-hidden="true"></span>
+                        </div>
+                        <div class="form-group has-feedback feedback-left">
+                            <input type="password" placeholder="请输入密码"
+                                class="form-control" id="password"
+                                name="password" />
+                            <span class="mdi mdi-lock form-control-feedback"
+                                aria-hidden="true"></span>
+                        </div>
+                        <div class="form-group has-feedback feedback-left row">
+                            <div class="col-xs-7">
+                                <input type="text" name="captcha"
+                                    class="form-control" placeholder="验证码">
+                                <span class="mdi mdi-check-all
+                                    form-control-feedback" aria-hidden="true"></span>
+                            </div>
+                            <div class="col-xs-5">
+                                <img src="/index.php/captcha/id/admin"
+                                    class="pull-right" id="captcha"
+                                    style="cursor: pointer;"
+                                    onclick="this.src='/index.php/captcha/id/admin?d='+Math.random();"
+                                    title="点击刷新"
+                                    alt="captcha">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-block btn-primary"
+                                type="button"
+                                onclick="location.href='index.html'">立即登录</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <footer class="col-sm-12 text-center">
+                        <p class="m-b-0">Copyright © 2019 <a
+                                href="http://lyear.itshubao.com">IT书包</a>. All
+                            right reserved
+                        </p>
+                    </footer>
                 </div>
-                <form action="#!" method="post">
-                    <div class="form-group has-feedback feedback-left">
-                        <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username" />
-                        <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
-                    </div>
-                    <div class="form-group has-feedback feedback-left">
-                        <input type="password" placeholder="请输入密码" class="form-control" id="password" name="password" />
-                        <span class="mdi mdi-lock form-control-feedback" aria-hidden="true"></span>
-                    </div>
-                    <div class="form-group has-feedback feedback-left row">
-                        <div class="col-xs-7">
-                            <input type="text" name="captcha" class="form-control" placeholder="验证码">
-                            <span class="mdi mdi-check-all form-control-feedback" aria-hidden="true"></span>
-                        </div>
-                        <div class="col-xs-5">
-                            <img src="/index.php/captcha/id/admin" class="pull-right" id="captcha"
-                                style="cursor: pointer;" onclick="this.src='/index.php/captcha/id/admin?d='+Math.random();" title="点击刷新"
-                                alt="captcha">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-block btn-primary" type="button"
-                            onclick="location.href='index.html'">立即登录</button>
-                    </div>
-                </form>
-                <hr>
-                <footer class="col-sm-12 text-center">
-                    <p class="m-b-0">Copyright © 2019 <a href="http://lyear.itshubao.com">IT书包</a>. All right reserved
-                    </p>
-                </footer>
             </div>
         </div>
-    </div>
-    <script type="text/javascript" src="__LIGHTYEARADMIN__/js/jquery.min.js"></script>
-    <script type="text/javascript" src="__LIGHTYEARADMIN__/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+        <script type="text/javascript"
+            src="__LIGHTYEARADMIN__/js/jquery.min.js"></script>
+        <script type="text/javascript"
+            src="__LIGHTYEARADMIN__/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
         ;
     </script>
-</body>
+    </body>
 
 </html>

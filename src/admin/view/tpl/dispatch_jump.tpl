@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>跳转提示</title>
   <meta name="author" content="yinqi">
-  <link href="__LIGHTYEARADMIN__/css/bootstrap.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="__LIGHTYEARADMIN__/css/style.min.css" rel="stylesheet">
+  <link href="/assets/lightyearadmin/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/lightyearadmin/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #fff;
@@ -16,6 +16,11 @@
 
     .lyear-layout-content {
       padding: 0;
+    }
+
+    .card
+    {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -32,7 +37,7 @@
                 <div class="card-header">
                   <h4>跳转提示</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body text-center">
                   <?php switch ($code) {?>
                   <?php case 1:?>
                   <div class="alert alert-success " role="alert">

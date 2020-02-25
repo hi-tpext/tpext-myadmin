@@ -146,21 +146,21 @@ class Index extends Controller
 
         $table->searchForm($form);
 
-        $table->text('name', '姓名')->autoPost(url('postBack'));
-        $table->text('idcard_no', '身份证')->autoPost(url('postBack'));
+        $table->text('name', '姓名')->autoPost();
+        $table->text('idcard_no', '身份证')->autoPost();
         $table->field('age', '年龄');
-        $table->radio('gender', '性别')->options(['1' => '男', '2' => '女'])->autoPost(url('postBack'));
+        $table->radio('gender', '性别')->options(['1' => '男', '2' => '女'])->autoPost();
         $table->field('birthday', '生日');
 
         $table->checkbox('hoby', '爱好')->options([
             '1' => '游泳',
             '2' => '爬山',
-        ])->autoPost(url('postBack'));
+        ])->autoPost();
 
         $table->select('todo', '任务')->options([
             '1' => '吃饭',
             '2' => '睡觉',
-        ])->select2(false)->autoPost(url('postBack'));
+        ])->select2(false)->autoPost();
 
         $table->field('photo', '照片');
 
@@ -170,6 +170,8 @@ class Index extends Controller
         ]);
 
         $table->paginator(1000);
+
+        $table->getToolbar()->btnAdd()->btnImport('', 'rar', 1);
 
         if (request()->isAjax()) {
 
@@ -233,7 +235,7 @@ class Index extends Controller
         return $builder->render();
     }
 
-    public function postBack()
+    public function autopost()
     {
         return json(['status' => 1]);
     }
@@ -247,7 +249,6 @@ class Index extends Controller
     {
         return json(['status' => 1]);
     }
-
 
     public function delete()
     {

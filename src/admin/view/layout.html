@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,
       maximum-scale=1, user-scalable=no" />
-    <title>{$admin_page_position|default=''} - {$admin_page_title|default=''}</title>
+    <title>{$admin_page_position|default='后台'} - {$admin_page_title|default=''}</title>
     <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
     <meta name="description" content="{$admin_page_description|default=''}">
     {notempty name="$admin_css"}
@@ -36,7 +36,7 @@
       height: 25px;
       line-height: 25px;
       width: 100%;
-      margin-top: 10px;
+      margin: 10px 0;
     }
 
   </style>
@@ -47,9 +47,11 @@
     <main class="lyear-layout-content">
       <div class="container-fluid">
         {block name="content"}{/block}
+        {notempty name="$admin_copyright"}
         <footer class="page-footer">
-          <span class="copyright">{$admin_copyright|raw|default=''}</span>
+          <span class="copyright">{$admin_copyright|raw}</span>
         </footer>
+        {/notempty}
       </div>
     </main>
     <!--End 页面主要内容-->

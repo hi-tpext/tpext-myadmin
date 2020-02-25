@@ -17,7 +17,7 @@ class Module extends baseModule
     protected $root = __DIR__ . '/../../';
 
     protected $modules = [
-        'admin' => ['index', 'auth'],
+        'admin' => ['index', 'permission', 'role'],
     ];
 
     public function moduleInit($info = [])

@@ -25,14 +25,12 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_menu` (
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `order` int(4) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  `title` varchar(25) NOT NULL DEFAULT '' COMMENT '角色名称',
-  `slug` varchar(55) NOT NULL DEFAULT '' COMMENT 'slug',
-  `description` varchar(100) NOT NULL DEFAULT '' COMMENT '描述',
+  `order` int(4) unsigned DEFAULT '0' COMMENT '排序',
+  `name` varchar(25) NOT NULL DEFAULT '' COMMENT '角色名称',
+  `description` varchar(100) DEFAULT '' COMMENT '描述',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE (`slug`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='后台角色表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_permission` (
