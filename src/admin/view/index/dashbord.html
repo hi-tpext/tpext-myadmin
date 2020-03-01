@@ -1,7 +1,15 @@
 {extend name="$admin_layout"/}
 
 {block name="style"}
-
+  <style>
+    .page-footer
+    {
+      height: 25px;
+      line-height: 25px;
+      width: 100%;
+      margin: 10px 0;
+    }
+  </style>
 {/block}
 
 {block name="content"}
@@ -209,7 +217,11 @@
     </div>
   </div>
 </div>
-
+{notempty name="$admin_copyright"}
+<footer class="page-footer">
+  <span class="copyright">{$admin_copyright|raw}</span>
+</footer>
+{/notempty}
 {/block}
 
 {block name="script"}

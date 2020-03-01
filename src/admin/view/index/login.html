@@ -6,8 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1,
             maximum-scale=1, user-scalable=no" />
         <title>登录 - {$admin_page_title}</title>
-        <link rel="icon" href="{$admin.favicon}" type="image/ico">
-        <meta name="description" content="{$admin.desc}">
+        <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
+        <meta name="description" content="{$admin_page_description|default=''}">
         <link href="/assets/lightyearadmin/css/bootstrap.min.css"
             rel="stylesheet">
         <link href="/assets/lightyearadmin/css/materialdesignicons.min.css"
@@ -69,11 +69,11 @@
             <div class="lyear-login">
                 <div class="login-center">
                     <div class="login-header text-center">
-                        <a href="index.html"> <img alt="light year admin"
-                                src="__LIGHTYEARADMIN__/images/logo-sidebar.png">
+                        <a> <img alt="{$admin_page_title}"
+                                src="/assets/lightyearadmin/images/logo-ico.png">
                         </a>
                     </div>
-                    <form action="#!" method="post">
+                    <form action="" method="post" id="login-form">
                         <div class="form-group has-feedback feedback-left">
                             <input type="text" placeholder="请输入您的用户名"
                                 class="form-control" name="username"
@@ -84,6 +84,7 @@
                         <div class="form-group has-feedback feedback-left">
                             <input type="password" placeholder="请输入密码"
                                 class="form-control" id="password"
+                                autocomplete="new-password"
                                 name="password" />
                             <span class="mdi mdi-lock form-control-feedback"
                                 aria-hidden="true"></span>
@@ -99,34 +100,109 @@
                                 <img src="/index.php/captcha/id/admin"
                                     class="pull-right" id="captcha"
                                     style="cursor: pointer;"
-                                    onclick="this.src='/index.php/captcha/id/admin?d='+Math.random();"
+                                    onclick="this.src='/index.php/captcha/admin?d='+Math.random();"
                                     title="点击刷新"
                                     alt="captcha">
                             </div>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-block btn-primary"
-                                type="button"
-                                onclick="location.href='index.html'">立即登录</button>
+                                type="submit">立即登录</button>
                         </div>
                     </form>
                     <hr>
+                    {notempty name="$admin_copyright"}
                     <footer class="col-sm-12 text-center">
-                        <p class="m-b-0">Copyright © 2019 <a
-                                href="http://lyear.itshubao.com">IT书包</a>. All
-                            right reserved
-                        </p>
+                        {$admin_copyright|raw}
                     </footer>
+                    {/notempty}
                 </div>
             </div>
         </div>
         <script type="text/javascript"
-            src="__LIGHTYEARADMIN__/js/jquery.min.js"></script>
+            src="/assets/lightyearadmin/js/jquery.min.js"></script>
         <script type="text/javascript"
-            src="__LIGHTYEARADMIN__/js/bootstrap.min.js"></script>
+            src="/assets/lightyearadmin/js/bootstrap.min.js"></script>
+        <script type="text/javascript"
+            src="/assets/tpextbuilder/js/jquery-validate/jquery.validate.min.js"></script>
+        <script type="text/javascript"
+            src="/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js"></script>
+        <script type="text/javascript"
+            src="/assets/lightyearadmin/js/bootstrap-notify.min.js"></script>
+        <script type="text/javascript"
+            src="/assets/lightyearadmin/js/lightyear.js"></script>
+
         <script type="text/javascript">
-        ;
-    </script>
+            $('#login-form').validate({
+                ignore: ".ignore",    // 插件默认不验证隐藏元素,这里可以自定义一个不验证的class,即验证隐藏元素,不验证class为.ignore的元素
+                focusInvalid: false,  // 禁用无效元素的聚焦
+                rules: {
+                    username: {
+                        required :true
+                    },
+                    password: {
+                        required :true
+                    },
+                    captcha: {
+                        required :true
+                    },
+                },
+                errorPlacement: function errorPlacement(error, element) {
+                    var parent = $(element).parents('.form-group');
+                    if (parent.find('.error-label').length) {
+                        return;
+                    }
+                    parent.addClass('has-error');
+
+                    lightyear.notify('输入有误，请检查', 'warning');
+                },
+                highlight: function(element) {
+                  
+                },
+                unhighlight: function(element) {
+                    $(element).next('.tagsinput').removeClass('is-invalid');
+                    $(element).parents('.form-group').removeClass('has-error');
+                },
+                submitHandler: function(form) {
+                    formSubmit();
+                }
+        });
+
+        function formSubmit()
+        {
+            lightyear.loading('hide');
+            
+            lightyear.loading('show');
+    
+            var data = $('#login-form').serialize();
+            
+            $.ajax({
+                url: location.href,
+                data: data,
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    setTimeout(function(){
+                        lightyear.loading('hide');
+                    },500);
+
+                    if (data.code) {
+                            lightyear.notify(data.msg || data.message || '登录成功', 'success');
+                            location.href ='index';
+                    } else {
+                        lightyear.notify(data.msg || data.message || '登录失败', 'warning');
+                        $('#captcha').attr('src','/index.php/captcha/id/admin?d=' + Math.random());
+                    }
+                },
+                error: function () {
+                    lightyear.loading('hide');
+                    lightyear.notify('网络错误', 'danger');
+                }
+            });
+
+            return false;
+        }
+        </script>
     </body>
 
 </html>

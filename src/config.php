@@ -1,13 +1,10 @@
 <?php
-use tpext\lightyearadmin\common\Module;
-
-$assetsDir = Module::getInstance()->assetsDirName();
 
 return [
     'name' => 'Tpext后台管理系统',
     'description' => 'Tpext后台管理系统',
-    'logo' => '<img src="/assets/' . $assetsDir . '/images/logo.png" alt="Admin logo" title="Tpext后台管理系统">',
-    'favicon' => '/assets/' . $assetsDir . '/favicon.ico',
+    'logo' => '<img src="/assets/lightyearadmin/images/logo.png" alt="Admin logo" title="Tpext后台管理系统">',
+    'favicon' => '/assets/lightyearadmin/favicon.ico',
     'copyright' => 'Copyright &copy; 2020. <a target="_blank" href="#">Tpext后台管理系统</a> All rights reserved.',
     'minify' => 0,
     //配置描述

@@ -2,19 +2,23 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
+use think\Db;
 use tpext\builder\common\Builder;
 use tpext\myadmin\admin\model\AdminPermission;
 use tpext\myadmin\admin\model\AdminRole;
+use tpext\myadmin\admin\model\AdminRolePermission;
 
 class Role extends Controller
 {
     protected $dataModel;
-    protected $pemModel;
+    protected $permModel;
+    protected $rolePermModel;
 
-    public function __construct()
+    protected function initialize()
     {
         $this->dataModel = new AdminRole;
-        $this->pemModel = new AdminPermission;
+        $this->permModel = new AdminPermission;
+        $this->rolePermModel = new AdminRolePermission;
     }
 
     public function index()
@@ -23,18 +27,20 @@ class Role extends Controller
 
         $table = $builder->table();
 
-        $table->field('id', 'ID');
-        $table->field('name', '名称');
-        $table->field('description', '描述')->default('无描述');
-        $table->text('order', '排序')->autoPost()->getWapper()->addStyle('max-width:80px');
-        $table->field('create_time', '添加时间')->getWapper()->addStyle('width:180px');
-        $table->field('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+        $table->show('id', 'ID');
+        $table->show('name', '名称');
+        $table->show('description', '描述')->default('无描述');
+        $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:80px');
+        $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
+        $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
         $pagezise = 10;
 
         $page = input('__page__/d', 1);
 
-        $data = $this->dataModel->order('order')->limit(($page - 1) * $pagezise, $pagezise)->select();
+        $page = $page < 1 ? 1 : $page;
+
+        $data = $this->dataModel->order('sort')->limit(($page - 1) * $pagezise, $pagezise)->select();
         $table->data($data);
         $table->paginator($this->dataModel->count(), $pagezise);
         $table->getToolbar()
@@ -62,8 +68,12 @@ class Role extends Controller
         if (request()->isPost()) {
             return $this->save($id);
         } else {
-
-            return $this->form('编辑', $this->dataModel->get($id));
+            $data = $this->dataModel->get($id);
+            if (!$data) {
+                $this->error('数据不存在');
+            }
+            
+            return $this->form('编辑', $data);
         }
     }
 
@@ -72,11 +82,12 @@ class Role extends Controller
         $data = request()->only([
             'name',
             'description',
-            'order',
-        ]);
+            'sort',
+        ], 'post');
 
         $result = $this->validate($data, [
             'name|名称' => 'require',
+            'sort|排序' => 'require|number',
         ]);
 
         if (true !== $result) {
@@ -85,6 +96,7 @@ class Role extends Controller
         }
 
         if ($id) {
+            $data['update_time'] = date('Y-m-d H:i:s');
             $res = $this->dataModel->where(['id' => $id])->update($data);
         } else {
             $res = $this->dataModel->create($data);
@@ -94,8 +106,66 @@ class Role extends Controller
             $this->error('保存失败');
         }
 
+        if (!$id) {
+            $id = $res;
+        }
+
+        $this->savePermissions($id);
+
         return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
 
+    }
+
+    private function savePermissions($roleId)
+    {
+        $data = request()->post();
+
+        $allIds = $this->rolePermModel->where(['role_id' => $roleId])->column('id');
+        $existIds = [];
+
+        $modControllers = $this->permModel->getControllers();
+
+        Db::startTrans();
+
+        foreach ($modControllers as $modController) {
+
+            foreach ($modController['controllers'] as $controller => $methods) {
+
+                $controllerPerm = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
+
+                if (!$controllerPerm || empty($methods)) {
+                    continue;
+                }
+
+                if (isset($data['permissions' . $controllerPerm['id']])) {
+
+                    $saveIds = $data['permissions' . $controllerPerm['id']];
+
+                    foreach ($saveIds as $id) {
+                        $exist = $this->rolePermModel->where(['permission_id' => $id, 'role_id' => $roleId])->find();
+
+                        if ($exist) {
+                            $existIds[] = $exist['id'];
+                            continue;
+                        } else {
+                            $this->rolePermModel->create([
+                                'permission_id' => $id,
+                                'role_id' => $roleId,
+                                'controller_id' => $controllerPerm['id'],
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+
+        $delIds = array_diff($allIds, $existIds);
+
+        if (!empty($delIds)) {
+            $this->rolePermModel->destroy(array_values($delIds));
+        }
+
+        Db::commit();
     }
 
     private function form($title, $data = [])
@@ -106,52 +176,60 @@ class Role extends Controller
 
         $form->hidden('id');
         $form->text('name', '名称')->maxlength(25)->required();
-        $form->textarea('description', '名称')->maxlength(100);
-        $form->number('order', '排序')->default(1);
+        $form->textarea('description', '描述')->maxlength(100);
+        $form->text('sort', '排序')->default(1);
         if (isset($data['id'])) {
-            $form->raw('create_time', '添加时间');
-            $form->raw('update_time', '修改时间');
+            $form->show('create_time', '添加时间');
+            $form->show('update_time', '修改时间');
         }
+        $modControllers = $this->permModel->getControllers();
 
-        $modControllers = $this->pemModel->getControllers();
+        foreach ($modControllers as $modController) {
 
-        foreach ($modControllers as $key => $modController) {
-
-            $form->html('', '', 2);
-            $form->checkbox($key, '', 10)->options([1 => $modController['title']])->showLabel(false);
+            $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
 
             foreach ($modController['controllers'] as $controller => $methods) {
 
-                $form->html('', '', 2);
+                $controllerPerm = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
 
-                $form->checkbox($controller, '', 9)->options([1 => $this->getPerName($controller, '————')])->showLabel(false)->getWapper()->attr('style="margin-left:20px;"');
+                if (!$controllerPerm) {
+                    continue;
+                }
+
+                if (empty($methods)) {
+                    continue;
+                }
 
                 $options = [];
 
                 foreach ($methods as $method) {
 
-                    $options[$controller . '@' . $method] = $this->getPerName($controller, '@' . $method);
+                    $actionPerm = $this->permModel->where(['controller' => $controller, 'action' => '@' . $method])->find();
+
+                    if (!$actionPerm || $actionPerm['action_type'] == 0) {
+                        continue;
+                    }
+
+                    if (!$actionPerm['action_name']) {
+                        $actionPerm['action_name'] = $method;
+                    }
+
+                    $options[$actionPerm['id']] = $actionPerm['action_name'];
                 }
 
-                $form->html('', '', 2);
-                $form->checkbox($controller, '', 9)->options($options)->showLabel(false)->size(0, 12)->inline(true)->getWapper()->attr('style="margin-left:40px;"');
+                $ids = $this->rolePermModel->where(['controller_id' => $controllerPerm['id']])->column('permission_id');
+
+                $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
+                    ->default($ids)->size(2, 10)
+                    ->options($options)
+                    ->inline()
+                    ->checkallBtn();
             }
         }
 
         $form->fill($data);
 
         return $builder->render();
-    }
-
-    protected function getPerName($controller, $action)
-    {
-        $perm = $this->pemModel->where(['controller' => $controller, 'action' => $action])->find();
-
-        if ($perm && $perm['action_name']) {
-            return $perm['action_name'];
-        }
-
-        return $controller . $action;
     }
 
     public function autopost()
@@ -164,7 +242,7 @@ class Role extends Controller
             $this->error('参数有误');
         }
 
-        $allow = ['order', 'name'];
+        $allow = ['sort', 'name'];
 
         if (!in_array($name, $allow)) {
             $this->error('不允许的操作');
@@ -177,6 +255,28 @@ class Role extends Controller
         } else {
             $this->error('修改失败');
         }
+    }
+
+    public function ajaxData()
+    {
+        $page = input('page/d', 1);
+        $q = input('q');
+
+        $pagezise = 10;
+        $where = [];
+
+        if ($q) {
+            $where = ['name', ['like', $q]];
+        }
+
+        $data = $this->dataModel->where($where)->field('id,name as text')->order('sort')->limit(($page - 1) * $pagezise, $pagezise)->select();
+
+        $hasMore = count($data) == $pagezise;
+
+        return json([
+            'more_url' => $hasMore ? '?page=' . ($page + 1) . '&q=' . $q : '',
+            'data' => $data,
+        ]);
     }
 
     public function delete()

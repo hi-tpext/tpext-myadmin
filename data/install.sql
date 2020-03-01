@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_permission` (
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_menu` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `parent_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上级id',
-  `order` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
+  `sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `title` varchar(25) NOT NULL DEFAULT '' COMMENT '标题',
   `url` varchar(100) NOT NULL DEFAULT '' COMMENT 'url地址',
   `icon` varchar(25) NOT NULL DEFAULT '' COMMENT '图标',
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_menu` (
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `order` int(4) unsigned DEFAULT '0' COMMENT '排序',
+  `sort` int(4) unsigned DEFAULT '0' COMMENT '排序',
   `name` varchar(25) NOT NULL DEFAULT '' COMMENT '角色名称',
   `description` varchar(100) DEFAULT '' COMMENT '描述',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role` (
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_permission` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `role_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '角色id',
+  `controller_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '控制器id',
   `permission_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '权限id',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
@@ -45,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_permission` (
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `role_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '角色组',
   `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(100) NOT NULL DEFAULT '' COMMENT '密码',
   `salt` varchar(10) NOT NULL DEFAULT '' COMMENT '密码',
@@ -52,6 +54,8 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_user` (
   `avatar` varchar(120) DEFAULT '' COMMENT '头像',
   `phone` varchar(20) DEFAULT '' COMMENT '电话',
   `email` varchar(55) DEFAULT '' COMMENT '邮箱',
+  `errors` int(10) unsigned DEFAULT '0' COMMENT '错误次数',
+  `login_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '登录时间',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`)

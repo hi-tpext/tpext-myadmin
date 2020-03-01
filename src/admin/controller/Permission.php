@@ -9,7 +9,7 @@ class Permission extends Controller
 {
     protected $dataModel;
 
-    public function __construct()
+    protected function initialize()
     {
         $this->dataModel = new AdminPermission;
     }
@@ -44,7 +44,7 @@ class Permission extends Controller
 
                 $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
 
-                $row_ = array_merge($row, ['controller' => $controller, 'action_name' => $contrl, 'action_type' => '', 'action' => '————']);
+                $row_ = array_merge($row, ['controller' => $controller, 'action_name' => $contrl, 'action_type' => '', 'action' => '#']);
 
                 $data[] = $row_;
 
@@ -72,6 +72,8 @@ class Permission extends Controller
                         'upload' => '上传',
                         'download' => '下载',
                         'autopost' => '字段编辑',
+                        'import' => '导入',
+                        'export' => '导出',
                     ];
 
                     if (isset($action_names[$method])) {
@@ -90,7 +92,7 @@ class Permission extends Controller
                 $perm = $this->dataModel->where(['controller' => $row['controller'], 'action' => $row['action']])->find();
                 if ($perm) {
                     $row['action_type'] = $perm['action_type'];
-                    $row['action_name'] = $perm['action_name'];
+                    $row['action_name'] = $perm['action_name'] ? $perm['action_name'] : $row['action_name'];
                     $row['id'] = $perm['id'];
                 } else {
                     $row['id'] = $this->dataModel->create([
@@ -104,7 +106,7 @@ class Permission extends Controller
                 }
             }
 
-            if ($row['action'] == '' || $row['action'] == '————') {
+            if ($row['action'] == '' || $row['action'] == '#') {
                 $row['action_type'] = '-1';
             }
         }
@@ -117,8 +119,12 @@ class Permission extends Controller
 
         $table->data($data);
         $table->paginator(count($data), $pagezise);
-        $table->useToolbar(false);
+        $table->getToolbar()->btnRefresh();
         $table->useActionbar(false);
+
+        if (request()->isAjax()) {
+            return $table->partial()->render(false);
+        }
 
         return $builder->render();
     }

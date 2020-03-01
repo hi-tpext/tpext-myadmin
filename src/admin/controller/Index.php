@@ -2,12 +2,28 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
+use think\facade\Request;
 use tpext\builder\common\Builder;
+use tpext\common\ExtLoader;
+use tpext\common\Tool;
+use tpext\myadmin\admin\model\AdminOperationLog;
+use tpext\myadmin\admin\model\AdminUser;
 
 class Index extends Controller
 {
+    protected $dataModel;
+
+    protected function initialize()
+    {
+        $this->dataModel = new AdminUser;
+    }
+
     public function index()
     {
+        $admin_user = session('admin_user');
+
+        $this->assign('admin_user', $admin_user);
+
         return $this->fetch();
     }
 
@@ -16,275 +32,310 @@ class Index extends Controller
         return $this->fetch();
     }
 
-    public function login()
+    public function logout()
     {
-        return $this->fetch();
+        session('admin_user', null);
+        session('admin_id', null);
+
+        $this->success('注销成功', url('login'));
     }
 
-    public function test()
+    public function changePwd()
     {
-        $builder = Builder::getInstance();
-
-        $form = $builder->form();
-
-        //$form->datetimeRange('datetimeRange','时间日期范围');
-        //$form->dateRange('dateRange','日期范围');
-        //$form->timeRange('timeRange','时间范围');
-
-        $form->text('name', '姓名', 12, 'hell', 'width="1000"')->maxlength(10)->default('小明')->afterSymbol('%');
-        $form->text('phone', '电话')->default('1234500006789')->readonly();
-        $form->textarea('note', '备注')->default('大家好！')->maxlength(50);
-        //$form->html('<p style="color:red;">hello world !</p>');
-        //$form->divider('test');
-        $form->raw('notice', '注意')->default('<span style="color:green;">嘿</span>')->labelClass('nihao')->labelAttr('width="200"');
-
-        $form->checkbox('hobi', '爱好')->options([
-            '1' => '游泳',
-            '2' => '爬山',
-        ])->default([1]);
-
-        $form->radio('goodat', '擅长')->options([
-            '1' => '写作',
-            '2' => '唱歌',
-        ])->default(2)->disabled();
-
-        $form->select('eat', '吃的')->options([
-            //'1' => '苹果',
-            //'2' => '香蕉',
-        ])->default(2)->dataUrl(url('testdata'));
-
-        $form->select('todo', '任务')->options([
-            [
-                'label' => '1组',
-                'options' => [
-                    '1' => '吃饭',
-                    '2' => '睡觉',
-                ],
-            ],
-        ])->default(2)->readonly();
-
-        $form->multipleSelect('todo2', '任务2')->options([
-            [
-                'label' => '1组',
-                'options' => [
-                    '1' => '吃饭',
-                    '2' => '睡觉',
-                ],
-            ],
-        ])->default([2]);
-
-        $form->hidden('text', '24234324');
-
-        /*   $form->switchBtn('hellowww', 'swithc')->default(1);
-
-        $form->tags('hjsfhd', 'tags')->default('hell,world');
-
-        $form->datetime('datetime', '日期时间');
-
-        $form->date('date','日期')->timespan()->value(strtotime('-20day'));
-
-        $form->time('tiem','时间');
-
-        $form->color('color','颜色');
-
-        $form->number('number','数字');
-
-        $form->icon('icon','图标');
-         */
-        //$form->wangEditor('wang','wang编辑器');
-
-        //$form->tinymce('tinymce','tinymce编辑器');
-
-        //$form->ueditor('ueditor','ueditor编辑器');
-
-        //$form->ckeditor('ckeditor','ckeditor编辑器');
-
-        //$form->mdeditor('mdeditor','mdeditor编辑器');
-
-        //$row->column(6)->table();
-
-        //$form->rate('rate','rate');
-        //$form->month('month','month');
-        //$form->year('year','year');
-
-        $form->multipleFile('multipleFile', 'multipleFile')->value('/upload/images/202002/file5e3c1b015b04d.png,/upload/images/202002/file5e3c29670e3c2.zip')->limit(3);
-        //$form->file('file','file')->value('/upload/images/202002/file5e3c1b015b04d.png')->image();
-        $form->image('iage', 'image')->value('/upload/images/202002/file5e3c1b015b04d.png');
-        $form->rangeSlider('slider', 'slider')->default([20, 30]);
-
         if (request()->isPost()) {
-            $form->fill(input('post.'));
-        }
+            $data = request()->only([
+                'password_old',
+                'password_new',
+                'password_confirm',
+            ], 'post');
 
-        return $builder->render();
-    }
-
-    public function test2()
-    {
-        $builder = Builder::getInstance('人员管理', '列表');
-
-        $form = $builder->form();
-
-        $form->text('name', '姓名', 3)->maxlength(10)->default('小明')->afterSymbol('%');
-
-        $form->checkbox('hobi1', '爱好', 3)->options([
-            '1' => '游泳',
-            '2' => '爬山',
-        ])->default([1]);
-
-        $form->radio('goodat', '擅长', 3)->options([
-            '1' => '写作',
-            '2' => '唱歌',
-        ])->default(2);
-
-        $form->select('eat', '吃的', 3)->options([
-            '1' => '苹果',
-            '2' => '香蕉',
-        ])->default(2)->dataUrl(url('testdata'));
-
-        $table = $builder->table();
-
-        $table->searchForm($form);
-
-        $table->text('name', '姓名')->autoPost();
-        $table->text('idcard_no', '身份证')->autoPost();
-        $table->field('age', '年龄');
-        $table->radio('gender', '性别')->options(['1' => '男', '2' => '女'])->autoPost();
-        $table->field('birthday', '生日');
-
-        $table->checkbox('hoby', '爱好')->options([
-            '1' => '游泳',
-            '2' => '爬山',
-        ])->autoPost();
-
-        $table->select('todo', '任务')->options([
-            '1' => '吃饭',
-            '2' => '睡觉',
-        ])->select2(false)->autoPost();
-
-        $table->field('photo', '照片');
-
-        $table->data([
-            ['id' => 1, 'name' => '小明', 'idcard_no' => '5012345678199901011234', 'age' => 18, 'gender' => '1', 'birthday' => '1989-10', 'hoby' => '1', 'todo' => 1, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
-            ['id' => 2, 'name' => '小红', 'idcard_no' => '5012345678199901014567', 'age' => 17, 'gender' => '2', 'birthday' => '1991-10', 'hoby' => '1,2', 'todo' => 2, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
-        ]);
-
-        $table->paginator(1000);
-
-        $table->getToolbar()->btnAdd()->btnImport('', 'rar', 1);
-
-        if (request()->isAjax()) {
-
-            $table->data([
-                ['id' => 1, 'name' => '小明' . input('__page__'), 'idcard_no' => '5012345678199901011234', 'age' => 18, 'gender' => '1', 'birthday' => '1989-10', 'hoby' => '1', 'todo' => 1, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
-                ['id' => 2, 'name' => '小红' . input('__page__'), 'idcard_no' => '5012345678199901014567', 'age' => 17, 'gender' => '2', 'birthday' => '1990-10', 'hoby' => '1,2', 'todo' => 2, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
-                ['id' => 3, 'name' => '小刚' . input('__page__'), 'idcard_no' => '5012345678199901014599', 'age' => 19, 'gender' => '1', 'birthday' => '1988-10', 'hoby' => '1', 'todo' => 2, 'photo' => '/upload/images/202002/file5e3c1b015b04d.png'],
+            $result = $this->validate($data, [
+                'password_old|原密码' => 'require',
+                'password_new|新密码' => 'require',
+                'password_confirm|确认新密码' => 'require',
             ]);
 
-            return $table->partial()->render(false);
+            if (true !== $result) {
+
+                $this->error($result);
+            }
+
+            $user = $this->dataModel->get(session('admin_id'));
+
+            if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password_old'])) {
+                $this->error('原密码不正确');
+            }
+
+            if ($data['password_new'] != $data['password_confirm']) {
+                $this->error('两次输入新密码不匹配');
+            }
+
+            if ($data['password_new'] == $data['password_old']) {
+                $this->error('新旧密码一样' . json_encode($data));
+            }
+
+            $password = $this->dataModel->passCrypt($data['password_new']);
+
+            $editData['password'] = $password[0];
+            $editData['salt'] = $password[1];
+
+            $res = $this->dataModel->where(['id' => $user['id']])->update($editData);
+
+            if ($res) {
+                ExtLoader::trigger('admin_change_pwd', $user);
+                session('admin_user', $this->dataModel->get($user['id']));
+
+                $this->success('修改成功');
+            } else {
+                $this->error('修改失败');
+            }
+
+        } else {
+            $builder = Builder::getInstance('个人设置', '修改密码');
+
+            $form = $builder->form();
+
+            $form->password('password_old', '原密码')->required()->help('输入您现在使用代密码');
+            $form->password('password_new', '新密码')->required()->help('输入新密码（6～20位）');
+            $form->password('password_confirm', '确认新密码')->required()->help('再次输入新密码');
+
+            return $builder->render();
+        }
+    }
+
+    public function profile()
+    {
+        if (request()->isPost() && !input('post.is_search', '0')) {
+            return $this->saveProfile();
+        } else {
+            $builder = Builder::getInstance('个人设置', '资料修改');
+
+            $form = $builder->form(4);
+            $form->show('username', '登录帐号')->size(3, 9);
+            $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
+            $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9);
+            $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>')->size(3, 9);
+            $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>')->size(3, 9);
+            $form->show('login_time', '登录时间')->size(3, 9);
+            $form->show('create_time', '添加时间')->size(3, 9);
+            $form->show('update_time', '修改时间')->size(3, 9);
+
+            $form->butonsSizeClass('btn-sm');
+
+            $user = $this->dataModel->get(session('admin_id'));
+
+            $form->fill($user);
+
+            /*******************************/
+
+            $col = $builder->column(8);
+
+            $searchForm = $col->form();
+
+            $searchForm->text('path', '路径', 6)->maxlength(20);
+            $searchForm->radio('method', '提交方式', 6)->options(['' => '全部', 'GET' => 'get', 'POST' => 'post']);
+            $searchForm->datetimeRange('create_time', '时间', 6);
+            $searchForm->hidden('is_search')->value(1);
+
+            $table = $col->table();
+
+            $table->searchForm($searchForm);
+
+            $table->show('id', 'ID');
+            $table->show('path', '路径');
+            $table->show('method', '提交方式');
+            $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
+            $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+            $table->getToolbar()
+                ->btnRefresh();
+
+            $pagezise = 8;
+
+            $page = input('__page__/d', 1);
+
+            $page = $page < 1 ? 1 : $page;
+
+            $searchData = request()->only([
+                'path',
+                'method',
+                'create_time',
+            ], 'post');
+
+            $where = [];
+            $whereTime = [];
+
+            if (!empty($searchData['path'])) {
+                $where['path'] = ['like' => $searchData['path']];
+            }
+
+            if (!empty($searchData['method'])) {
+                $where['method'] = ['eq' => $searchData['method']];
+            }
+
+            if (!empty($searchData['create_time'])) {
+                $whereTime = explode(' ~ ', $searchData['create_time']);
+            }
+
+            $count = 0;
+
+            if (count($whereTime)) {
+                $count = AdminOperationLog::where($where)->whereBetweenTime('create_time', $whereTime[0], $whereTime[1])->count();
+                $data = AdminOperationLog::where($where)->whereBetweenTime('create_time', $whereTime[0], $whereTime[1])->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
+            } else {
+                $count = AdminOperationLog::where($where)->count();
+                $data = AdminOperationLog::where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
+            }
+
+            $table->data($data);
+            $table->paginator($count, $pagezise);
+
+            if (request()->isAjax()) {
+                return $table->partial()->render(false);
+            }
+
+            return $builder->render();
+        }
+    }
+
+    private function saveProfile()
+    {
+        $data = request()->only([
+            'name',
+            'avatar',
+            'email',
+            'phone',
+        ], 'post');
+
+        $result = $this->validate($data, [
+            'name|姓名' => 'require',
+            'email|电子邮箱' => 'email',
+            'phone|手机号' => 'mobile',
+        ]);
+
+        if (true !== $result) {
+
+            $this->error($result);
         }
 
-        return $builder->render();
+        $user = $this->dataModel->get(session('admin_id'));
 
+        $data['update_time'] = date('Y-m-d H:i:s');
+
+        $res = $this->dataModel->where(['id' => $user['id']])->update($data);
+
+        if ($res) {
+
+            session('admin_user', $this->dataModel->get($user['id']));
+
+            $this->success('修改成功');
+        } else {
+            $this->error('修改失败');
+        }
     }
 
-    public function test3()
+    public function clearCache()
     {
-        $builder = Builder::getInstance('人员管理', '列表');
-        /*$tab = $builder->tab();
-        $form = $tab->add('测试1')->form();
-        $form->text('name', '姓名')->maxlength(10)->default('小明')->afterSymbol('%');
+        if (request()->isPost()) {
+            $types = input('post.types');
 
-        $tab->add('测试2')->content()->display('xxxxxxx');*/
-        $form = $builder->form(10);
+            if (empty($types)) {
+                $this->error('请选择清除类型');
+            }
 
-        $form->tab('tab1');
-        $form->text('aaa', 'aaa');
+            if (in_array(1, $types)) {
+                Tool::deleteDir(app()->getRuntimePath() . 'cache');
+            }
+            if (in_array(2, $types)) {
+                Tool::deleteDir(app()->getRuntimePath() . 'temp');
+            }
 
-        $form->tab('tab2');
-        $form->text('bbb', 'bbb');
+            $this->success('操作成功！');
 
-        $form->tab('tab3');
-        $form->text('ccc', 'ccc');
+        } else {
+            $builder = Builder::getInstance('系统设置', '清空缓存');
 
-        $form->tab('tab4');
-        $form->text('ddd', 'ddd');
+            $form = $builder->form();
 
-        $form->tab('tab5');
-        $form->text('eee', 'eee');
+            $form->checkbox('types', '耀清除代缓存类型')->options([
+                1 => 'cache',
+                2 => 'temp',
+            ])->checkallBtn('全部')->inline(false);
 
-        return $builder->render();
+            return $builder->render();
+        }
     }
 
-    public function test4()
+    public function login()
     {
-        $builder = Builder::getInstance('人员管理', '列表');
-        $form = $builder->form();
+        if (request()->isPost()) {
+            $data = request()->only([
+                'username',
+                'password',
+                'captcha',
+            ], 'post');
 
-        $form->step('step1');
-        $form->text('aaa', 'aaa');
+            $result = $this->validate($data, [
+                'username|登录帐号' => 'require',
+                'password|密码' => 'require',
+                'captcha|验证码' => 'require',
+            ]);
 
-        $form->step('step2');
-        $form->text('bbb', 'bbb');
+            if (true !== $result) {
 
-        $form->step('step3');
-        $form->text('ccc', 'ccc');
+                $this->error($result);
+            }
 
-        $form->getStep()->active(3)->anchor();
+            if (!captcha_check($data['captcha'], 'admin')) {
+                $this->error('验证码错误');
+            }
 
-        return $builder->render();
-    }
+            $user = $this->dataModel->where(['username' => $data['username']])->find();
 
-    public function autopost()
-    {
-        return json(['status' => 1]);
-    }
+            if (!$user) {
+                $this->error('用户帐号不存');
+            }
 
-    public function enable()
-    {
-        return json(['status' => 1]);
-    }
+            if ($user['errors'] > 10) {
+                $try_login = cache('admin_try_login_' . $user['id']);
 
-    public function disable()
-    {
-        return json(['status' => 1]);
-    }
+                if ($try_login) {
 
-    public function delete()
-    {
-        return json(['status' => 1]);
-    }
+                    $time_gone = time() - $try_login;
 
-    public function testdata()
-    {
-        return json([
-            'more_url' => '',
-            'data' => [
-                [
-                    'id' => 1,
-                    'text' => '吃饭',
-                ],
-                [
-                    'id' => 2,
-                    'text' => '睡觉',
-                ],
-                [
-                    'id' => 3,
-                    'text' => '上厕所',
-                ], [
-                    'id' => 4,
-                    'text' => '看电视',
-                ], [
-                    'id' => 5,
-                    'text' => '玩游戏',
-                ], [
-                    'id' => 6,
-                    'text' => '跑步',
-                ], [
-                    'id' => 7,
-                    'text' => '爬山',
-                ],
-            ],
-        ]);
+                    if ($time_gone < $user['errors']) {
+                        $this->error('错误次数过多，请' . ($user['errors'] - $time_gone) . '秒后再试' . $time_gone);
+                    }
+                }
+            }
+
+            if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password'])) {
+
+                $this->dataModel->where(['id' => $user['id']])->setInc('errors');
+
+                cache('admin_try_login_' . $user['id'], time());
+
+                $this->error('密码错误');
+            }
+
+            $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
+            cache('admin_try_login_' . $user['id'], null);
+
+            session('admin_user', $user);
+            session('admin_id', $user['id']);
+
+            AdminOperationLog::create([
+                'user_id' => $user['id'],
+                'path' => 'admin/index/login',
+                'method' => Request::method(),
+                'ip' => Request::ip(),
+                'data' => json_encode([])
+            ]);
+
+            ExtLoader::trigger('admin_login', $user);
+
+            $this->success('登录成功');
+        } else {
+            return $this->fetch();
+        }
     }
 }

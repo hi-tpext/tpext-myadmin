@@ -28,15 +28,7 @@
     }
     .container-fluid .content
     {
-      min-height: 96%;
-      margin-bottom:0;
-    }
-    .page-footer
-    {
-      height: 25px;
-      line-height: 25px;
-      width: 100%;
-      margin: 10px 0;
+      min-height: 97%;
     }
 
   </style>
@@ -47,11 +39,6 @@
     <main class="lyear-layout-content">
       <div class="container-fluid">
         {block name="content"}{/block}
-        {notempty name="$admin_copyright"}
-        <footer class="page-footer">
-          <span class="copyright">{$admin_copyright|raw}</span>
-        </footer>
-        {/notempty}
       </div>
     </main>
     <!--End 页面主要内容-->

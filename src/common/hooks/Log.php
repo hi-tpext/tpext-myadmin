@@ -12,8 +12,30 @@ class Log
         $module = Request::module();
 
         if ($module == 'admin') { //admin模块
-            $controller = Request::controller();
-            $action = Request::action();
+
+            $controller = strtolower(Request::controller());
+            $action = strtolower(Request::action());
+
+            $admin_id = session('admin_id');
+
+            if ($controller == 'index' && $action == 'login') {
+                if ($admin_id && Request::isGet())
+                {
+                    redirect('index/index')->send();
+                    exit;
+                }
+                return;
+            }
+
+            if (empty($admin_id)) {
+                if (Request::isAjax()) {
+                    echo json_encode(['code' => 0, 'msg' => '登录超时，请重新登录！']);
+                } else {
+                    redirect('index/login')->send();
+                }
+
+                exit;
+            }
 
             $tableName = config('database.prefix') . 'admin_operation_log';
 
@@ -24,13 +46,11 @@ class Log
             }
 
             AdminOperationLog::create([
-                'user_id' => 1,
+                'user_id' => $admin_id,
                 'path' => implode('/', [$module, $controller, $action]),
                 'method' => Request::method(),
                 'ip' => Request::ip(),
                 'data' => json_encode(Request::param()),
-                'create_time' => date('Y-m-d H:i:s'),
-                'update_time' => date('Y-m-d H:i:s'),
             ]);
 
         }
