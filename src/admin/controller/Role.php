@@ -257,28 +257,6 @@ class Role extends Controller
         }
     }
 
-    public function ajaxData()
-    {
-        $page = input('page/d', 1);
-        $q = input('q');
-
-        $pagezise = 10;
-        $where = [];
-
-        if ($q) {
-            $where = ['name', ['like', $q]];
-        }
-
-        $data = $this->dataModel->where($where)->field('id,name as text')->order('sort')->limit(($page - 1) * $pagezise, $pagezise)->select();
-
-        $hasMore = count($data) == $pagezise;
-
-        return json([
-            'more_url' => $hasMore ? '?page=' . ($page + 1) . '&q=' . $q : '',
-            'data' => $data,
-        ]);
-    }
-
     public function delete()
     {
         $ids = input('ids');

@@ -74,3 +74,10 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_operation_log` (
   INDEX (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
+-- 默认权限
+INSERT INTO `__PREFIX__admin_role` (`id`, `sort`, `name`, `description`, `create_time`, `update_time`) VALUES
+(1, 1, '超级管理员', '超级管理员，拥有所有权限', '2020-03-01 20:11:43', '2020-03-01 20:16:03');
+
+-- 默认管理员 admin tpextadmin
+INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `salt`, `name`, `avatar`, `phone`, `email`, `errors`, `login_time`, `create_time`, `update_time`) VALUES
+(1, 1, 'admin', '0796647d241a5014670013b324a155ee', '15fb7db', '管理员', '/assets/lightyearadmin/images/no-avatar.jpg', '', '', 0, '2020-01-01 00:00:00', '2020-03-01 20:19:11', '2020-03-01 20:19:11');

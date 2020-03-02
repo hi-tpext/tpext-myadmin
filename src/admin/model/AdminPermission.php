@@ -119,6 +119,10 @@ class AdminPermission extends Model
 
     public function scanControllers($path, $controllers = [])
     {
+        if(!is_dir($path))
+        {
+            return [];
+        }
         $dir = opendir($path);
 
         while (false !== ($file = readdir($dir))) {

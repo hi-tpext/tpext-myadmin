@@ -37,7 +37,7 @@ class Index extends Controller
         session('admin_user', null);
         session('admin_id', null);
 
-        $this->success('注销成功', url('login'));
+        header('location: ' . url('login'));
     }
 
     public function changePwd()
@@ -105,12 +105,12 @@ class Index extends Controller
 
     public function profile()
     {
-        if (request()->isPost() && !input('post.is_search', '0')) {
+        if (request()->isPost() && !input('post.__search__', '0')) {
             return $this->saveProfile();
         } else {
             $builder = Builder::getInstance('个人设置', '资料修改');
 
-            $form = $builder->form(4);
+            $form = $builder->form(5);
             $form->show('username', '登录帐号')->size(3, 9);
             $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
             $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9);
@@ -128,26 +128,16 @@ class Index extends Controller
 
             /*******************************/
 
-            $col = $builder->column(8);
-
-            $searchForm = $col->form();
-
-            $searchForm->text('path', '路径', 6)->maxlength(20);
-            $searchForm->radio('method', '提交方式', 6)->options(['' => '全部', 'GET' => 'get', 'POST' => 'post']);
-            $searchForm->datetimeRange('create_time', '时间', 6);
-            $searchForm->hidden('is_search')->value(1);
-
-            $table = $col->table();
-
-            $table->searchForm($searchForm);
+            $table = $builder->table(7);
 
             $table->show('id', 'ID');
             $table->show('path', '路径');
             $table->show('method', '提交方式');
-            $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
-            $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+            $table->show('ip', 'IP');
+            $table->show('create_time', '添加时间');
             $table->getToolbar()
                 ->btnRefresh();
+            $table->useActionbar(false);
 
             $pagezise = 8;
 
@@ -155,36 +145,13 @@ class Index extends Controller
 
             $page = $page < 1 ? 1 : $page;
 
-            $searchData = request()->only([
-                'path',
-                'method',
-                'create_time',
-            ], 'post');
-
-            $where = [];
-            $whereTime = [];
-
-            if (!empty($searchData['path'])) {
-                $where['path'] = ['like' => $searchData['path']];
-            }
-
-            if (!empty($searchData['method'])) {
-                $where['method'] = ['eq' => $searchData['method']];
-            }
-
-            if (!empty($searchData['create_time'])) {
-                $whereTime = explode(' ~ ', $searchData['create_time']);
-            }
-
             $count = 0;
 
-            if (count($whereTime)) {
-                $count = AdminOperationLog::where($where)->whereBetweenTime('create_time', $whereTime[0], $whereTime[1])->count();
-                $data = AdminOperationLog::where($where)->whereBetweenTime('create_time', $whereTime[0], $whereTime[1])->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
-            } else {
-                $count = AdminOperationLog::where($where)->count();
-                $data = AdminOperationLog::where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
-            }
+            $where['user_id'] = ['eq', session('admin_id')];
+            $where['path'] = ['like', 'admin/index/login'];
+
+            $count = AdminOperationLog::where($where)->count();
+            $data = AdminOperationLog::where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
 
             $table->data($data);
             $table->paginator($count, $pagezise);

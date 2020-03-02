@@ -14,7 +14,7 @@ class Admin extends Controller
     protected function initialize()
     {
         $this->dataModel = new AdminUser;
-        $this->permModel = new AdminRole;
+        $this->roleModel = new AdminRole;
     }
 
     public function index()
@@ -38,6 +38,7 @@ class Admin extends Controller
         $table->show('role_name', '角色');
         $table->show('email', '电子邮箱')->default('无');
         $table->show('phone', '手机号')->default('无');
+        $table->show('errors', '登录失败');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
@@ -57,19 +58,19 @@ class Admin extends Controller
         $where = [];
 
         if (!empty($searchData['name'])) {
-            $where['name'] = ['like' => $searchData['name']];
+            $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
         }
 
         if (!empty($searchData['email'])) {
-            $where['email'] = ['like' => $searchData['email']];
+            $where[] = ['email', 'like', '%' . $searchData['email'] . '%'];
         }
 
         if (!empty($searchData['phone'])) {
-            $where['phone'] = ['like' => $searchData['phone']];
+            $where[] = ['phone', 'like', '%' . $searchData['phone'] . '%'];
         }
 
         if (!empty($searchData['role_id'])) {
-            $where['role_id'] = ['eq' => $searchData['role_id']];
+            $where[] = ['role_id', 'eq', $searchData['role_id']];
         }
 
         $data = $this->dataModel->where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
@@ -123,7 +124,7 @@ class Admin extends Controller
             'username|登录帐号' => 'require',
             'name|姓名' => 'require',
             'email|电子邮箱' => 'email',
-            'phone|手机号' => 'mobile'
+            'phone|手机号' => 'mobile',
         ]);
 
         if (true !== $result) {
@@ -176,9 +177,15 @@ class Admin extends Controller
 
         $form = $builder->form();
 
+        $list = $this->roleModel->all();
+
+        foreach ($list as $row) {
+            $roles[$row['id']] = $row['name'];
+        }
+
         $form->hidden('id');
         $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
-        $form->select('role_id', '角色组')->required()->options($isEdit ? [$data['role_id'] => $data['role_name']] : [])->dataUrl(url('role/ajaxData'));
+        $form->select('role_id', '角色组')->required()->options($roles);
         $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
         $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');

@@ -4,6 +4,7 @@ namespace tpext\myadmin\common\hooks;
 use think\Db;
 use think\facade\Request;
 use tpext\myadmin\admin\model\AdminOperationLog;
+use tpext\myadmin\common\Module;
 
 class Log
 {
@@ -19,20 +20,11 @@ class Log
             $admin_id = session('admin_id');
 
             if ($controller == 'index' && $action == 'login') {
-                if ($admin_id && Request::isGet())
-                {
-                    redirect('index/index')->send();
-                    exit;
-                }
+
                 return;
             }
 
             if (empty($admin_id)) {
-                if (Request::isAjax()) {
-                    echo json_encode(['code' => 0, 'msg' => '登录超时，请重新登录！']);
-                } else {
-                    redirect('index/login')->send();
-                }
 
                 exit;
             }
