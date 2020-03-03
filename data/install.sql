@@ -81,3 +81,16 @@ INSERT INTO `__PREFIX__admin_role` (`id`, `sort`, `name`, `description`, `create
 -- 默认管理员 admin tpextadmin
 INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `salt`, `name`, `avatar`, `phone`, `email`, `errors`, `login_time`, `create_time`, `update_time`) VALUES
 (1, 1, 'admin', '0796647d241a5014670013b324a155ee', '15fb7db', '管理员', '/assets/lightyearadmin/images/no-avatar.jpg', '', '', 0, '2020-01-01 00:00:00', '2020-03-01 20:19:11', '2020-03-01 20:19:11');
+
+-- 菜单
+INSERT INTO `tp_admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, `create_time`, `update_time`) VALUES
+(1, 0, 1, '首页', '/admin/index/welcome.html', 'mdi mdi-home', '2020-03-03 20:26:49', '2020-03-03 20:26:49'),
+(2, 0, 1, '权限管理', '#', 'mdi mdi-account-check', '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
+(3, 2, 1, '菜单管理', '/admin/menu/index.html', 'mdi mdi-arrange-send-to-back', '2020-03-03 20:27:49', '2020-03-03 20:34:40'),
+(4, 2, 1, '权限设置', '/admin/permission/index.html', 'mdi mdi-account-key', '2020-03-03 20:28:35', '2020-03-03 20:28:35'),
+(5, 2, 1, '管理员', '/admin/admin/index.html', 'mdi mdi-account-card-details', '2020-03-03 20:29:07', '2020-03-03 20:34:25'),
+(6, 2, 1, '角色管理', '/admin/role/index.html', 'mdi mdi-account-multiple', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
+(7, 2, 1, '操作记录', '/admin/operationlog/index.html', 'mdi mdi-playlist-check', '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
+(8, 0, 1, '系统管理', '#', 'mdi mdi-settings', '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
+(9, 8, 1, '扩展管理', '/admin/tpext/index.html', 'mdi mdi-blur', '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
+(10, 8, 1, '平台设置', '/admin/tpext/setting.html', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');
