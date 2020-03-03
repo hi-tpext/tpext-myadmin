@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1,
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,
             maximum-scale=1, user-scalable=no" />
-        <title>登录 - {$admin_page_title}</title>
-        <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
-        <meta name="description" content="{$admin_page_description|default=''}">
-        <link href="/assets/lightyearadmin/css/bootstrap.min.css"
-            rel="stylesheet">
-        <link href="/assets/lightyearadmin/css/materialdesignicons.min.css"
-            rel="stylesheet">
-        <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
-        <style>
+    <title>登录 - {$admin_page_title|default=''}</title>
+    <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
+    <meta name="description" content="{$admin_page_description|default=''}">
+    <link href="/assets/lightyearadmin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/lightyearadmin/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
+    <script>
+        if (window != top) {
+            top.location.reload();
+        }
+    </script>
+    <style>
         .lyear-wrapper {
             position: relative;
         }
@@ -56,142 +59,122 @@
             left: 15px;
         }
 
-        #captcha
-        {
+        #captcha {
             width: 120px;
             height: 38px;
         }
     </style>
-    </head>
+</head>
 
-    <body>
-        <div class="row lyear-wrapper">
-            <div class="lyear-login">
-                <div class="login-center">
-                    <div class="login-header text-center">
-                        <a> <img alt="{$admin_page_title}"
-                                src="/assets/lightyearadmin/images/logo-ico.png">
-                        </a>
-                    </div>
-                    <form action="" method="post" id="login-form">
-                        <div class="form-group has-feedback feedback-left">
-                            <input type="text" placeholder="请输入您的用户名"
-                                class="form-control" name="username"
-                                id="username" />
-                            <span class="mdi mdi-account form-control-feedback"
-                                aria-hidden="true"></span>
-                        </div>
-                        <div class="form-group has-feedback feedback-left">
-                            <input type="password" placeholder="请输入密码"
-                                class="form-control" id="password"
-                                autocomplete="new-password"
-                                name="password" />
-                            <span class="mdi mdi-lock form-control-feedback"
-                                aria-hidden="true"></span>
-                        </div>
-                        <div class="form-group has-feedback feedback-left row">
-                            <div class="col-xs-7">
-                                <input type="text" name="captcha"
-                                    class="form-control" placeholder="验证码">
-                                <span class="mdi mdi-check-all
-                                    form-control-feedback" aria-hidden="true"></span>
-                            </div>
-                            <div class="col-xs-5">
-                                <img src="/index.php/captcha/id/admin"
-                                    class="pull-right" id="captcha"
-                                    style="cursor: pointer;"
-                                    onclick="this.src='/index.php/captcha/admin?d='+Math.random();"
-                                    title="点击刷新"
-                                    alt="captcha">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-block btn-primary"
-                                type="submit">立即登录</button>
-                        </div>
-                    </form>
-                    <hr>
-                    {notempty name="$admin_copyright"}
-                    <footer class="col-sm-12 text-center">
-                        {$admin_copyright|raw}
-                    </footer>
-                    {/notempty}
+<body>
+    <div class="row lyear-wrapper">
+        <div class="lyear-login">
+            <div class="login-center">
+                <div class="login-header text-center">
+                    <a> <img alt="{$admin_page_title|default=''}" src="/assets/lightyearadmin/images/logo-ico.png">
+                    </a>
                 </div>
+                <form action="" method="post" id="login-form">
+                    <div class="form-group has-feedback feedback-left">
+                        <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username" />
+                        <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group has-feedback feedback-left">
+                        <input type="password" placeholder="请输入密码" class="form-control" id="password"
+                            autocomplete="new-password" name="password" />
+                        <span class="mdi mdi-lock form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group has-feedback feedback-left row">
+                        <div class="col-xs-7">
+                            <input type="text" name="captcha" class="form-control" placeholder="验证码">
+                            <span class="mdi mdi-check-all
+                                    form-control-feedback" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-xs-5">
+                            <img src="/index.php/captcha/id/admin" class="pull-right" id="captcha"
+                                style="cursor: pointer;" onclick="this.src='/index.php/captcha/admin?d='+Math.random();"
+                                title="点击刷新" alt="captcha">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-block btn-primary" type="submit">立即登录</button>
+                    </div>
+                </form>
+                <hr>
+                {notempty name="$admin_copyright"}
+                <footer class="col-sm-12 text-center">
+                    {$admin_copyright|raw}
+                </footer>
+                {/notempty}
             </div>
         </div>
-        <script type="text/javascript"
-            src="/assets/lightyearadmin/js/jquery.min.js"></script>
-        <script type="text/javascript"
-            src="/assets/lightyearadmin/js/bootstrap.min.js"></script>
-        <script type="text/javascript"
-            src="/assets/tpextbuilder/js/jquery-validate/jquery.validate.min.js"></script>
-        <script type="text/javascript"
-            src="/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js"></script>
-        <script type="text/javascript"
-            src="/assets/lightyearadmin/js/bootstrap-notify.min.js"></script>
-        <script type="text/javascript"
-            src="/assets/lightyearadmin/js/lightyear.js"></script>
+    </div>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/tpextbuilder/js/jquery-validate/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js"></script>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/lightyear.js"></script>
 
-        <script type="text/javascript">
-            $('#login-form').validate({
-                ignore: ".ignore",    // 插件默认不验证隐藏元素,这里可以自定义一个不验证的class,即验证隐藏元素,不验证class为.ignore的元素
-                focusInvalid: false,  // 禁用无效元素的聚焦
-                rules: {
-                    username: {
-                        required :true
-                    },
-                    password: {
-                        required :true
-                    },
-                    captcha: {
-                        required :true
-                    },
+    <script type="text/javascript">
+        $('#login-form').validate({
+            ignore: ".ignore", // 插件默认不验证隐藏元素,这里可以自定义一个不验证的class,即验证隐藏元素,不验证class为.ignore的元素
+            focusInvalid: false, // 禁用无效元素的聚焦
+            rules: {
+                username: {
+                    required: true
                 },
-                errorPlacement: function errorPlacement(error, element) {
-                    var parent = $(element).parents('.form-group');
-                    if (parent.find('.error-label').length) {
-                        return;
-                    }
-                    parent.addClass('has-error');
-
-                    lightyear.notify('输入有误，请检查', 'warning');
+                password: {
+                    required: true
                 },
-                highlight: function(element) {
-                  
+                captcha: {
+                    required: true
                 },
-                unhighlight: function(element) {
-                    $(element).next('.tagsinput').removeClass('is-invalid');
-                    $(element).parents('.form-group').removeClass('has-error');
-                },
-                submitHandler: function(form) {
-                    formSubmit();
+            },
+            errorPlacement: function errorPlacement(error, element) {
+                var parent = $(element).parents('.form-group');
+                if (parent.find('.error-label').length) {
+                    return;
                 }
+                parent.addClass('has-error');
+
+                lightyear.notify('输入有误，请检查', 'warning');
+            },
+            highlight: function (element) {
+
+            },
+            unhighlight: function (element) {
+                $(element).next('.tagsinput').removeClass('is-invalid');
+                $(element).parents('.form-group').removeClass('has-error');
+            },
+            submitHandler: function (form) {
+                formSubmit();
+            }
         });
 
-        function formSubmit()
-        {
+        function formSubmit() {
             lightyear.loading('hide');
-            
+
             lightyear.loading('show');
-    
+
             var data = $('#login-form').serialize();
-            
+
             $.ajax({
                 url: location.href,
                 data: data,
                 type: 'POST',
                 dataType: 'json',
                 success: function (data) {
-                    setTimeout(function(){
+                    setTimeout(function () {
                         lightyear.loading('hide');
-                    },500);
+                    }, 500);
 
                     if (data.code) {
-                            lightyear.notify(data.msg || data.message || '登录成功', 'success');
-                            location.href ='index';
+                        lightyear.notify(data.msg || data.message || '登录成功', 'success');
+                        location.href = 'index';
                     } else {
                         lightyear.notify(data.msg || data.message || '登录失败', 'warning');
-                        $('#captcha').attr('src','/index.php/captcha/id/admin?d=' + Math.random());
+                        $('#captcha').attr('src', '/index.php/captcha/id/admin?d=' + Math.random());
                     }
                 },
                 error: function () {
@@ -202,7 +185,7 @@
 
             return false;
         }
-        </script>
-    </body>
+    </script>
+</body>
 
 </html>

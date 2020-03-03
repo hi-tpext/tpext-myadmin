@@ -52,7 +52,7 @@ class AdminPermission extends Model
     {
         $controllers = [];
 
-        $extensions = Extension::extensionsList();
+        $extensions = ExtLoader::getModules();
 
         $installed = ExtLoader::getInstalled();
 

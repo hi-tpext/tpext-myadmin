@@ -87,6 +87,9 @@ class Menu extends Controller
         }
 
         if ($id) {
+            if ($data['parent_id'] == $id) {
+                $this->error('上级不能是自己');
+            }
             $data['update_time'] = date('Y-m-d H:i:s');
             $res = $this->dataModel->where(['id' => $id])->update($data);
         } else {
@@ -142,10 +145,10 @@ class Menu extends Controller
 
         $form->hidden('id');
         $form->text('title', '名称')->required();
-        $form->select('url', 'url')->required()->options($urls);
-        $form->icon('icon', '图标')->required();
-        $form->text('sort', '排序')->default(1)->required();
         $form->select('parent_id', '上级')->required()->options($tree);
+        $form->select('url', 'url')->required()->options($urls);
+        $form->icon('icon', '图标')->required()->default('mdi mdi-access-point');
+        $form->text('sort', '排序')->default(1)->required();
 
         if ($isEdit) {
             $form->show('create_time', '添加时间');
