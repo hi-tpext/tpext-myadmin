@@ -56,7 +56,17 @@ class Role extends Controller
             $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
         }
 
-        $data = $this->dataModel->where($where)->order('sort')->limit(($page - 1) * $pagezise, $pagezise)->select();
+        $sortOrder = 'id asc';
+
+        $sort = input('__sort__');
+        if ($sort) {
+            $arr = explode(':', $sort);
+            if (count($arr) == 2) {
+                $sortOrder = implode(' ', $arr);
+            }
+        }
+
+        $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
         foreach ($data as &$d) {
             $d['__h_del__'] = $d['id'] == 1;

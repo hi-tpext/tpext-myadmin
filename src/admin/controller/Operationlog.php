@@ -65,7 +65,17 @@ class Operationlog extends Controller
             $where[] = ['method', 'eq', $searchData['method']];
         }
 
-        $data = $this->dataModel->where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
+        $sortOrder = 'id desc';
+
+        $sort = input('__sort__');
+        if ($sort) {
+            $arr = explode(':', $sort);
+            if (count($arr) == 2) {
+                $sortOrder = implode(' ', $arr);
+            }
+        }
+
+        $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
         $table->data($data);
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);

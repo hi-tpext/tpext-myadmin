@@ -75,7 +75,17 @@ class Admin extends Controller
             $where[] = ['role_id', 'eq', $searchData['role_id']];
         }
 
-        $data = $this->dataModel->where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
+        $sortOrder = 'id asc';
+
+        $sort = input('__sort__');
+        if ($sort) {
+            $arr = explode(':', $sort);
+            if (count($arr) == 2) {
+                $sortOrder = implode(' ', $arr);
+            }
+        }
+
+        $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
         foreach ($data as &$d) {
             $d['__h_del__'] = $d['id'] == 1;
