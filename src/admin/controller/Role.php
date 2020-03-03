@@ -25,12 +25,18 @@ class Role extends Controller
     {
         $builder = Builder::getInstance('权限管理', '列表');
 
+        $form = $builder->form();
+
+        $form->text('name', '名称', 3)->maxlength(20);
+
         $table = $builder->table();
+
+        $table->searchForm($form);
 
         $table->show('id', 'ID');
         $table->show('name', '名称');
         $table->show('description', '描述')->default('无描述');
-        $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:80px');
+        $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
@@ -40,12 +46,28 @@ class Role extends Controller
 
         $page = $page < 1 ? 1 : $page;
 
-        $data = $this->dataModel->order('sort')->limit(($page - 1) * $pagezise, $pagezise)->select();
+        $searchData = request()->only([
+            'name',
+        ], 'post');
+
+        $where = [];
+
+        if (!empty($searchData['name'])) {
+            $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
+        }
+
+        $data = $this->dataModel->where($where)->order('sort')->limit(($page - 1) * $pagezise, $pagezise)->select();
+
+        foreach ($data as &$d) {
+            $d['__h_del__'] = $d['id'] == 1;
+        }
+
         $table->data($data);
-        $table->paginator($this->dataModel->count(), $pagezise);
-        $table->getToolbar()
-            ->btnAdd()
-            ->btnDelete();
+        $table->paginator($this->dataModel->where($where)->count(), $pagezise);
+
+        $table->getActionbar()->mapClass([
+            'delete' => ['hidden' => '__h_del__'],
+        ]);
 
         if (request()->isAjax()) {
             return $table->partial()->render(false);
@@ -72,7 +94,7 @@ class Role extends Controller
             if (!$data) {
                 $this->error('数据不存在');
             }
-            
+
             return $this->form('编辑', $data);
         }
     }
@@ -170,6 +192,8 @@ class Role extends Controller
 
     private function form($title, $data = [])
     {
+        $isEdit = isset($data['id']);
+
         $builder = Builder::getInstance('权限管理', $title);
 
         $form = $builder->form();
@@ -177,53 +201,64 @@ class Role extends Controller
         $form->hidden('id');
         $form->text('name', '名称')->maxlength(25)->required();
         $form->textarea('description', '描述')->maxlength(100);
-        $form->text('sort', '排序')->default(1);
-        if (isset($data['id'])) {
+        $form->text('sort', '排序')->required()->default(1);
+
+        if ($isEdit) {
             $form->show('create_time', '添加时间');
             $form->show('update_time', '修改时间');
         }
-        $modControllers = $this->permModel->getControllers();
+        if ($isEdit && $data['id'] == 1) {
+            $form->raw('permission', '权限')->value('<label class="label label-warning">拥有所有权限</label>');
+        } else {
 
-        foreach ($modControllers as $modController) {
+            $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
 
-            $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
+            $modControllers = $this->permModel->getControllers();
 
-            foreach ($modController['controllers'] as $controller => $methods) {
+            foreach ($modControllers as $modController) {
 
-                $controllerPerm = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
+                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
 
-                if (!$controllerPerm) {
-                    continue;
-                }
+                foreach ($modController['controllers'] as $controller => $methods) {
 
-                if (empty($methods)) {
-                    continue;
-                }
+                    $controllerPerm = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
 
-                $options = [];
-
-                foreach ($methods as $method) {
-
-                    $actionPerm = $this->permModel->where(['controller' => $controller, 'action' => '@' . $method])->find();
-
-                    if (!$actionPerm || $actionPerm['action_type'] == 0) {
+                    if (!$controllerPerm) {
                         continue;
                     }
 
-                    if (!$actionPerm['action_name']) {
-                        $actionPerm['action_name'] = $method;
+                    if (empty($methods)) {
+                        continue;
                     }
 
-                    $options[$actionPerm['id']] = $actionPerm['action_name'];
+                    $options = [];
+
+                    foreach ($methods as $method) {
+
+                        $actionPerm = $this->permModel->where(['controller' => $controller, 'action' => '@' . $method])->find();
+
+                        if (!$actionPerm || $actionPerm['action_type'] == 0) {
+                            continue;
+                        }
+
+                        if (!$actionPerm['action_name']) {
+                            $actionPerm['action_name'] = $method;
+                        }
+
+                        $options[$actionPerm['id']] = $actionPerm['action_name'];
+                    }
+
+                    $ids = [];
+                    if ($isEdit) {
+                        $ids = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
+                    }
+
+                    $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
+                        ->default($ids)->size(2, 10)
+                        ->options($options)
+                        ->inline()
+                        ->checkallBtn();
                 }
-
-                $ids = $this->rolePermModel->where(['controller_id' => $controllerPerm['id']])->column('permission_id');
-
-                $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
-                    ->default($ids)->size(2, 10)
-                    ->options($options)
-                    ->inline()
-                    ->checkallBtn();
             }
         }
 
@@ -270,6 +305,9 @@ class Role extends Controller
         $res = 0;
 
         foreach ($ids as $id) {
+            if ($id == 1) {
+                continue;
+            }
             if ($this->dataModel->destroy($id)) {
                 $res += 1;
             }

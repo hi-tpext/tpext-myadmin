@@ -26,7 +26,7 @@ class Log
 
             if (empty($admin_id)) {
 
-                exit;
+                return;
             }
 
             $tableName = config('database.prefix') . 'admin_operation_log';

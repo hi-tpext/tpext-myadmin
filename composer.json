@@ -15,7 +15,8 @@
     ],
     "require": {
         "topthink/framework": "5.1.*",
-        "topthink/think-captcha": "^2.0"
+        "topthink/think-captcha": "^2.0",
+        "ichynul/tpext": "^1.0.1"
     },
     "autoload": {
         "psr-4": {

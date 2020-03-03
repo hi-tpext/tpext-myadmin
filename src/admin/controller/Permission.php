@@ -57,6 +57,7 @@ class Permission extends Controller
                         'index' => '列表',
                         'list' => '列表',
                         'add' => '添加',
+                        'create' => '新建',
                         'edit' => '修改',
                         'update' => '更新',
                         'delete' => '删除',

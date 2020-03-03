@@ -25,8 +25,10 @@ class Admin extends Controller
 
         $form->text('name', '姓名', 3)->maxlength(20);
         $form->text('phone', '手机号', 3)->maxlength(20);
-        $form->text('email', '电子邮箱', 3)->maxlength(50);
-        $form->select('role_id', '角色组', 3)->dataUrl(url('role/ajaxData'));
+        $form->text('email', '邮箱', 3)->maxlength(20);
+        $form->select('role_id', '角色组', 3)->options($this->getRoleList());
+
+        $form->html('', '', 4);
 
         $table = $builder->table();
 
@@ -61,12 +63,12 @@ class Admin extends Controller
             $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
         }
 
-        if (!empty($searchData['email'])) {
-            $where[] = ['email', 'like', '%' . $searchData['email'] . '%'];
-        }
-
         if (!empty($searchData['phone'])) {
             $where[] = ['phone', 'like', '%' . $searchData['phone'] . '%'];
+        }
+
+        if (!empty($searchData['email'])) {
+            $where[] = ['email', 'like', '%' . $searchData['email'] . '%'];
         }
 
         if (!empty($searchData['role_id'])) {
@@ -74,8 +76,17 @@ class Admin extends Controller
         }
 
         $data = $this->dataModel->where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
+
+        foreach ($data as &$d) {
+            $d['__h_del__'] = $d['id'] == 1;
+        }
+
         $table->data($data);
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);
+
+        $table->getActionbar()->mapClass([
+            'delete' => ['hidden' => '__h_del__'],
+        ]);
 
         if (request()->isAjax()) {
             return $table->partial()->render(false);
@@ -169,6 +180,20 @@ class Admin extends Controller
 
     }
 
+    private function getRoleList()
+    {
+        $list = $this->roleModel->all();
+        $roles = [
+            '' => '请选择',
+        ];
+
+        foreach ($list as $row) {
+            $roles[$row['id']] = $row['name'];
+        }
+
+        return $roles;
+    }
+
     private function form($title, $data = [])
     {
         $isEdit = isset($data['id']);
@@ -177,15 +202,9 @@ class Admin extends Controller
 
         $form = $builder->form();
 
-        $list = $this->roleModel->all();
-
-        foreach ($list as $row) {
-            $roles[$row['id']] = $row['name'];
-        }
-
         $form->hidden('id');
         $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
-        $form->select('role_id', '角色组')->required()->options($roles);
+        $form->select('role_id', '角色组')->required()->options($this->getRoleList());
         $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
         $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
@@ -243,6 +262,9 @@ class Admin extends Controller
         $res = 0;
 
         foreach ($ids as $id) {
+            if ($id == 1) {
+                continue;
+            }
             if ($this->dataModel->destroy($id)) {
                 $res += 1;
             }

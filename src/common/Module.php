@@ -17,13 +17,6 @@ class Module extends baseModule
     protected $root = __DIR__ . '/../../';
 
     protected $modules = [
-        'admin' => ['index', 'permission', 'role', 'admin', 'menu'],
+        'admin' => ['index', 'permission', 'role', 'admin', 'menu', 'operationlog'],
     ];
-
-    public function moduleInit($info = [])
-    {
-        parent::moduleInit($info);
-
-        return true;
-    }
 }

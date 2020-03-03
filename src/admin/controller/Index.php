@@ -2,20 +2,24 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
+use think\Db;
 use think\facade\Request;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
+use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminOperationLog;
 use tpext\myadmin\admin\model\AdminUser;
 
 class Index extends Controller
 {
     protected $dataModel;
+    protected $menuModel;
 
     protected function initialize()
     {
         $this->dataModel = new AdminUser;
+        $this->menuModel = new AdminMenu;
     }
 
     public function index()
@@ -23,11 +27,84 @@ class Index extends Controller
         $admin_user = session('admin_user');
 
         $this->assign('admin_user', $admin_user);
+        $menus = [];
+        $list = $this->menuModel->order('parent_id,sort')->all();
+
+        if (count($list) == 0) {
+            $menus = [
+                [
+                    'id' => 1,
+                    'name' => '首页',
+                    'url' => url('welcome'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-home',
+                    'is_out' => 0,
+                    'is_home' => 1,
+                ],
+                [
+                    'id' => 2,
+                    'name' => '菜单管理',
+                    'url' => url('menu/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-arrange-send-to-back',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ],
+                [
+                    'id' => 3,
+                    'name' => '权限设置',
+                    'url' => url('permission/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-account-key',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ], [
+                    'id' => 4,
+                    'name' => '管理员',
+                    'url' => url('admin/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-account-card-details',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ], [
+                    'id' => 5,
+                    'name' => '角色管理',
+                    'url' => url('role/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-account-multiple',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ], [
+                    'id' => 6,
+                    'name' => '扩展管理',
+                    'url' => url('tpext/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-blur',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ],
+            ];
+        } else {
+            foreach ($list as $li) {
+                $menus[] = [
+                    'id' => $li['id'],
+                    'name' => $li['title'],
+                    'url' => $li['url'],
+                    'pid' => $li['parent_id'],
+                    'icon' => 'mdi ' . $li['icon'],
+                    'is_out' => 0,
+                    'is_home' => $li['id'] == 1 ? 1 : 0,
+                ];
+            }
+        }
+
+        $this->assign('menus', json_encode($menus));
+        $this->assign('dashbord', count($list) ? $list[0]['url'] : url('welcome'));
 
         return $this->fetch();
     }
 
-    public function dashbord()
+    public function welcome()
     {
         return $this->fetch();
     }
@@ -37,7 +114,7 @@ class Index extends Controller
         session('admin_user', null);
         session('admin_id', null);
 
-        header('location: ' . url('login'));
+        $this->success('注销成功！');
     }
 
     public function changePwd()
@@ -110,7 +187,7 @@ class Index extends Controller
         } else {
             $builder = Builder::getInstance('个人设置', '资料修改');
 
-            $form = $builder->form(5);
+            $form = $builder->form(6);
             $form->show('username', '登录帐号')->size(3, 9);
             $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
             $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9);
@@ -128,18 +205,18 @@ class Index extends Controller
 
             /*******************************/
 
-            $table = $builder->table(7);
+            $table = $builder->table(6);
 
             $table->show('id', 'ID');
             $table->show('path', '路径');
-            $table->show('method', '提交方式');
             $table->show('ip', 'IP');
-            $table->show('create_time', '添加时间');
+            $table->show('create_time', '登录时间');
             $table->getToolbar()
                 ->btnRefresh();
             $table->useActionbar(false);
+            $table->rowCheckbox(false);
 
-            $pagezise = 8;
+            $pagezise = 10;
 
             $page = input('__page__/d', 1);
 
@@ -289,6 +366,7 @@ class Index extends Controller
 
             session('admin_user', $user);
             session('admin_id', $user['id']);
+            session('admin_last_time', time());
 
             AdminOperationLog::create([
                 'user_id' => $user['id'],
@@ -302,6 +380,15 @@ class Index extends Controller
 
             $this->success('登录成功');
         } else {
+
+            $tableName = config('database.prefix') . 'admin_user';
+
+            $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
+
+            if (empty($isTable)) {
+                Tool::deleteDir(app()->getRuntimePath() . 'cache');
+            }
+
             return $this->fetch();
         }
     }
