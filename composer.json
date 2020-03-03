@@ -16,7 +16,9 @@
     "require": {
         "topthink/framework": "5.1.*",
         "topthink/think-captcha": "^2.0",
-        "ichynul/tpext": "^1.0.1"
+        "ichynul/tpext": "^1.0.1",
+        "ichynul/tpextbuilder": "^1.0.1",
+        "ichynul/lightyearadmin": "^1.0.1"
     },
     "autoload": {
         "psr-4": {
