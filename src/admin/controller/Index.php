@@ -30,19 +30,7 @@ class Index extends Controller
         $menus = [];
         $list = $this->menuModel->order('parent_id,sort')->all();
 
-        foreach ($list as $li) {
-            $menus[] = [
-                'id' => $li['id'],
-                'name' => $li['title'],
-                'url' => $li['url'],
-                'pid' => $li['parent_id'],
-                'icon' => 'mdi ' . $li['icon'],
-                'is_out' => 0,
-                'is_home' => $li['id'] == 1 ? 1 : 0,
-            ];
-        }
-
-        if (empty($menus)) {
+        if (count($list) == 0) {
             $menus = [
                 [
                     'id' => 1,
@@ -55,14 +43,59 @@ class Index extends Controller
                 ],
                 [
                     'id' => 2,
-                    'name' => '菜单',
+                    'name' => '菜单管理',
                     'url' => url('menu/index'),
                     'pid' => 0,
                     'icon' => 'mdi mdi-arrange-send-to-back',
                     'is_out' => 0,
                     'is_home' => 0,
                 ],
+                [
+                    'id' => 3,
+                    'name' => '权限设置',
+                    'url' => url('permission/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-account-key',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ], [
+                    'id' => 4,
+                    'name' => '管理员',
+                    'url' => url('admin/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-account-card-details',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ], [
+                    'id' => 5,
+                    'name' => '角色管理',
+                    'url' => url('role/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-account-multiple',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ], [
+                    'id' => 6,
+                    'name' => '扩展管理',
+                    'url' => url('tpext/index'),
+                    'pid' => 0,
+                    'icon' => 'mdi mdi-blur',
+                    'is_out' => 0,
+                    'is_home' => 0,
+                ],
             ];
+        } else {
+            foreach ($list as $li) {
+                $menus[] = [
+                    'id' => $li['id'],
+                    'name' => $li['title'],
+                    'url' => $li['url'],
+                    'pid' => $li['parent_id'],
+                    'icon' => 'mdi ' . $li['icon'],
+                    'is_out' => 0,
+                    'is_home' => $li['id'] == 1 ? 1 : 0,
+                ];
+            }
         }
 
         $this->assign('menus', json_encode($menus));
