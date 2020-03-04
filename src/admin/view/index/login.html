@@ -13,7 +13,18 @@
     <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
     <script>
         if (window != top) {
-            top.location.reload();
+            top.location.replace("{:url('admin/index/login')}");
+            
+            document.querySelector('body').innerHTML = 
+
+            '<div style="background:#fff;z-index:999;padding-top:88px;position:fixed;top:0px;height:10000px;width:100%;text-align:center;font-size:18px;"><p>跳转中...</p></div>';
+            
+            if(!!(window.attachEvent && !window.opera)){
+                document.execCommand("stop");
+            }
+            else {
+                window.stop();
+            }
         }
     </script>
     <style>

@@ -44,12 +44,12 @@ class Permission extends Controller
 
                 $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
 
-                $row_ = array_merge($row, ['controller' => $controller, 'action_name' => $contrl, 'action_type' => '', 'action' => '#']);
+                $row_ = array_merge($row, ['controller' => $controller . '::class', 'action_name' => $contrl, 'action_type' => '', 'action' => '#']);
 
                 $data[] = $row_;
 
                 foreach ($methods as $method) {
-                    $url = url('/admin/' . strtolower($contrl) . '/' . $method);
+                    $url = url('/admin/' . strtolower($contrl) . '/' . $method, '', false);
 
                     $action_name = $method;
 

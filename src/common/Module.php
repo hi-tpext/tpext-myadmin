@@ -19,4 +19,27 @@ class Module extends baseModule
     protected $modules = [
         'admin' => ['index', 'permission', 'role', 'admin', 'menu', 'operationlog'],
     ];
+
+    public function install()
+    {
+        if (parent::install()) {
+            session('admin_id', 1);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function uninstall()
+    {
+        if (parent::uninstall()) {
+            session('admin_user', null);
+            session('admin_id', null);
+
+            return true;
+        }
+
+        return false;
+    }
 }

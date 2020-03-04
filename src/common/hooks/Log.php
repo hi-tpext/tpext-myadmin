@@ -36,13 +36,22 @@ class Log
             if (empty($isTable)) {
                 return;
             }
+            $param = Request::param();
+
+            if ($controller == 'admin' && in_array($action, ['add', 'edit'])) {
+                $param = [];
+            }
+
+            if ($controller == 'index' && in_array($action, ['changepwd', 'profile'])) {
+                $param = [];
+            }
 
             AdminOperationLog::create([
                 'user_id' => $admin_id,
                 'path' => implode('/', [$module, $controller, $action]),
                 'method' => Request::method(),
                 'ip' => Request::ip(),
-                'data' => json_encode(Request::param()),
+                'data' => json_encode($param),
             ]);
 
         }

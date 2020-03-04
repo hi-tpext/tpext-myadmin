@@ -22,6 +22,7 @@ class Menu extends Controller
         $builder = Builder::getInstance('菜单管理', '列表');
 
         $table = $builder->table();
+        $table->show('id', 'ID');
         $table->raw('title_show', '名称')->getWapper()->addStyle('text-align:left;');
         $table->show('url', 'url');
         $table->raw('icon_show', '图标');
@@ -29,6 +30,8 @@ class Menu extends Controller
         $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+
+        $table->sortable([]);
 
         $data = $this->dataModel->buildList(0, 0);
         $table->data($data);
@@ -129,21 +132,31 @@ class Menu extends Controller
         ];
         foreach ($modControllers as $key => $modController) {
 
-            $urls[$key]['label'] = '--' . $modController['title'] . '--';
+            $urls[$key]['label'] = '[' . $modController['title'] . ']';
+            $urls[$key]['options'] = [];
 
             foreach ($modController['controllers'] as $controller => $methods) {
 
                 $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
 
-                foreach ($methods as $method) {
-                    $url = url('/admin/' . strtolower($contrl) . '/' . $method);
+                $permission = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
 
-                    $urls[$key]['options'][$url] = $url;
+                $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
+
+                foreach ($methods as $method) {
+                    $url = url('/admin/' . strtolower($contrl) . '/' . $method, '', false);
+
+                    $perm = $this->permModel->where(['url' => $url])->find();
+
+                    if ($perm && $perm['action_type'] != 1) {
+                        continue;
+                    }
+
+                    $urls[$key . '_' . $contrl]['options'][$url] = $url;
                 }
             }
         }
 
-        $form->hidden('id');
         $form->text('title', '名称')->required();
         $form->select('parent_id', '上级')->required()->options($tree);
         $form->select('url', 'url')->required()->options($urls);
@@ -199,6 +212,7 @@ class Menu extends Controller
 
         foreach ($ids as $id) {
             if ($this->dataModel->destroy($id)) {
+                $this->dataModel->where(['parent_id' => $id])->update(['parent_id' => 0]);
                 $res += 1;
             }
         }

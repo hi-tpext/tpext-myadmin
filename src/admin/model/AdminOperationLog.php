@@ -30,7 +30,7 @@ class AdminOperationLog extends Model
             return $this->user;
         }
 
-        $user = AdminUser::get($data['user_id']);
-        return $user;
+        $this->user = AdminUser::get($data['user_id']);
+        return $this->user;
     }
 }

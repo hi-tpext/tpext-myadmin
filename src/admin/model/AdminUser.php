@@ -43,4 +43,51 @@ class AdminUser extends Model
         $role = AdminRole::get($data['role_id']);
         return $role ? $role['name'] : '--';
     }
+
+    public function checkPermission($admin_id, $controller, $action)
+    {
+        $data = static::get($admin_id);
+
+        if (!$data) {
+            return false;
+        }
+
+        session('admin_user', $data);
+
+        if ($data['role_id'] == 1) {
+            return true;
+        }
+
+        $url = "/admin/$controller/$action";
+
+        if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+            return true;
+        }
+
+        if ($data['enable'] == 0) {
+            session('admin_user', null);
+            session('admin_id', null);
+            return false;
+        }
+
+        $role = AdminRole::get($data['role_id']);
+
+        if (!$role) {
+            return false;
+        }
+
+        $prmission = AdminPermission::where(['url' => $url])->find();
+
+        if (!$prmission) {
+            return false;
+        }
+
+        $rolePrmission = AdminRolePermission::where(['role_id' => $data['role_id'], 'permission_id' => $prmission['id']])->find();
+
+        if (!$rolePrmission) {
+            return false;
+        }
+
+        return true;
+    }
 }

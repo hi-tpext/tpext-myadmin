@@ -24,6 +24,7 @@ class Operationlog extends Controller
         $form = $builder->form();
 
         $form->select('user_id', '管理员', 3)->options($this->getUesrList());
+        $form->text('path', '路径', 3);
         $form->radio('method', '提交方式', 3)->options(['' => '全部', 'GET' => 'get', 'POST' => 'post']);
 
         $table = $builder->table();
@@ -33,6 +34,7 @@ class Operationlog extends Controller
         $table->show('id', 'ID');
         $table->show('username', '登录帐号');
         $table->show('name', '姓名');
+        $table->show('path', '路径');
         $table->show('method', '提交方式');
         $table->show('data', '数据')->getWapper()->style('width:40%;');
         $table->show('create_time', '时间')->getWapper()->addStyle('width:180px');
@@ -52,6 +54,7 @@ class Operationlog extends Controller
 
         $searchData = request()->only([
             'user_id',
+            'path',
             'method',
         ], 'post');
 
@@ -59,6 +62,10 @@ class Operationlog extends Controller
 
         if (!empty($searchData['user_id'])) {
             $where[] = ['user_id', 'eq', $searchData['user_id']];
+        }
+
+        if (!empty($searchData['path'])) {
+            $where[] = ['path', 'like', '%' . $searchData['path'] . '%'];
         }
 
         if (!empty($searchData['method'])) {

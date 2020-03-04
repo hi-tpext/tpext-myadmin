@@ -4,8 +4,10 @@ namespace tpext\myadmin\admin\controller;
 use think\Controller;
 use think\Db;
 use tpext\builder\common\Builder;
+use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 use tpext\myadmin\admin\model\AdminRole;
+use tpext\myadmin\admin\model\AdminRoleMenu;
 use tpext\myadmin\admin\model\AdminRolePermission;
 
 class Role extends Controller
@@ -13,12 +15,15 @@ class Role extends Controller
     protected $dataModel;
     protected $permModel;
     protected $rolePermModel;
+    protected $menuModel;
 
     protected function initialize()
     {
         $this->dataModel = new AdminRole;
         $this->permModel = new AdminPermission;
         $this->rolePermModel = new AdminRolePermission;
+        $this->menuModel = new AdminMenu;
+        $this->roleMenuModel = new AdminRoleMenu;
     }
 
     public function index()
@@ -95,6 +100,18 @@ class Role extends Controller
         }
     }
 
+    private function getMenuList()
+    {
+        $list = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select();
+        $menus = [];
+
+        foreach ($list as $row) {
+            $menus[$row['id']] = $row['title'];
+        }
+
+        return $menus;
+    }
+
     public function edit($id)
     {
         if (request()->isPost()) {
@@ -131,7 +148,7 @@ class Role extends Controller
             $data['update_time'] = date('Y-m-d H:i:s');
             $res = $this->dataModel->where(['id' => $id])->update($data);
         } else {
-            $res = $this->dataModel->create($data);
+            $res = Db::name('admin_role')->insertGetId($data);
         }
 
         if (!$res) {
@@ -142,10 +159,43 @@ class Role extends Controller
             $id = $res;
         }
 
+        $this->saveMenus($id);
         $this->savePermissions($id);
 
         return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
 
+    }
+
+    private function saveMenus($roleId)
+    {
+        $menuIds = request()->post('menus/a');
+
+        $allIds = $this->roleMenuModel->where(['role_id' => $roleId])->column('id');
+        $existIds = [];
+
+        Db::startTrans();
+
+        foreach ($menuIds as $id) {
+            $exist = $this->roleMenuModel->where(['menu_id' => $id, 'role_id' => $roleId])->find();
+
+            if ($exist) {
+                $existIds[] = $exist['id'];
+                continue;
+            } else {
+                $this->roleMenuModel->create([
+                    'menu_id' => $id,
+                    'role_id' => $roleId,
+                ]);
+            }
+        }
+
+        $delIds = array_diff($allIds, $existIds);
+
+        if (!empty($delIds)) {
+            $this->roleMenuModel->destroy(array_values($delIds));
+        }
+
+        Db::commit();
     }
 
     private function savePermissions($roleId)
@@ -218,8 +268,18 @@ class Role extends Controller
             $form->show('update_time', '修改时间');
         }
         if ($isEdit && $data['id'] == 1) {
+            $form->raw('menus', '菜单')->value('<label class="label label-warning">拥有所有菜单</label>');
             $form->raw('permission', '权限')->value('<label class="label label-warning">拥有所有权限</label>');
         } else {
+
+            $menuIds = [];
+            if ($isEdit) {
+                $menuIds = $this->roleMenuModel->where(['role_id' => $data['id']])->column('menu_id');
+            } else {
+                $menuIds = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->column('id');
+            }
+
+            $form->checkbox('menus', '菜单')->required()->options($this->getMenuList())->default($menuIds)->size(2, 10)->checkallBtn('全部菜单');
 
             $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
 
@@ -258,13 +318,13 @@ class Role extends Controller
                         $options[$actionPerm['id']] = $actionPerm['action_name'];
                     }
 
-                    $ids = [];
+                    $perIds = [];
                     if ($isEdit) {
-                        $ids = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
+                        $perIds = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
                     }
 
                     $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
-                        ->default($ids)->size(2, 10)
+                        ->default($perIds)->size(2, 10)
                         ->options($options)
                         ->inline()
                         ->checkallBtn();
@@ -319,6 +379,8 @@ class Role extends Controller
                 continue;
             }
             if ($this->dataModel->destroy($id)) {
+
+                $this->rolePermModel->where(['role_id' => $id])->delete();
                 $res += 1;
             }
         }

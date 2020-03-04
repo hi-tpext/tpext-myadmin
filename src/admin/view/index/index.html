@@ -257,7 +257,8 @@
 
       for (var i = 0; i < data.length; i++) {
         iframe_class = data[i].is_out == 1 ? '' : 'class="multitabs"';
-        icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '';
+        //icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '';
+        icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '<i class="' + data[i].icon + '"></i>&nbsp;';
         selected = (data[i].pid == 0) && (data[i].is_home == 1) ? 'active' : '';
         menuName = data[i].pid == 0 ? '<span>' + data[i].name + '</span>' : '<span>' + data[i].name + '</span>';
         if (data[i].children && data[i].children.length > 0) {

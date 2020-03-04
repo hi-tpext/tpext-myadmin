@@ -9,99 +9,115 @@ use tpext\common\ExtLoader;
 use tpext\common\Tool;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminOperationLog;
+use tpext\myadmin\admin\model\AdminPermission;
+use tpext\myadmin\admin\model\AdminRoleMenu;
+use tpext\myadmin\admin\model\AdminRolePermission;
 use tpext\myadmin\admin\model\AdminUser;
 
 class Index extends Controller
 {
     protected $dataModel;
     protected $menuModel;
+    protected $roleMenuModel;
+    protected $rolePerModel;
+    protected $perModel;
 
     protected function initialize()
     {
         $this->dataModel = new AdminUser;
         $this->menuModel = new AdminMenu;
+        $this->roleMenuModel = new AdminRoleMenu;
+        $this->rolePerModel = new AdminRolePermission;
+        $this->perModel = new AdminPermission;
     }
 
     public function index()
     {
         $admin_user = session('admin_user');
-
-        $this->assign('admin_user', $admin_user);
         $menus = [];
-        $list = $this->menuModel->order('parent_id,sort')->all();
-
-        if (count($list) == 0) {
-            $menus = [
-                [
-                    'id' => 1,
-                    'name' => '首页',
-                    'url' => url('welcome'),
-                    'pid' => 0,
-                    'icon' => 'mdi mdi-home',
-                    'is_out' => 0,
-                    'is_home' => 1,
-                ],
-                [
-                    'id' => 2,
-                    'name' => '菜单管理',
-                    'url' => url('menu/index'),
-                    'pid' => 0,
-                    'icon' => 'mdi mdi-arrange-send-to-back',
-                    'is_out' => 0,
-                    'is_home' => 0,
-                ],
-                [
-                    'id' => 3,
-                    'name' => '权限设置',
-                    'url' => url('permission/index'),
-                    'pid' => 0,
-                    'icon' => 'mdi mdi-account-key',
-                    'is_out' => 0,
-                    'is_home' => 0,
-                ], [
-                    'id' => 4,
-                    'name' => '管理员',
-                    'url' => url('admin/index'),
-                    'pid' => 0,
-                    'icon' => 'mdi mdi-account-card-details',
-                    'is_out' => 0,
-                    'is_home' => 0,
-                ], [
-                    'id' => 5,
-                    'name' => '角色管理',
-                    'url' => url('role/index'),
-                    'pid' => 0,
-                    'icon' => 'mdi mdi-account-multiple',
-                    'is_out' => 0,
-                    'is_home' => 0,
-                ], [
-                    'id' => 6,
-                    'name' => '扩展管理',
-                    'url' => url('tpext/index'),
-                    'pid' => 0,
-                    'icon' => 'mdi mdi-blur',
-                    'is_out' => 0,
-                    'is_home' => 0,
-                ],
-            ];
-        } else {
-            foreach ($list as $li) {
-                $menus[] = [
-                    'id' => $li['id'],
-                    'name' => $li['title'],
-                    'url' => $li['url'],
-                    'pid' => $li['parent_id'],
-                    'icon' => 'mdi ' . $li['icon'],
-                    'is_out' => 0,
-                    'is_home' => $li['id'] == 1 ? 1 : 0,
+        if ($admin_user['role_id'] == 1) {
+            $list = $this->menuModel->order('parent_id,sort')->all();
+            if (count($list) == 0 && $admin_user['id'] == 1) {
+                $menus = [
+                    [
+                        'id' => 1,
+                        'name' => '首页',
+                        'url' => url('welcome'),
+                        'pid' => 0,
+                        'icon' => 'mdi mdi-home',
+                        'is_out' => 0,
+                        'is_home' => 1,
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => '菜单管理',
+                        'url' => url('menu/index'),
+                        'pid' => 0,
+                        'icon' => 'mdi mdi-arrange-send-to-back',
+                        'is_out' => 0,
+                        'is_home' => 0,
+                    ],
+                    [
+                        'id' => 3,
+                        'name' => '权限设置',
+                        'url' => url('permission/index'),
+                        'pid' => 0,
+                        'icon' => 'mdi mdi-account-key',
+                        'is_out' => 0,
+                        'is_home' => 0,
+                    ], [
+                        'id' => 4,
+                        'name' => '管理员',
+                        'url' => url('admin/index'),
+                        'pid' => 0,
+                        'icon' => 'mdi mdi-account-card-details',
+                        'is_out' => 0,
+                        'is_home' => 0,
+                    ], [
+                        'id' => 5,
+                        'name' => '角色管理',
+                        'url' => url('role/index'),
+                        'pid' => 0,
+                        'icon' => 'mdi mdi-account-multiple',
+                        'is_out' => 0,
+                        'is_home' => 0,
+                    ], [
+                        'id' => 6,
+                        'name' => '扩展管理',
+                        'url' => url('tpext/index'),
+                        'pid' => 0,
+                        'icon' => 'mdi mdi-blur',
+                        'is_out' => 0,
+                        'is_home' => 0,
+                    ],
                 ];
+            } else {
+                foreach ($list as $li) {
+                    $menus[] = [
+                        'id' => $li['id'],
+                        'name' => $li['title'],
+                        'url' => $li['url'],
+                        'pid' => $li['parent_id'],
+                        'icon' => 'mdi ' . $li['icon'],
+                        'is_out' => 0,
+                        'is_home' => $li['id'] == 1 ? 1 : 0,
+                    ];
+                }
             }
+        } else {
+            $menus = $this->menuModel->buildMenus($admin_user);
         }
 
+        $this->assign('admin_user', $admin_user);
         $this->assign('menus', json_encode($menus));
-        $this->assign('dashbord', count($list) ? $list[0]['url'] : url('welcome'));
+        $this->assign('dashbord', count($menus) ? $menus[0]['url'] : url('welcome'));
 
         return $this->fetch();
+    }
+
+    public function denied()
+    {
+        return '<p>无权访问</p>';
     }
 
     public function welcome()
@@ -337,6 +353,10 @@ class Index extends Controller
 
             if (!$user) {
                 $this->error('用户帐号不存');
+            }
+
+            if ($user['enable'] == 0) {
+                $this->error('帐号已禁用');
             }
 
             if ($user['errors'] > 10) {

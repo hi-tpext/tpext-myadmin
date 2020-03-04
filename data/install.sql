@@ -44,6 +44,16 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_permission` (
   INDEX (`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
+CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_menu` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `role_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '角色id',
+  `menu_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '菜单id',
+  `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
+  `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  INDEX (`role_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
+
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `role_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '角色组',
@@ -55,10 +65,12 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_user` (
   `phone` varchar(20) DEFAULT '' COMMENT '电话',
   `email` varchar(55) DEFAULT '' COMMENT '邮箱',
   `errors` int(10) unsigned DEFAULT '0' COMMENT '错误次数',
+  `enable` tinyint(1) unsigned DEFAULT '1' COMMENT '启用',
   `login_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '登录时间',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_operation_log` (
@@ -84,13 +96,13 @@ INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `sa
 
 -- 菜单
 INSERT INTO `tp_admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, `create_time`, `update_time`) VALUES
-(1, 0, 1, '首页', '/admin/index/welcome.html', 'mdi mdi-home', '2020-03-03 20:26:49', '2020-03-03 20:26:49'),
+(1, 0, 1, '首页', '/admin/index/welcome', 'mdi mdi-home', '2020-03-03 20:26:49', '2020-03-03 20:26:49'),
 (2, 0, 1, '权限管理', '#', 'mdi mdi-account-check', '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
-(3, 2, 1, '菜单管理', '/admin/menu/index.html', 'mdi mdi-arrange-send-to-back', '2020-03-03 20:27:49', '2020-03-03 20:34:40'),
-(4, 2, 1, '权限设置', '/admin/permission/index.html', 'mdi mdi-account-key', '2020-03-03 20:28:35', '2020-03-03 20:28:35'),
-(5, 2, 1, '管理员', '/admin/admin/index.html', 'mdi mdi-account-card-details', '2020-03-03 20:29:07', '2020-03-03 20:34:25'),
-(6, 2, 1, '角色管理', '/admin/role/index.html', 'mdi mdi-account-multiple', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
-(7, 2, 1, '操作记录', '/admin/operationlog/index.html', 'mdi mdi-playlist-check', '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
+(3, 2, 1, '菜单管理', '/admin/menu/index', 'mdi mdi-arrange-send-to-back', '2020-03-03 20:27:49', '2020-03-03 20:34:40'),
+(4, 2, 1, '权限设置', '/admin/permission/index', 'mdi mdi-account-key', '2020-03-03 20:28:35', '2020-03-03 20:28:35'),
+(5, 2, 1, '管理员', '/admin/admin/index', 'mdi mdi-account-card-details', '2020-03-03 20:29:07', '2020-03-03 20:34:25'),
+(6, 2, 1, '角色管理', '/admin/role/index', 'mdi mdi-account-multiple', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
+(7, 2, 1, '操作记录', '/admin/operationlog/index', 'mdi mdi-playlist-check', '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
 (8, 0, 1, '系统管理', '#', 'mdi mdi-settings', '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
-(9, 8, 1, '扩展管理', '/admin/tpext/index.html', 'mdi mdi-blur', '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
-(10, 8, 1, '平台设置', '/admin/tpext/setting.html', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');
+(9, 8, 1, '扩展管理', '/admin/tpext/index', 'mdi mdi-blur', '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
+(10, 8, 1, '平台设置', '/admin/tpext/setting', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');

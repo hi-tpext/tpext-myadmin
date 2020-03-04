@@ -6,6 +6,7 @@ use think\Db;
 use think\facade\Request;
 use think\Response;
 use tpext\common\ExtLoader;
+use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\common\Module;
 
 class Auth
@@ -98,6 +99,14 @@ class Auth
                     session('admin_id', null);
                 } else {
                     session('admin_last_time', $now);
+
+                    $userModel = new AdminUser;
+
+                    $res = $userModel->checkPermission($admin_id, $controller, $action);
+
+                    if (!$res) {
+                        $this->error('无权限访问！', url('index/denied'));
+                    }
                 }
             }
 
@@ -119,7 +128,7 @@ class Auth
      * @param  array     $header 发送的Header信息
      * @return void
      */
-    protected function error($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
+    protected function error($msg = '', $url = null, $data = '', $wait = 2, array $header = [])
     {
         $type = $this->getResponseType();
         if (is_null($url)) {
@@ -156,7 +165,7 @@ class Auth
      * @param  array     $header 发送的Header信息
      * @return void
      */
-    protected function success($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
+    protected function success($msg = '', $url = null, $data = '', $wait = 2, array $header = [])
     {
         if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
             $url = $_SERVER["HTTP_REFERER"];
