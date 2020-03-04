@@ -243,8 +243,18 @@ class Index extends Controller
             $where['user_id'] = ['eq', session('admin_id')];
             $where['path'] = ['like', 'admin/index/login'];
 
+            $sortOrder = 'id desc';
+
+            $sort = input('__sort__');
+            if ($sort) {
+                $arr = explode(':', $sort);
+                if (count($arr) == 2) {
+                    $sortOrder = implode(' ', $arr);
+                }
+            }
+
             $count = AdminOperationLog::where($where)->count();
-            $data = AdminOperationLog::where($where)->order('id desc')->limit(($page - 1) * $pagezise, $pagezise)->select();
+            $data = AdminOperationLog::where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
             $table->data($data);
             $table->paginator($count, $pagezise);
