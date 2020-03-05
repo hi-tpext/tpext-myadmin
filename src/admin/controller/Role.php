@@ -159,8 +159,10 @@ class Role extends Controller
             $id = $res;
         }
 
-        $this->saveMenus($id);
-        $this->savePermissions($id);
+        if ($id > 1) {
+            $this->saveMenus($id);
+            $this->savePermissions($id);
+        }
 
         return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
 
@@ -291,7 +293,7 @@ class Role extends Controller
 
                 foreach ($modController['controllers'] as $controller => $methods) {
 
-                    $controllerPerm = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
+                    $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
 
                     if (!$controllerPerm) {
                         continue;
@@ -305,7 +307,7 @@ class Role extends Controller
 
                     foreach ($methods as $method) {
 
-                        $actionPerm = $this->permModel->where(['controller' => $controller, 'action' => '@' . $method])->find();
+                        $actionPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '@' . $method])->find();
 
                         if (!$actionPerm || $actionPerm['action_type'] == 0) {
                             continue;

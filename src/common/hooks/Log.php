@@ -40,9 +40,9 @@ class Log
 
             if ($controller == 'admin' && in_array($action, ['add', 'edit'])) {
                 $param = [];
-            }
-
-            if ($controller == 'index' && in_array($action, ['changepwd', 'profile'])) {
+            } else if ($controller == 'index' && in_array($action, ['changepwd', 'profile'])) {
+                $param = [];
+            } else if ($controller == 'config' && in_array($action, ['extconfig', 'index'])) {
                 $param = [];
             }
 

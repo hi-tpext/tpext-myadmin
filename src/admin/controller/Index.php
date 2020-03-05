@@ -130,7 +130,7 @@ class Index extends Controller
         session('admin_user', null);
         session('admin_id', null);
 
-        $this->success('注销成功！');
+        $this->success('注销成功！', url('login'));
     }
 
     public function changePwd()
