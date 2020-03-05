@@ -115,9 +115,9 @@ class Menu extends Controller
 
         $form = $builder->form();
 
-        $tree[0] = '根菜单';
+        $tree = [0 => '根菜单'];
 
-        $tree = array_merge($tree, $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0));
+        $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重派数组键 ，作为options导致bug
 
         $modControllers = $this->permModel->getControllers();
 
@@ -156,7 +156,6 @@ class Menu extends Controller
                 }
             }
         }
-
         $form->text('title', '名称')->required();
         $form->select('parent_id', '上级')->required()->options($tree);
         $form->select('url', 'url')->required()->options($urls);

@@ -105,4 +105,4 @@ INSERT INTO `tp_admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, 
 (7, 2, 1, '操作记录', '/admin/operationlog/index', 'mdi mdi-playlist-check', '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
 (8, 0, 1, '系统管理', '#', 'mdi mdi-settings', '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
 (9, 8, 1, '扩展管理', '/admin/tpext/index', 'mdi mdi-blur', '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
-(10, 8, 1, '平台设置', '/admin/tpext/setting', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');
+(10, 8, 1, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');

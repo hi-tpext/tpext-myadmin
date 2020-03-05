@@ -77,9 +77,8 @@ class AdminMenu extends Model
 
             $data[$root['id']] = $root['title_show'];
 
-            $data = array_merge($data, $this->buildTree($root->id, $deep));
+            $data += $this->buildTree($root->id, $deep);
         }
-
         return $data;
     }
 
