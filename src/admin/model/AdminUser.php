@@ -29,7 +29,7 @@ class AdminUser extends Model
      * @param string $savedCryptPwd
      * @param string $savedSalt
      * @param string $inputPwd
-     * @return void
+     * @return boolean
      */
     public function passValidate($savedCryptPwd, $savedSalt, $inputPwd)
     {
