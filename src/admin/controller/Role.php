@@ -171,6 +171,9 @@ class Role extends Controller
     private function saveMenus($roleId)
     {
         $menuIds = request()->post('menus/a');
+        if (empty($menuIds)) {
+            $menuIds = [];
+        }
 
         $allIds = $this->roleMenuModel->where(['role_id' => $roleId])->column('id');
         $existIds = [];
@@ -215,7 +218,7 @@ class Role extends Controller
 
             foreach ($modController['controllers'] as $controller => $methods) {
 
-                $controllerPerm = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
+                $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
 
                 if (!$controllerPerm || empty($methods)) {
                     continue;
