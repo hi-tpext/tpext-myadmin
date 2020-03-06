@@ -15,8 +15,8 @@ class Auth
 
     public function isInstalled()
     {
-        if (cache('tpextmyadmin_installed')) {
-            return true;
+        if (empty(config('database.database'))) {
+            return false;
         }
 
         $tableName = config('database.prefix') . 'admin_user';
@@ -25,6 +25,10 @@ class Auth
 
         if (empty($isTable)) {
             return false;
+        }
+
+        if (cache('tpextmyadmin_installed')) {
+            return true;
         }
 
         $installed = ExtLoader::getInstalled();
