@@ -88,7 +88,7 @@ class Operationlog extends Controller
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);
 
         if (request()->isAjax()) {
-            return $table->partial()->render(false);
+            return $table->partial()->render();
         }
 
         return $builder->render();

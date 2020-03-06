@@ -260,7 +260,7 @@ class Index extends Controller
             $table->paginator($count, $pagezise);
 
             if (request()->isAjax()) {
-                return $table->partial()->render(false);
+                return $table->partial()->render();
             }
 
             return $builder->render();

@@ -85,7 +85,7 @@ class Role extends Controller
         ]);
 
         if (request()->isAjax()) {
-            return $table->partial()->render(false);
+            return $table->partial()->render();
         }
 
         return $builder->render();

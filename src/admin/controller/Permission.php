@@ -124,7 +124,7 @@ class Permission extends Controller
         $table->useActionbar(false);
 
         if (request()->isAjax()) {
-            return $table->partial()->render(false);
+            return $table->partial()->render();
         }
 
         return $builder->render();

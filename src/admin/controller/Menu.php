@@ -37,7 +37,7 @@ class Menu extends Controller
         $table->data($data);
 
         if (request()->isAjax()) {
-            return $table->partial()->render(false);
+            return $table->partial()->render();
         }
 
         return $builder->render();
