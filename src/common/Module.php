@@ -36,7 +36,7 @@ class Module extends baseModule
         if (parent::uninstall()) {
             session('admin_user', null);
             session('admin_id', null);
-
+            cache('tpextmyadmin_installed', null);
             return true;
         }
 
