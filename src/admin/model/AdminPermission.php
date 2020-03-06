@@ -3,7 +3,6 @@
 namespace tpext\myadmin\admin\model;
 
 use think\Model;
-use tpext\common\Extension;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
 

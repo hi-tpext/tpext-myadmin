@@ -95,7 +95,7 @@ INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `sa
 (1, 1, 'admin', '0796647d241a5014670013b324a155ee', '15fb7db', '管理员', '/assets/lightyearadmin/images/no-avatar.jpg', '', '', 0, '2020-01-01 00:00:00', '2020-03-01 20:19:11', '2020-03-01 20:19:11');
 
 -- 菜单
-INSERT INTO `tp_admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, `create_time`, `update_time`) VALUES
+INSERT INTO `__PREFIX__admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, `create_time`, `update_time`) VALUES
 (1, 0, 1, '首页', '/admin/index/welcome', 'mdi mdi-home', '2020-03-03 20:26:49', '2020-03-03 20:26:49'),
 (2, 0, 1, '权限管理', '#', 'mdi mdi-account-check', '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
 (3, 2, 1, '菜单管理', '/admin/menu/index', 'mdi mdi-arrange-send-to-back', '2020-03-03 20:27:49', '2020-03-03 20:34:40'),
