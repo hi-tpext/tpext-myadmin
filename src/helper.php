@@ -14,8 +14,7 @@ use tpext\myadmin\common\hooks\Log;
 use tpext\myadmin\common\hooks\Setup;
 
 $classMap = [
-    'tpext\\myadmin\\common\\Module',
-    'tpext\\myadmin\\common\\Plugin',
+    'tpext\\myadmin\\common\\Module'
 ];
 
 ExtLoader::addClassMap($classMap);
