@@ -80,8 +80,8 @@ class Auth
             $action = strtolower(Request::action());
 
             if (!$this->isInstalled()) {
-                if ($controller != 'tpext') {
-                    $this->error('请安装扩展！', url('tpext/index'));
+                if ($controller != 'extension') {
+                    $this->error('请安装扩展！', url('extension/index'));
                 } else {
                     return;
                 }
