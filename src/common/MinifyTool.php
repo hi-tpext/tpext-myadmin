@@ -2,8 +2,7 @@
 
 namespace tpext\myadmin\common;
 
-use MatthiasMullie\Minify\css;
-use MatthiasMullie\Minify\JS;
+use MatthiasMullie\Minify;
 use tpext\builder\common\Builder;
 use tpext\builder\common\Module as BModule;
 use tpext\builder\form\Wapper;
@@ -105,8 +104,7 @@ class MinifyTool
             return;
         }
 
-        require_once app()->getRootPath() . implode(DIRECTORY_SEPARATOR, ['vendor', 'matthiasmullie', 'minify', 'src', 'JS.php']);
-        $minifier = new JS;
+        $minifier = new Minify\JS;
 
         $this->createBuilder();
 
@@ -123,14 +121,14 @@ class MinifyTool
             return;
         }
 
-        require_once app()->getRootPath() . implode(DIRECTORY_SEPARATOR, ['vendor', 'matthiasmullie', 'minify', 'src', 'CSS.php']);
-        $minifier = new Css();
+        $minifier = new Minify\CSS();
 
         foreach (static::$css as $c) {
             $minifier->addFile($this->public . $c);
         }
 
         $minifier->minify($this->path . 'min.css');
+
     }
 
     private function createBuilder()

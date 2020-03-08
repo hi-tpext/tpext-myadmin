@@ -334,9 +334,9 @@ class Index extends Controller
             $form = $builder->form();
 
             $form->checkbox('types', '耀清除代缓存类型')->options([
-                1 => 'cache',
-                2 => 'temp',
-                3 => 'minify',
+                1 => '数据缓存[cache]',
+                2 => '模板缓存[temp]',
+                3 => '资源压缩[minify]',
             ])->checkallBtn('全部')->inline(false);
 
             return $builder->render();
