@@ -5,8 +5,10 @@ namespace tpext\myadmin\common;
 use MatthiasMullie\Minify\css;
 use MatthiasMullie\Minify\JS;
 use tpext\builder\common\Builder;
+use tpext\builder\common\Module as BModule;
 use tpext\builder\form\Wapper;
 use tpext\common\ExtLoader;
+use tpext\common\Tool;
 
 class MinifyTool
 {
@@ -15,9 +17,9 @@ class MinifyTool
         '/assets/lightyearadmin/js/bootstrap.min.js',
         '/assets/lightyearadmin/js/jquery.lyear.loading.js',
         '/assets/lightyearadmin/js/bootstrap-notify.min.js',
+        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js',
         '/assets/lightyearadmin/js/lightyear.js',
         '/assets/lightyearadmin/js/main.min.js',
-        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js',
     ];
 
     protected static $css = [
@@ -26,6 +28,7 @@ class MinifyTool
         '/assets/lightyearadmin/css/animate.css',
         '/assets/lightyearadmin/css/style.min.css',
         '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css',
+        '/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js',
     ];
 
     private $path;
@@ -108,10 +111,6 @@ class MinifyTool
         $this->createBuilder();
 
         foreach (static::$js as $j) {
-            if ($j == '/assets/tpextbuilder/js/layer/layer.js') {
-                continue;
-            }
-
             $minifier->addFile($this->public . $j);
         }
 
@@ -136,19 +135,27 @@ class MinifyTool
 
     private function createBuilder()
     {
-        $builder = Builder::getInstance();
-        $form = $builder->row()->column(12)->form();
-        $table = $builder->row()->column(12)->table();
-
         $displayerMap = Wapper::getDisplayerMap();
 
         foreach ($displayerMap as $name => $class) {
-            $form->$name($name)->value($name);
-            $table->$name($name)->value($name);
+
+            $field = new $class($name, $name);
+            if ($field->canMinify()) {
+                $this->addJs($field->getJs());
+            }
+            $this->addCss($field->getCss());
         }
 
-        ExtLoader::watch('builder_render', static::class);
-        $builder->render();
+        $builder = Builder::getInstance();
+
+        $this->addJs($builder->commonJs());
+        $this->addCss($builder->commonCss());
+
+        $dirs = ['assets', 'js', 'layer', 'theme'];
+        $layerDir = BModule::getInstance()->getRoot() . implode(DIRECTORY_SEPARATOR, $dirs);
+        Tool::copyDir($layerDir, $this->path . DIRECTORY_SEPARATOR . 'theme');
+
+        ExtLoader::trigger('minifying', $this->path);
     }
 
     private function checkAssetsDir($dirName)
@@ -165,13 +172,5 @@ class MinifyTool
         mkdir($minifyDir, 0775);
 
         return $minifyDir;
-    }
-
-    public function run($data)
-    {
-        if (is_array($data) && count($data) == 2) {
-            $this->addJs($data[0]);
-            $this->addCss($data[1]);
-        }
     }
 }

@@ -318,6 +318,13 @@ class Index extends Controller
             if (in_array(2, $types)) {
                 Tool::deleteDir(app()->getRuntimePath() . 'temp');
             }
+            if (in_array(3, $types)) {
+
+                $dirs = ['public', 'assets', 'minify', ''];
+                $minifyDir = app()->getRootPath() . implode(DIRECTORY_SEPARATOR, $dirs);
+
+                Tool::deleteDir($minifyDir);
+            }
 
             $this->success('操作成功！');
 
@@ -329,6 +336,7 @@ class Index extends Controller
             $form->checkbox('types', '耀清除代缓存类型')->options([
                 1 => 'cache',
                 2 => 'temp',
+                3 => 'minify',
             ])->checkallBtn('全部')->inline(false);
 
             return $builder->render();
