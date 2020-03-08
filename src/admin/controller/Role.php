@@ -40,6 +40,7 @@ class Role extends Controller
 
         $table->show('id', 'ID');
         $table->show('name', '名称');
+        $table->show('users', '用户数');
         $table->show('description', '描述')->default('无描述');
         $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
@@ -132,6 +133,7 @@ class Role extends Controller
             'name',
             'description',
             'sort',
+            'tags'
         ], 'post');
 
         $result = $this->validate($data, [
@@ -267,6 +269,7 @@ class Role extends Controller
         $form->text('name', '名称')->maxlength(25)->required();
         $form->textarea('description', '描述')->maxlength(100);
         $form->text('sort', '排序')->required()->default(1);
+        $form->tags('tags', '标签');
 
         if ($isEdit) {
             $form->show('create_time', '添加时间');

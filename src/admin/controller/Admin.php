@@ -4,17 +4,20 @@ namespace tpext\myadmin\admin\controller;
 use think\Controller;
 use tpext\builder\common\Builder;
 use tpext\myadmin\admin\model\AdminRole;
+use tpext\myadmin\admin\model\AdminGroup;
 use tpext\myadmin\admin\model\AdminUser;
 
 class Admin extends Controller
 {
     protected $dataModel;
     protected $roleModel;
+    protected $groupModel;
 
     protected function initialize()
     {
         $this->dataModel = new AdminUser;
         $this->roleModel = new AdminRole;
+        $this->groupModel = new AdminGroup;
     }
 
     public function index()
@@ -37,11 +40,12 @@ class Admin extends Controller
         $table->show('username', '登录帐号');
         $table->text('name', '姓名')->autoPost()->getWapper()->addStyle('max-width:80px');
         $table->show('role_name', '角色');
+        $table->show('group_name', '分组');
         $table->show('email', '电子邮箱')->default('无');
         $table->show('phone', '手机号')->default('无');
         $table->show('errors', '登录失败');
+        $table->show('login_time', '登录时间')->getWapper()->addStyle('width:180px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
         $pagezise = 10;
 
@@ -95,7 +99,10 @@ class Admin extends Controller
             $d['__h_del__'] = $d['id'] == 1;
             $d['__h_en__'] = $d['enable'] == 1;
             $d['__h_dis__'] = $d['enable'] != 1 || $d['id'] == 1;
+            $d['__h_clr__'] = $d['errors'] < 1;
         }
+
+        unset($d);
 
         $table->data($data);
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);
@@ -112,10 +119,12 @@ class Admin extends Controller
             ->btnEnable()
             ->btnDisable()
             ->btnDelete()
+            ->btnPostRowid('clear_errors', url('clearErrors'), '', 'btn-info', 'mdi-backup-restore', 'title="重置登录失败次数"')
             ->mapClass([
                 'delete' => ['hidden' => '__h_del__'],
                 'enable' => ['hidden' => '__h_en__'],
                 'disable' => ['hidden' => '__h_dis__'],
+                'clear_errors' => ['hidden' => '__h_clr__'],
             ]);
 
         if (request()->isAjax()) {
@@ -148,6 +157,31 @@ class Admin extends Controller
         }
     }
 
+    public function clearErrors()
+    {
+        $ids = input('ids', '');
+
+        $ids = array_filter(explode(',', $ids), 'strlen');
+
+        if (empty($ids)) {
+            $this->error('参数有误');
+        }
+
+        $res = 0;
+
+        foreach ($ids as $id) {
+            if ($this->dataModel->where(['id' => $id])->update(['errors' => 0])) {
+                $res += 1;
+            }
+        }
+
+        if ($res) {
+            $this->success('成功重置' . $res . '个账号的登录失败次数');
+        } else {
+            $this->error('重置失败');
+        }
+    }
+
     private function save($id = 0)
     {
         if ($id == 1 && session('admin_id') != 1) {
@@ -157,11 +191,13 @@ class Admin extends Controller
         $data = request()->only([
             'name',
             'role_id',
+            'group_id',
             'avatar',
             'username',
             'password',
             'email',
             'phone',
+            'tags',
         ], 'post');
 
         if ($id == 1) {
@@ -178,6 +214,7 @@ class Admin extends Controller
             'name|姓名' => 'require',
             'email|电子邮箱' => 'email',
             'phone|手机号' => 'mobile',
+            'errors|失败次数' => 'number',
         ]);
 
         if (true !== $result) {
@@ -236,6 +273,15 @@ class Admin extends Controller
         return $roles;
     }
 
+    private function getGroupList()
+    {
+        $tree = [0 => '未分组'];
+
+        $tree += $this->groupModel->buildTree(); //数组合并不要用 array_merge , 会重派数组键 ，作为options导致bug
+
+        return $tree;
+    }
+
     private function form($title, $data = [])
     {
         $isEdit = isset($data['id']);
@@ -245,12 +291,14 @@ class Admin extends Controller
         $form = $builder->form();
 
         $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
-        $form->select('role_id', '角色组')->required()->options($this->getRoleList())->disabled($isEdit && $data['id'] == 1);
+        $form->select('role_id', '角色')->required()->options($this->getRoleList())->disabled($isEdit && $data['id'] == 1);
         $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
         $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
+        $form->select('group_id', '用户组')->options($this->getGroupList());
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
         $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
         $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
+        $form->tags('tags', '标签');
 
         if ($isEdit) {
 

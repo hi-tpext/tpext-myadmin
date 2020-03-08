@@ -80,7 +80,7 @@ class Menu extends Controller
             'title|名称' => 'require',
             'url|url' => 'require',
             'icon|图标' => 'require',
-            'sort|排序' => 'require',
+            'sort|排序' => 'require|number',
             'parent_id|上级' => 'require',
         ]);
 
@@ -117,7 +117,7 @@ class Menu extends Controller
 
         $tree = [0 => '根菜单'];
 
-        $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重派数组键 ，作为options导致bug
+        $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
         $modControllers = $this->permModel->getControllers();
 

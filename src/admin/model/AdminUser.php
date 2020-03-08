@@ -8,6 +8,13 @@ class AdminUser extends Model
 {
     protected $autoWriteTimestamp = 'dateTime';
 
+    public static function current()
+    {
+        $admin_id = session('admin_id');
+
+        return static::get($admin_id);
+    }
+
     /**
      * Undocumented function
      *
@@ -42,6 +49,12 @@ class AdminUser extends Model
     {
         $role = AdminRole::get($data['role_id']);
         return $role ? $role['name'] : '--';
+    }
+
+    public function getGroupNameAttr($value, $data)
+    {
+        $group = AdminGroup::get($data['group_id']);
+        return $group ? $group['name'] : '--';
     }
 
     public function checkPermission($admin_id, $controller, $action)
