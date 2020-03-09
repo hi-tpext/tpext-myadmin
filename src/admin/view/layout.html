@@ -10,7 +10,7 @@
     <meta name="description" content="{$admin_page_description|default=''}">
     {notempty name="$admin_css"}
     {volist name="admin_css" id="item"}
-    <link href="{$item}{$assets_ver|default='1.0'}" rel="stylesheet">
+    <link href="{$item}?v={$assets_ver|default='1.0'}" rel="stylesheet">
     {/volist}
     {/notempty}
     {block name="style"}

@@ -372,7 +372,7 @@ class Role extends Controller
 
     public function delete()
     {
-        $ids = input('ids');
+        $ids = input('post.ids', '');
 
         $ids = array_filter(explode(',', $ids), 'strlen');
 

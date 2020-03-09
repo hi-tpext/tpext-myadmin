@@ -340,7 +340,7 @@ class Admin extends Controller
 
     public function enable()
     {
-        $ids = input('ids', '');
+        $ids = input('post.ids', '');
 
         $ids = array_filter(explode(',', $ids), 'strlen');
 
@@ -368,7 +368,7 @@ class Admin extends Controller
 
     public function disable()
     {
-        $ids = input('ids', '');
+        $ids = input('post.ids', '');
 
         $ids = array_filter(explode(',', $ids), 'strlen');
 
@@ -396,7 +396,7 @@ class Admin extends Controller
 
     public function delete()
     {
-        $ids = input('ids');
+        $ids = input('post.ids', '');
 
         $ids = array_filter(explode(',', $ids), 'strlen');
 
