@@ -10,7 +10,7 @@
     <meta name="description" content="{$admin_page_description|default=''}">
     {notempty name="$admin_css"}
     {volist name="admin_css" id="item"}
-    <link href="{$item}" rel="stylesheet">
+    <link href="{$item}{$assets_ver|default='1.0'}" rel="stylesheet">
     {/volist}
     {/notempty}
     {block name="style"}
@@ -44,7 +44,7 @@
     <!--End 页面主要内容-->
     {notempty name="$admin_js"}
     {volist name="admin_js" id="item"}
-    <script type="text/javascript" src="{$item}" charset="utf-8"></script>
+    <script type="text/javascript" src="{$item}?v={$assets_ver|default='1.0'}" charset="utf-8"></script>
     {/volist}
     {/notempty}
     <script>

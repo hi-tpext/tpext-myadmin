@@ -44,6 +44,7 @@ class Setup
                 'admin_js' => MinifyTool::getJs(),
                 'admin_css' => MinifyTool::getCss(),
                 'admin_layout' => $admin_layout,
+                'admin_assets_ver' => $config['assets_ver'],
             ]);
         }
     }
