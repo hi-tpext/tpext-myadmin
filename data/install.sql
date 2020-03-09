@@ -109,11 +109,11 @@ INSERT INTO `__PREFIX__admin_role` (`id`, `sort`, `name`, `description`, `create
 
 
 -- 默认组
-INSERT INTO `admin_group` (`id`, `parent_id`, `description`, `sort`, `name`, `tags`, `create_time`, `update_time`) VALUES
+INSERT INTO `__PREFIX__admin_group` (`id`, `parent_id`, `description`, `sort`, `name`, `tags`, `create_time`, `update_time`) VALUES
 (1, 0, '', 1, '默认分组', '', '2020-03-01 20:11:43', '2020-03-01 20:11:43');
 
 -- 默认管理员 admin tpextadmin
-INSERT INTO `admin_user` (`id`, `role_id`, `username`, `password`, `salt`, `name`, `avatar`, `phone`, `email`, `errors`, `enable`, `tags`, `group_id`, `login_time`, `create_time`, `update_time`) VALUES
+INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `salt`, `name`, `avatar`, `phone`, `email`, `errors`, `enable`, `tags`, `group_id`, `login_time`, `create_time`, `update_time`) VALUES
 (1, 1, 'admin', '0796647d241a5014670013b324a155ee', '15fb7db', '管理员', '/assets/lightyearadmin/images/no-avatar.jpg', '', '', 0, 1, '', 1, '2020-01-01 00:00:00', '2020-03-01 20:19:11', '2020-03-08 23:37:36');
 
 -- 菜单
