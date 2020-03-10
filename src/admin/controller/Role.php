@@ -30,13 +30,10 @@ class Role extends Controller
     {
         $builder = Builder::getInstance('角色管理', '列表');
 
-        $form = $builder->form();
-
-        $form->text('name', '名称', 3)->maxlength(20);
-
         $table = $builder->table();
 
-        $table->searchForm($form);
+        $form = $table->getSearch();
+        $form->text('name', '名称', 3)->maxlength(20);
 
         $table->show('id', 'ID');
         $table->show('name', '名称');
@@ -46,7 +43,7 @@ class Role extends Controller
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
-        $pagezise = 10;
+        $pagezise = 14;
 
         $page = input('__page__/d', 1);
 
@@ -62,15 +59,7 @@ class Role extends Controller
             $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
         }
 
-        $sortOrder = 'id asc';
-
-        $sort = input('__sort__');
-        if ($sort) {
-            $arr = explode(':', $sort);
-            if (count($arr) == 2) {
-                $sortOrder = implode(' ', $arr);
-            }
-        }
+        $sortOrder = input('__sort__', 'id desc');
 
         $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
@@ -79,6 +68,7 @@ class Role extends Controller
         }
 
         $table->data($data);
+        $table->sortOrder($sortOrder);
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);
 
         $table->getActionbar()->mapClass([

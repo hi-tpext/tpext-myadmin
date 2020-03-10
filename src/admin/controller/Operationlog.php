@@ -21,17 +21,15 @@ class Operationlog extends Controller
     {
         $builder = Builder::getInstance('操作记录', '列表');
 
-        $form = $builder->form();
+        $table = $builder->table();
+
+        $form = $table->getSearch();
 
         $form->select('user_id', '管理员', 3)->options($this->getUesrList());
         $form->text('path', '路径', 3);
         $form->radio('method', '提交方式', 3)->options(['' => '全部', 'GET' => 'get', 'POST' => 'post']);
 
-        $table = $builder->table();
-
-        $table->searchForm($form);
-
-        $table->show('id', 'ID');
+        $table->show('id', 'ID')->getWapper();
         $table->show('username', '登录帐号');
         $table->show('name', '姓名');
         $table->show('path', '路径');
@@ -47,7 +45,7 @@ class Operationlog extends Controller
         $table->getActionbar()
             ->btnDelete();
 
-        $pagezise = 10;
+        $pagezise = 14;
 
         $page = input('__page__/d', 1);
 
@@ -73,19 +71,13 @@ class Operationlog extends Controller
             $where[] = ['method', 'eq', $searchData['method']];
         }
 
-        $sortOrder = 'id desc';
-
-        $sort = input('__sort__');
-        if ($sort) {
-            $arr = explode(':', $sort);
-            if (count($arr) == 2) {
-                $sortOrder = implode(' ', $arr);
-            }
-        }
+        $sortOrder = input('__sort__', 'id desc');
 
         $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
         $table->data($data);
+        $table->sortOrder($sortOrder);
+
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);
 
         if (request()->isAjax()) {

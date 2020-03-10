@@ -24,17 +24,14 @@ class Admin extends Controller
     {
         $builder = Builder::getInstance('用户管理', '列表');
 
-        $form = $builder->form();
+        $table = $builder->table();
 
+        $form = $table->getSearch();
         $form->text('username', '账号', 3)->maxlength(20);
         $form->text('name', '姓名', 3)->maxlength(20);
         $form->text('phone', '手机号', 3)->maxlength(20);
         $form->text('email', '邮箱', 3)->maxlength(20);
         $form->select('role_id', '角色组', 3)->options($this->getRoleList());
-
-        $table = $builder->table();
-
-        $table->searchForm($form);
 
         $table->show('id', 'ID');
         $table->show('username', '登录帐号');
@@ -47,7 +44,7 @@ class Admin extends Controller
         $table->show('login_time', '登录时间')->getWapper()->addStyle('width:180px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
 
-        $pagezise = 10;
+        $pagezise = 14;
 
         $page = input('__page__/d', 1);
 
@@ -62,7 +59,6 @@ class Admin extends Controller
         ], 'post');
 
         $where = [];
-
         if (!empty($searchData['username'])) {
             $where[] = ['username', 'like', '%' . $searchData['username'] . '%'];
         }
