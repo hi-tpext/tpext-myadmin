@@ -129,13 +129,13 @@ class Operationlog extends Controller
             'user_id',
             'path',
             'method',
-            'checked_ids',
+            '__ids__',
         ], 'post');
 
         $where = [];
 
-        if (!empty($searchData['checked_ids'])) {
-            $where[] = ['id', 'in', $searchData['checked_ids']];
+        if (!empty($searchData['__ids__'])) {
+            $where[] = ['id', 'in', $searchData['__ids__']];
         } else {
             if (!empty($searchData['user_id'])) {
                 $where[] = ['user_id', 'eq', $searchData['user_id']];
