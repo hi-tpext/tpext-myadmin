@@ -28,7 +28,7 @@ class Role extends Controller
 
     public function index()
     {
-        $builder = Builder::getInstance('权限管理', '列表');
+        $builder = Builder::getInstance('角色管理', '列表');
 
         $form = $builder->form();
 

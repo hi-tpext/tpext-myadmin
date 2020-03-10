@@ -19,7 +19,7 @@ class Operationlog extends Controller
 
     public function index()
     {
-        $builder = Builder::getInstance('用户管理', '列表');
+        $builder = Builder::getInstance('操作记录', '列表');
 
         $form = $builder->form();
 
@@ -118,7 +118,7 @@ class Operationlog extends Controller
         header('Cache-Control: max-age=0');
         $fp = fopen('php://output', 'a');
 
-        $header_data = ['ID', '登录帐号', '姓名', '路径', '方式', '数据', '时间'];
+        $header_data = ['编号', '登录帐号', '姓名', '路径', '方式', '数据', '时间'];
 
         foreach ($header_data as $key => $value) {
             $header_data[$key] = iconv('utf-8', 'gbk', $value);
@@ -129,13 +129,13 @@ class Operationlog extends Controller
             'user_id',
             'path',
             'method',
-            'checked_ids',
+            '__ids__',
         ], 'post');
 
         $where = [];
 
-        if (!empty($searchData['checked_ids'])) {
-            $where[] = ['id', 'in', $searchData['checked_ids']];
+        if (!empty($searchData['__ids__'])) {
+            $where[] = ['id', 'in', $searchData['__ids__']];
         } else {
             if (!empty($searchData['user_id'])) {
                 $where[] = ['user_id', 'eq', $searchData['user_id']];
