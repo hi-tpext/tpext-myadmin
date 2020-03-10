@@ -41,6 +41,7 @@ class Operationlog extends Controller
 
         $table->getToolbar()
             ->btnDelete()
+            ->btnExport()
             ->btnRefresh();
 
         $table->getActionbar()
@@ -106,6 +107,97 @@ class Operationlog extends Controller
         }
 
         return $users;
+    }
+
+    public function export()
+    {
+        // TODO
+        ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=' . 'operation_log' . "_" . date('Y-m-d-H-i-s') . ".csv");
+        header('Cache-Control: max-age=0');
+        $fp = fopen('php://output', 'a');
+
+        $header_data = ['ID', '登录帐号', '姓名', '路径', '方式', '数据', '时间'];
+
+        foreach ($header_data as $key => $value) {
+            $header_data[$key] = iconv('utf-8', 'gbk', $value);
+        }
+        fputcsv($fp, $header_data);
+
+        $searchData = request()->only([
+            'user_id',
+            'path',
+            'method',
+            'checked_ids',
+        ], 'post');
+
+        $where = [];
+
+        if (!empty($searchData['checked_ids'])) {
+            $where[] = ['id', 'in', $searchData['checked_ids']];
+        } else {
+            if (!empty($searchData['user_id'])) {
+                $where[] = ['user_id', 'eq', $searchData['user_id']];
+            }
+
+            if (!empty($searchData['path'])) {
+                $where[] = ['path', 'like', '%' . $searchData['path'] . '%'];
+            }
+
+            if (!empty($searchData['method'])) {
+                $where[] = ['method', 'eq', $searchData['method']];
+            }
+        }
+
+        $sortOrder = 'id desc';
+
+        $sort = input('__sort__');
+        if ($sort) {
+            $arr = explode(':', $sort);
+            if (count($arr) == 2) {
+                $sortOrder = implode(' ', $arr);
+            }
+        }
+
+        $list = $this->dataModel->where($where)->order($sortOrder)->select();
+
+        $data = [];
+
+        foreach ($list as $li) {
+            $row = [];
+            $row[] = $li['id'];
+            $row[] = $li['username'];
+            $row[] = $li['name'];
+            $row[] = $li['path'];
+            $row[] = $li['method'];
+            $row[] = $li['data'];
+            $row[] = $li['create_time'];
+            $data[] = $row;
+        }
+        //来源网络
+        $num = 0;
+        //每隔$limit行，刷新一下输出buffer，不要太大，也不要太小
+        $limit = 10000;
+        //逐行取出数据，不浪费内存
+        $count = count($data);
+        if ($count > 0) {
+            for ($i = 0; $i < $count; $i++) {
+                $num++;
+                //刷新一下输出buffer，防止由于数据过多造成问题
+                if ($limit == $num) {
+                    ob_flush();
+                    flush();
+                    $num = 0;
+                }
+                $row = $data[$i];
+                foreach ($row as $key => $value) {
+                    $row[$key] = iconv('utf-8', 'gb2312', $value);
+                }
+                fputcsv($fp, $row);
+            }
+        }
+        fclose($fp);
     }
 
     public function delete()

@@ -27,7 +27,6 @@ class MinifyTool
         '/assets/lightyearadmin/css/animate.css',
         '/assets/lightyearadmin/css/style.min.css',
         '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css',
-        '/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js',
     ];
 
     private $path;
