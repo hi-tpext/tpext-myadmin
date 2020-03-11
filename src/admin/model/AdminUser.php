@@ -64,16 +64,15 @@ class AdminUser extends Model
         if (!$data) {
             return false;
         }
-
         session('admin_user', $data);
-
-        if ($data['role_id'] == 1) {
-            return true;
-        }
 
         $url = "/admin/$controller/$action";
 
         if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+            return true;
+        }
+        
+        if ($data['role_id'] == 1) {
             return true;
         }
 

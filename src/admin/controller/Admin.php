@@ -79,15 +79,7 @@ class Admin extends Controller
             $where[] = ['role_id', 'eq', $searchData['role_id']];
         }
 
-        $sortOrder = 'id asc';
-
-        $sort = input('__sort__');
-        if ($sort) {
-            $arr = explode(':', $sort);
-            if (count($arr) == 2) {
-                $sortOrder = implode(' ', $arr);
-            }
-        }
+        $sortOrder = input('__sort__', 'id desc');
 
         $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
 
@@ -101,6 +93,7 @@ class Admin extends Controller
         unset($d);
 
         $table->data($data);
+        $table->sortOrder($sortOrder);
         $table->paginator($this->dataModel->where($where)->count(), $pagezise);
 
         $table->getToolbar()
