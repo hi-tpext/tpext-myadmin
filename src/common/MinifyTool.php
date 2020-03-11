@@ -5,7 +5,7 @@ namespace tpext\myadmin\common;
 use MatthiasMullie\Minify;
 use tpext\builder\common\Builder;
 use tpext\builder\common\Module as BModule;
-use tpext\builder\form\Wapper;
+use tpext\builder\common\Wapper;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
 
