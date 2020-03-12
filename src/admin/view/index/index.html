@@ -12,6 +12,30 @@
   <link href="/assets/lightyearadmin/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="/assets/lightyearadmin/js/bootstrap-multitabs/multitabs.min.css" rel="stylesheet">
   <link href="/assets/lightyearadmin/css/style.min.css" rel="stylesheet">
+  <style>
+    .lyear-layout-header .navbar {
+      min-height: 50px;
+    }
+
+    .topbar-right>li>a {
+      padding: 2px 0px 2px 15px;
+    }
+
+    .icon-palette {
+      height: 50px;
+      line-height: 50px;
+    }
+
+    .topbar {
+      min-height: 50px;
+    }
+
+    .img-avatar-44 {
+      width: 44px;
+      height: 44px;
+      line-height: 44px;
+    }
+  </style>
 </head>
 
 <body>
@@ -56,7 +80,7 @@
             <ul class="topbar-right">
               <li class="dropdown dropdown-profile">
                 <a href="javascript:void(0)" data-toggle="dropdown">
-                  <img class="img-avatar img-avatar-48 m-r-10"
+                  <img class="img-avatar img-avatar-44 m-r-10"
                     src="{$admin_user.avatar|default='/assets/lightyearadmin/images/no-avatar.jpg'}"
                     alt="{$admin_user.name|default='Tpext'}" />
                   <span>{$admin_user.name|default='Tpext'}<span class="caret"></span></span>
@@ -258,7 +282,8 @@
       for (var i = 0; i < data.length; i++) {
         iframe_class = data[i].is_out == 1 ? '' : 'class="multitabs"';
         //icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '';
-        icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '<i class="' + data[i].icon + '"></i>&nbsp;';
+        icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '<i class="' + data[i].icon +
+          '"></i>&nbsp;';
         selected = (data[i].pid == 0) && (data[i].is_home == 1) ? 'active' : '';
         menuName = data[i].pid == 0 ? '<span>' + data[i].name + '</span>' : '<span>' + data[i].name + '</span>';
         if (data[i].children && data[i].children.length > 0) {
