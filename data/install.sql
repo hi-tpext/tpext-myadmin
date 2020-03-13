@@ -119,13 +119,13 @@ INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `sa
 -- 菜单
 INSERT INTO `__PREFIX__admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, `create_time`, `update_time`) VALUES
 (1, 0, 1, '首页', '/admin/index/welcome', 'mdi mdi-home', '2020-03-03 20:26:49', '2020-03-03 20:26:49'),
-(2, 0, 1, '权限管理', '#', 'mdi mdi-account-check', '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
+(2, 0, 98, '权限管理', '#', 'mdi mdi-account-check', '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
 (3, 2, 1, '菜单管理', '/admin/menu/index', 'mdi mdi-arrange-send-to-back', '2020-03-03 20:27:49', '2020-03-03 20:34:40'),
-(4, 2, 1, '权限设置', '/admin/permission/index', 'mdi mdi-account-key', '2020-03-03 20:28:35', '2020-03-03 20:28:35'),
-(5, 2, 1, '管理员', '/admin/admin/index', 'mdi mdi-account-card-details', '2020-03-03 20:29:07', '2020-03-03 20:34:25'),
-(6, 2, 1, '角色管理', '/admin/role/index', 'mdi mdi-account-multiple', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
-(7, 2, 1, '用户分组', '/admin/group/index', 'mdi mdi-account-network', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
-(8, 2, 1, '操作记录', '/admin/operationlog/index', 'mdi mdi-playlist-check', '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
-(9, 0, 1, '系统管理', '#', 'mdi mdi-settings', '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
+(4, 2, 2, '权限设置', '/admin/permission/index', 'mdi mdi-account-key', '2020-03-03 20:28:35', '2020-03-03 20:28:35'),
+(5, 2, 3, '管理员', '/admin/admin/index', 'mdi mdi-account-card-details', '2020-03-03 20:29:07', '2020-03-03 20:34:25'),
+(6, 2, 4, '角色管理', '/admin/role/index', 'mdi mdi-account-multiple', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
+(7, 2, 5, '用户分组', '/admin/group/index', 'mdi mdi-account-network', '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
+(8, 2, 6, '操作记录', '/admin/operationlog/index', 'mdi mdi-playlist-check', '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
+(9, 0, 99, '系统管理', '#', 'mdi mdi-settings', '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
 (10, 9, 1, '扩展管理', '/admin/extension/index', 'mdi mdi-blur', '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
-(11, 9, 1, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');
+(11, 9, 2, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '2020-03-03 20:37:29', '2020-03-03 20:37:29');
