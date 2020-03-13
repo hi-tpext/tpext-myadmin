@@ -43,7 +43,7 @@ class Role extends Controller
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
-        $pagezise = 14;
+        $pagesize = 14;
 
         $page = input('__page__/d', 1);
 
@@ -61,7 +61,7 @@ class Role extends Controller
 
         $sortOrder = input('__sort__', 'id desc');
 
-        $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
+        $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagesize, $pagesize)->select();
 
         foreach ($data as &$d) {
             $d['__h_del__'] = $d['id'] == 1;
@@ -69,7 +69,7 @@ class Role extends Controller
 
         $table->data($data);
         $table->sortOrder($sortOrder);
-        $table->paginator($this->dataModel->where($where)->count(), $pagezise);
+        $table->paginator($this->dataModel->where($where)->count(), $pagesize);
 
         $table->getActionbar()->mapClass([
             'delete' => ['hidden' => '__h_del__'],

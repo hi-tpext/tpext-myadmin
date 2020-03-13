@@ -232,7 +232,7 @@ class Index extends Controller
             $table->useActionbar(false);
             $table->rowCheckbox(false);
 
-            $pagezise = 10;
+            $pagesize = 10;
 
             $page = input('__page__/d', 1);
 
@@ -254,10 +254,10 @@ class Index extends Controller
             }
 
             $count = AdminOperationLog::where($where)->count();
-            $data = AdminOperationLog::where($where)->order($sortOrder)->limit(($page - 1) * $pagezise, $pagezise)->select();
+            $data = AdminOperationLog::where($where)->order($sortOrder)->limit(($page - 1) * $pagesize, $pagesize)->select();
 
             $table->data($data);
-            $table->paginator($count, $pagezise);
+            $table->paginator($count, $pagesize);
 
             if (request()->isAjax()) {
                 return $table->partial()->render();

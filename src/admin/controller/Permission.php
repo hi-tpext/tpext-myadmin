@@ -22,7 +22,7 @@ class Permission extends Controller
 
         $builder = Builder::getInstance('权限管理', '动作设置');
 
-        $pagezise = 9999;
+        $pagesize = 9999;
 
         $table = $builder->table();
 
@@ -121,7 +121,7 @@ class Permission extends Controller
         $table->radio('action_type', '权限')->options([0 => '否', 1 => '是'])->default(1)->autoPost()->mapClassWhen(['-1'], 'hidden')->getWapper()->addStyle('max-width:80px');
 
         $table->data($data);
-        $table->paginator(count($data), $pagezise);
+        $table->paginator(count($data), $pagesize);
         $table->getToolbar()->btnRefresh();
         $table->useActionbar(false);
 
