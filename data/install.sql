@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_menu` (
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '图标',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX(`parent_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role` (
@@ -52,7 +53,8 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_menu` (
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  INDEX (`role_id`)
+  INDEX (`role_id`),
+  INDEX(`menu_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_group` (
@@ -64,7 +66,8 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_group` (
   `tags` varchar(500) DEFAULT '' COMMENT '标记',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX(`parent_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户分组表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_user` (
