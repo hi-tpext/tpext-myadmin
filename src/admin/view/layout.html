@@ -1,61 +1,58 @@
 <!DOCTYPE html>
 <html lang="zh">
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1,
-      maximum-scale=1, user-scalable=no" />
-    <title>{$admin_page_position|default='后台'} - {$admin_page_title|default=''}</title>
-    <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
-    <meta name="description" content="{$admin_page_description|default=''}">
-    {notempty name="$admin_css"}
-    {volist name="admin_css" id="item"}
-    <link href="{$item}?v={$assets_ver|default='1.0'}" rel="stylesheet">
-    {/volist}
-    {/notempty}
-    {block name="style"}
-    <!--stylesheets-->
-    {/block}
-    <style>
-
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no" />
+  <title>{$admin_page_position|default='后台'} - {$admin_page_title|default=''}</title>
+  <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
+  <meta name="description" content="{$admin_page_description|default=''}">
+  {notempty name="$admin_css"}
+  {volist name="admin_css" id="item"}
+  <link href="{$item}?v={$assets_ver|default='1.0'}" rel="stylesheet">
+  {/volist}
+  {/notempty}
+  {block name="style"}
+  <!--stylesheets-->
+  {/block}
+  <style>
     .lyear-layout-content {
       padding-left: 0;
       padding-top: 0;
     }
-    .lyear-layout-content .container-fluid
-    {
+
+    .lyear-layout-content .container-fluid {
       height: 100%;
       padding-left: 8px;
       padding-right: 8px;
       padding-top: 5px;
     }
-    .container-fluid .content
-    {
-      min-height: 97%;
+
+    .container-fluid .content {
+      min-height: calc(100% - 30px);
     }
-
   </style>
-  </head>
+</head>
 
-  <body>
-    <!--页面主要内容-->
-    <main class="lyear-layout-content">
-      <div class="container-fluid">
-        {block name="content"}{/block}
-      </div>
-    </main>
-    <!--End 页面主要内容-->
-    {notempty name="$admin_js"}
-    {volist name="admin_js" id="item"}
-    <script type="text/javascript" src="{$item}?v={$assets_ver|default='1.0'}" charset="utf-8"></script>
-    {/volist}
-    {/notempty}
-    <script>
-      window.__token__ = "{$__token__|default=''}";
-    </script>
-    {block name="script"}
-    <!--scripts-->
-    {/block}
-  </body>
+<body>
+  <!--页面主要内容-->
+  <main class="lyear-layout-content">
+    <div class="container-fluid">
+      {block name="content"}{/block}
+    </div>
+  </main>
+  <!--End 页面主要内容-->
+  {notempty name="$admin_js"}
+  {volist name="admin_js" id="item"}
+  <script type="text/javascript" src="{$item}?v={$assets_ver|default='1.0'}" charset="utf-8"></script>
+  {/volist}
+  {/notempty}
+  <script>
+    window.__token__ = "{$__token__|default=''}";
+  </script>
+  {block name="script"}
+  <!--scripts-->
+  {/block}
+</body>
 
 </html>
