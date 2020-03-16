@@ -110,7 +110,7 @@ class Index extends Controller
 
         $this->assign('admin_user', $admin_user);
         $this->assign('menus', json_encode($menus));
-        $this->assign('dashbord', count($menus) ? $menus[0]['url'] : url('welcome'));
+        $this->assign('dashbord', count($menus) ? $menus[0] : ['url' => url('welcome'), 'name' => '首页']);
 
         return $this->fetch();
     }
