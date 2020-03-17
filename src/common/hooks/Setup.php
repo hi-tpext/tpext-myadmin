@@ -36,11 +36,13 @@ class Setup
 
             View::share([
                 'admin_page_position' => '',
-                'admin_page_title' => $config['name'],
-                'admin_page_description' => $config['description'],
-                'admin_logo' => $config['logo'],
-                'admin_favicon' => $config['favicon'],
-                'admin_copyright' => $config['copyright'],
+                'admin_page_title' => isset($config['name']) ? $config['name'] : '',
+                'admin_page_description' => isset($config['description']) ? $config['description'] : '',
+                'admin_logo' => isset($config['logo']) ? $config['logo'] : '',
+                'admin_favicon' => isset($config['favicon']) ? $config['favicon'] : '',
+                'admin_copyright' => isset($config['copyright']) ? $config['copyright'] : '',
+                'admin_login_logo' => isset($config['login_logo']) ? $config['login_logo'] : '',
+                'admin_login_background_img' => isset($config['login_background_img']) ? $config['login_background_img'] : '',
                 'admin_js' => MinifyTool::getJs(),
                 'admin_css' => MinifyTool::getCss(),
                 'admin_layout' => $admin_layout,
