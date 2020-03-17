@@ -84,6 +84,16 @@
     .lyear-layout-sidebar-scroll {
       height: calc(100% - 50px);
     }
+
+    .topbar-right>li>a.link {
+      display: block;
+      height: 50px;
+      line-height: 50px;
+      font-size: 1.5em;
+      cursor: pointer;
+      text-align: center;
+      padding: 0 5px;
+    }
   </style>
 </head>
 
@@ -124,6 +134,8 @@
                 <span class="lyear-toggler-bar"></span>
               </div>
               <span class="navbar-page-title">{$admin_page_title|default='admin'}</span>
+              <!--扩展左侧链接-->
+              {:\\tpext\\common\\ExtLoader::trigger('topbar_left_links')}
             </div>
 
             <ul class="topbar-right">
@@ -266,6 +278,25 @@
                   </li>
                 </ul>
               </li>
+              <li>
+                <a title="打开首页" class="link" href="/" target="_blank"><i class="mdi mdi-home"></i></a>
+              </li>
+              <!--
+              扩展右侧链接
+              ****************** tags.php注册 ********************
+              'topbar_right_links' => [
+                'app\\common\\behavior\\RightLinks'
+              ],
+              ****************** tags.php注册 ********************
+              class RightLinks
+              {
+                  public function run()
+                  {
+                      echo '<li><a href="xxx">我的链接</a></li>';
+                  }
+              }
+              -->
+              {:\\tpext\\common\\ExtLoader::trigger('topbar_right_links')}
               <!--切换主题配色-->
             </ul>
 
