@@ -4,6 +4,7 @@ namespace tpext\myadmin\admin\controller;
 use think\Controller;
 use think\Db;
 use tpext\builder\common\Builder;
+use tpext\builder\traits\HasBuilder;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 use tpext\myadmin\admin\model\AdminRole;
@@ -12,6 +13,8 @@ use tpext\myadmin\admin\model\AdminRolePermission;
 
 class Role extends Controller
 {
+    use HasBuilder;
+
     protected $dataModel;
     protected $permModel;
     protected $rolePermModel;
@@ -24,16 +27,43 @@ class Role extends Controller
         $this->rolePermModel = new AdminRolePermission;
         $this->menuModel = new AdminMenu;
         $this->roleMenuModel = new AdminRoleMenu;
+
+        $this->pageTitle = '用户管理';
+        $this->postAllowFields = ['sort', 'name'];
+        $this->delNotAllowed = [1];
     }
 
-    public function index()
+    protected function filterWhere()
     {
-        $builder = Builder::getInstance('角色管理', '列表');
+        $searchData = request()->post();
 
-        $table = $builder->table();
+        $where = [];
+        if (!empty($searchData['name'])) {
+            $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
+        }
 
-        $form = $table->getSearch();
-        $form->text('name', '名称', 3)->maxlength(20);
+        return $where;
+    }
+
+    /**
+     * 构建搜索
+     *
+     * @return void
+     */
+    protected function builSearch()
+    {
+        $search = $this->search;
+
+        $search->text('name', '名称', 3)->maxlength(20);
+    }
+    /**
+     * 构建表格
+     *
+     * @return void
+     */
+    protected function buildTable(&$data = [])
+    {
+        $table = $this->table;
 
         $table->show('id', 'ID');
         $table->show('name', '名称');
@@ -42,78 +72,91 @@ class Role extends Controller
         $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
-
-        $pagesize = 14;
-
-        $page = input('__page__/d', 1);
-
-        $page = $page < 1 ? 1 : $page;
-
-        $searchData = request()->only([
-            'name',
-        ], 'post');
-
-        $where = [];
-
-        if (!empty($searchData['name'])) {
-            $where[] = ['name', 'like', '%' . $searchData['name'] . '%'];
-        }
-
-        $sortOrder = input('__sort__', 'id desc');
-
-        $data = $this->dataModel->where($where)->order($sortOrder)->limit(($page - 1) * $pagesize, $pagesize)->select();
-
-        foreach ($data as &$d) {
-            $d['__h_del__'] = $d['id'] == 1;
-        }
-
-        $table->data($data);
-        $table->sortOrder($sortOrder);
-        $table->paginator($this->dataModel->where($where)->count(), $pagesize);
-
-        $table->getActionbar()->mapClass([
-            'delete' => ['hidden' => '__h_del__'],
-        ]);
-
-        if (request()->isAjax()) {
-            return $table->partial()->render();
-        }
-
-        return $builder->render();
     }
 
-    public function add()
+    /**
+     * 构建表单
+     *
+     * @param boolean $isEdit
+     * @param array $data
+     */
+    protected function builForm($isEdit, &$data = [])
     {
-        if (request()->isPost()) {
-            return $this->save();
+        $form = $this->form;
+
+        $form->hidden('id');
+        $form->text('name', '名称')->maxlength(25)->required();
+        $form->textarea('description', '描述')->maxlength(100);
+        $form->text('sort', '排序')->required()->default(1);
+        $form->tags('tags', '标签');
+
+        if ($isEdit) {
+            $form->show('create_time', '添加时间');
+            $form->show('update_time', '修改时间');
+        }
+        if ($isEdit && $data['id'] == 1) {
+            $form->raw('menus', '菜单')->value('<label class="label label-warning">拥有所有菜单</label>');
+            $form->raw('permission', '权限')->value('<label class="label label-warning">拥有所有权限</label>');
         } else {
-            return $this->form('添加');
-        }
-    }
 
-    private function getMenuList()
-    {
-        $list = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select();
-        $menus = [];
-
-        foreach ($list as $row) {
-            $menus[$row['id']] = $row['title'];
-        }
-
-        return $menus;
-    }
-
-    public function edit($id)
-    {
-        if (request()->isPost()) {
-            return $this->save($id);
-        } else {
-            $data = $this->dataModel->get($id);
-            if (!$data) {
-                $this->error('数据不存在');
+            $menuIds = [];
+            if ($isEdit) {
+                $menuIds = $this->roleMenuModel->where(['role_id' => $data['id']])->column('menu_id');
+            } else {
+                $menuIds = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->column('id');
             }
 
-            return $this->form('编辑', $data);
+            $form->checkbox('menus', '菜单')->required()->optionsData($this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select(), 'title')->default($menuIds)->size(2, 10)->checkallBtn('全部菜单');
+
+            $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
+
+            $modControllers = $this->permModel->getControllers();
+
+            foreach ($modControllers as $modController) {
+
+                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
+
+                foreach ($modController['controllers'] as $controller => $methods) {
+
+                    $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
+
+                    if (!$controllerPerm) {
+                        continue;
+                    }
+
+                    if (empty($methods)) {
+                        continue;
+                    }
+
+                    $options = [];
+
+                    foreach ($methods as $method) {
+
+                        $actionPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '@' . $method])->find();
+
+                        if (!$actionPerm || $actionPerm['action_type'] == 0) {
+                            continue;
+                        }
+
+                        if (!$actionPerm['action_name']) {
+                            $actionPerm['action_name'] = $method;
+                        }
+
+                        $options[$actionPerm['id']] = $actionPerm['action_name'];
+                    }
+
+                    $perIds = [];
+                    if ($isEdit) {
+                        $perIds = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
+                    }
+
+                    $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
+                        ->default($perIds)->size(2, 10)
+                        ->options($options)
+                        ->inline()
+                        ->checkallBtn();
+                }
+            }
         }
     }
 
@@ -123,7 +166,7 @@ class Role extends Controller
             'name',
             'description',
             'sort',
-            'tags'
+            'tags',
         ], 'post');
 
         $result = $this->validate($data, [
@@ -245,148 +288,5 @@ class Role extends Controller
         }
 
         Db::commit();
-    }
-
-    private function form($title, $data = [])
-    {
-        $isEdit = isset($data['id']);
-
-        $builder = Builder::getInstance('权限管理', $title);
-
-        $form = $builder->form();
-
-        $form->hidden('id');
-        $form->text('name', '名称')->maxlength(25)->required();
-        $form->textarea('description', '描述')->maxlength(100);
-        $form->text('sort', '排序')->required()->default(1);
-        $form->tags('tags', '标签');
-
-        if ($isEdit) {
-            $form->show('create_time', '添加时间');
-            $form->show('update_time', '修改时间');
-        }
-        if ($isEdit && $data['id'] == 1) {
-            $form->raw('menus', '菜单')->value('<label class="label label-warning">拥有所有菜单</label>');
-            $form->raw('permission', '权限')->value('<label class="label label-warning">拥有所有权限</label>');
-        } else {
-
-            $menuIds = [];
-            if ($isEdit) {
-                $menuIds = $this->roleMenuModel->where(['role_id' => $data['id']])->column('menu_id');
-            } else {
-                $menuIds = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->column('id');
-            }
-
-            $form->checkbox('menus', '菜单')->required()->options($this->getMenuList())->default($menuIds)->size(2, 10)->checkallBtn('全部菜单');
-
-            $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
-
-            $modControllers = $this->permModel->getControllers();
-
-            foreach ($modControllers as $modController) {
-
-                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
-
-                foreach ($modController['controllers'] as $controller => $methods) {
-
-                    $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
-
-                    if (!$controllerPerm) {
-                        continue;
-                    }
-
-                    if (empty($methods)) {
-                        continue;
-                    }
-
-                    $options = [];
-
-                    foreach ($methods as $method) {
-
-                        $actionPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '@' . $method])->find();
-
-                        if (!$actionPerm || $actionPerm['action_type'] == 0) {
-                            continue;
-                        }
-
-                        if (!$actionPerm['action_name']) {
-                            $actionPerm['action_name'] = $method;
-                        }
-
-                        $options[$actionPerm['id']] = $actionPerm['action_name'];
-                    }
-
-                    $perIds = [];
-                    if ($isEdit) {
-                        $perIds = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
-                    }
-
-                    $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
-                        ->default($perIds)->size(2, 10)
-                        ->options($options)
-                        ->inline()
-                        ->checkallBtn();
-                }
-            }
-        }
-
-        $form->fill($data);
-
-        return $builder->render();
-    }
-
-    public function autopost()
-    {
-        $id = input('id/d', '');
-        $name = input('name', '');
-        $value = input('value', '');
-
-        if (empty($id) || empty($name)) {
-            $this->error('参数有误');
-        }
-
-        $allow = ['sort', 'name'];
-
-        if (!in_array($name, $allow)) {
-            $this->error('不允许的操作');
-        }
-
-        $res = $this->dataModel->where(['id' => $id])->update([$name => $value]);
-
-        if ($res) {
-            $this->success('修改成功');
-        } else {
-            $this->error('修改失败');
-        }
-    }
-
-    public function delete()
-    {
-        $ids = input('post.ids', '');
-
-        $ids = array_filter(explode(',', $ids), 'strlen');
-
-        if (empty($ids)) {
-            $this->error('参数有误');
-        }
-
-        $res = 0;
-
-        foreach ($ids as $id) {
-            if ($id == 1) {
-                continue;
-            }
-            if ($this->dataModel->destroy($id)) {
-
-                $this->rolePermModel->where(['role_id' => $id])->delete();
-                $res += 1;
-            }
-        }
-
-        if ($res) {
-            $this->success('成功删除' . $res . '条数据');
-        } else {
-            $this->error('删除失败');
-        }
     }
 }
