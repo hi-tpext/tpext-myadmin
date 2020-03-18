@@ -89,6 +89,33 @@ class Admin extends Controller
         $table->show('errors', '登录失败');
         $table->show('login_time', '登录时间')->getWapper()->addStyle('width:180px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
+
+        foreach ($data as &$d) {
+            $d['__h_del__'] = $d['id'] == 1;
+            $d['__h_en__'] = $d['enable'] == 1;
+            $d['__h_dis__'] = $d['enable'] != 1 || $d['id'] == 1;
+            $d['__h_clr__'] = $d['errors'] < 1;
+        }
+
+        $table->getToolbar()
+            ->btnAdd()
+            ->btnEnable()
+            ->btnDisable()
+            ->btnDelete()
+            ->btnRefresh();
+
+        $table->getActionbar()
+            ->btnEdit()
+            ->btnEnable()
+            ->btnDisable()
+            ->btnDelete()
+            ->btnPostRowid('clear_errors', url('clearErrors'), '', 'btn-info', 'mdi-backup-restore', 'title="重置登录失败次数"')
+            ->mapClass([
+                'delete' => ['hidden' => '__h_del__'],
+                'enable' => ['hidden' => '__h_en__'],
+                'disable' => ['hidden' => '__h_dis__'],
+                'clear_errors' => ['hidden' => '__h_clr__'],
+            ]);
     }
 
     /**
