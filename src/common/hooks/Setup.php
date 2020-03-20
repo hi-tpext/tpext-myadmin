@@ -34,6 +34,21 @@ class Setup
                 $tool->minify();
             }
 
+            $css = MinifyTool::getCss();
+            $js = MinifyTool::getJs();
+
+            foreach ($css as &$c) {
+                if (strpos($c, '?') == false && strpos($c, 'http') == false) {
+                    $c .= '?aver=' . $config['assets_ver'];
+                }
+            }
+
+            foreach ($js as &$j) {
+                if (strpos($j, '?') == false && strpos($c, 'http') == false) {
+                    $j .= '?aver=' . $config['assets_ver'];
+                }
+            }
+
             View::share([
                 'admin_page_position' => '',
                 'admin_page_title' => isset($config['name']) ? $config['name'] : '',
@@ -43,8 +58,8 @@ class Setup
                 'admin_copyright' => isset($config['copyright']) ? $config['copyright'] : '',
                 'admin_login_logo' => isset($config['login_logo']) ? $config['login_logo'] : '',
                 'admin_login_background_img' => isset($config['login_background_img']) ? $config['login_background_img'] : '',
-                'admin_js' => MinifyTool::getJs(),
-                'admin_css' => MinifyTool::getCss(),
+                'admin_js' => $js,
+                'admin_css' => $css,
                 'admin_layout' => $admin_layout,
                 'admin_assets_ver' => $config['assets_ver'],
             ]);
