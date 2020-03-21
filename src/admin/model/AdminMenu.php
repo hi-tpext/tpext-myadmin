@@ -32,7 +32,7 @@ class AdminMenu extends Model
             }
 
             $root['title_show'];
-            $root['icon_show'] = '<i class="mdi ' . $root['icon'] . '"></i>';
+            $root['icon_show'] = '<i class="' . $root['icon'] . '"></i>';
 
             $data[] = $root;
 
