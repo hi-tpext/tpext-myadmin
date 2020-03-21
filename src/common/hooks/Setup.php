@@ -43,11 +43,15 @@ class Setup
                 }
             }
 
+            unset($c);
+
             foreach ($js as &$j) {
-                if (strpos($j, '?') == false && strpos($c, 'http') == false) {
+                if (strpos($j, '?') == false && strpos($j, 'http') == false) {
                     $j .= '?aver=' . $config['assets_ver'];
                 }
             }
+
+            unset($j);
 
             View::share([
                 'admin_page_position' => '',
