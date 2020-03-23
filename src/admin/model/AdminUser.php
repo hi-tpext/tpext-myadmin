@@ -64,6 +64,9 @@ class AdminUser extends Model
         if (!$data) {
             return false;
         }
+
+        unset($data['password'], $data['salt']);
+
         session('admin_user', $data);
 
         $url = "/admin/$controller/$action";
