@@ -320,8 +320,9 @@ class Index extends Controller
             }
             if (in_array(3, $types)) {
 
-                $dirs = ['public', 'assets', 'minify', ''];
-                $minifyDir = app()->getRootPath() . implode(DIRECTORY_SEPARATOR, $dirs);
+                $dirs = ['', 'assets', 'minify', ''];
+                $scriptName = $_SERVER['SCRIPT_FILENAME'];
+                $minifyDir = realpath(dirname($scriptName)) . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
             }
