@@ -68,7 +68,7 @@ class Admin extends Controller
         $search->text('name', '姓名', 3)->maxlength(20);
         $search->text('phone', '手机号', 3)->maxlength(20);
         $search->text('email', '邮箱', 3)->maxlength(20);
-        $search->select('role_id', '角色组', 3)->options($this->roleModel->all(), 'name');
+        $search->select('role_id', '角色组', 3)->optionsData($this->roleModel->all(), 'name');
     }
     /**
      * 构建表格
