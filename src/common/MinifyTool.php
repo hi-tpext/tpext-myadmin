@@ -157,9 +157,11 @@ class MinifyTool
 
     private function checkAssetsDir($dirName)
     {
-        $dirs = ['public', 'assets', $dirName, ''];
+        $dirs = ['', 'assets', $dirName, ''];
 
-        $minifyDir = app()->getRootPath() . implode(DIRECTORY_SEPARATOR, $dirs);
+        $scriptName = $_SERVER['SCRIPT_FILENAME'];
+
+        $minifyDir = realpath(dirname($scriptName)) . implode(DIRECTORY_SEPARATOR, $dirs);
 
         if (is_dir($minifyDir)) {
 
