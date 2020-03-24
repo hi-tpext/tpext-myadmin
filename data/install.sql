@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_operation_log` (
   `path` varchar(200) NOT NULL DEFAULT '' COMMENT '路径',
   `method` varchar(10) NOT NULL DEFAULT '' COMMENT '方法',
   `ip` varchar(120) DEFAULT '' COMMENT 'ip',
-  `data` text DEFAULT '' COMMENT '数据',
+  `data` text COMMENT '数据',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`),
