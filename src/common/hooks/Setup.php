@@ -5,6 +5,7 @@ use think\facade\Request;
 use think\facade\View;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\common\Module;
+use tpext\builder\common\Builder;
 
 class Setup
 {
@@ -52,6 +53,8 @@ class Setup
             }
 
             unset($j);
+
+            Builder::aver($config['assets_ver']);
 
             View::share([
                 'admin_page_position' => '',
