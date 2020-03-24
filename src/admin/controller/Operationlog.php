@@ -68,6 +68,7 @@ class Operationlog extends Controller
         $table->show('name', '姓名');
         $table->show('path', '路径');
         $table->show('method', '提交方式');
+        $table->show('ip', 'IP');
         $table->show('data', '数据')->getWapper()->style('width:40%;');
         $table->show('create_time', '时间')->getWapper()->addStyle('width:180px');
 
@@ -89,47 +90,24 @@ class Operationlog extends Controller
         header('Cache-Control: max-age=0');
         $fp = fopen('php://output', 'a');
 
-        $header_data = ['编号', '登录帐号', '姓名', '路径', '方式', '数据', '时间'];
+        $header_data = ['编号', '登录帐号', '姓名', '路径', '方式', 'IP', '数据', '时间'];
 
         foreach ($header_data as $key => $value) {
             $header_data[$key] = iconv('utf-8', 'gbk', $value);
         }
         fputcsv($fp, $header_data);
 
-        $searchData = request()->only([
-            'user_id',
-            'path',
-            'method',
-            '__ids__',
-        ], 'post');
+        $__ids__ = input('post.__ids__');
 
         $where = [];
 
-        if (!empty($searchData['__ids__'])) {
-            $where[] = ['id', 'in', $searchData['__ids__']];
+        if (!empty($__ids__)) {
+            $where[] = ['id', 'in', $__ids__];
         } else {
-            if (!empty($searchData['user_id'])) {
-                $where[] = ['user_id', 'eq', $searchData['user_id']];
-            }
-
-            if (!empty($searchData['path'])) {
-                $where[] = ['path', 'like', '%' . $searchData['path'] . '%'];
-            }
-
-            if (!empty($searchData['method'])) {
-                $where[] = ['method', 'eq', $searchData['method']];
-            }
+            $where = $this->filterWhere();
         }
 
-        $sortOrder = 'id desc';
-
-        $sort = input('__sort__');
-        if ($sort) {
-            $arr = explode(':', $sort);
-            if (count($arr) == 2) {
-                $sortOrder = implode(' ', $arr);
-            }
-        }
+        $sortOrder = input('__sort__', $this->sortOrder);
 
         $list = $this->dataModel->where($where)->order($sortOrder)->select();
 
@@ -142,6 +120,7 @@ class Operationlog extends Controller
             $row[] = $li['name'];
             $row[] = $li['path'];
             $row[] = $li['method'];
+            $row[] = $li['ip'];
             $row[] = $li['data'];
             $row[] = $li['create_time'];
             $data[] = $row;

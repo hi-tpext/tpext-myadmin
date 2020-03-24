@@ -176,7 +176,12 @@ class Index extends Controller
 
             if ($res) {
                 ExtLoader::trigger('admin_change_pwd', $user);
-                session('admin_user', $this->dataModel->get($user['id']));
+
+                $user = $this->dataModel->get($user['id']);
+
+                unset($user['password'], $user['salt']);
+
+                session('admin_user', $user);
 
                 $this->success('修改成功');
             } else {
@@ -213,7 +218,7 @@ class Index extends Controller
             $form->show('create_time', '添加时间')->size(3, 9);
             $form->show('update_time', '修改时间')->size(3, 9);
 
-            $form->butonsSizeClass('btn-sm');
+            $form->butonsSizeClass('btn-xs');
 
             $user = $this->dataModel->get(session('admin_id'));
 
@@ -243,15 +248,7 @@ class Index extends Controller
             $where['user_id'] = ['eq', session('admin_id')];
             $where['path'] = ['like', 'admin/index/login'];
 
-            $sortOrder = 'id desc';
-
-            $sort = input('__sort__');
-            if ($sort) {
-                $arr = explode(':', $sort);
-                if (count($arr) == 2) {
-                    $sortOrder = implode(' ', $arr);
-                }
-            }
+            $sortOrder = input('__sort__' ,'id desc');
 
             $count = AdminOperationLog::where($where)->count();
             $data = AdminOperationLog::where($where)->order($sortOrder)->limit(($page - 1) * $pagesize, $pagesize)->select();
@@ -295,7 +292,11 @@ class Index extends Controller
 
         if ($res) {
 
-            session('admin_user', $this->dataModel->get($user['id']));
+            $user = $this->dataModel->get($user['id']);
+
+            unset($user['password'], $user['salt']);
+
+            session('admin_user', $user);
 
             $this->success('修改成功');
         } else {

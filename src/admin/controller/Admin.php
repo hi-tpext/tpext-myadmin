@@ -96,7 +96,8 @@ class Admin extends Controller
             $d['__h_dis__'] = $d['enable'] != 1 || $d['id'] == 1;
             $d['__h_clr__'] = $d['errors'] < 1;
         }
-
+        unset($d);
+        
         $table->getToolbar()
             ->btnAdd()
             ->btnEnable()
