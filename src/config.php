@@ -11,6 +11,8 @@ return [
     'login_timeout' => 20,
     'assets_ver' => '1.0',
     'minify' => 0,
+    'admin_group_model' => '',
+    'admin_group_title' => '分组',
     //配置描述
     '__config__' => [
         'name' => ['type' => 'text', 'label' => '名称'],
@@ -23,5 +25,7 @@ return [
         'login_timeout' => ['type' => 'number', 'label' => '登录超时(分钟)', 'help' => '后台用户在一段时间没有操作后自动注销'],
         'assets_ver' => ['type' => 'text', 'label' => '静态资源版本号', 'size' => [2, 4]],
         'minify' => ['type' => 'radio', 'label' => '资源压缩', 'options' => [0 => '否', 1 => '是'], 'help' => '压缩css、js资源'],
+        'admin_group_model' => ['type' => 'text', 'label' => '管理员分组模型', 'help' => '如:`\tpext\myadmin\admin\model\AdminGroup`，你可以自己实现分组。树形结构需要实现buildTree()方法'],
+        'admin_group_title' => ['type' => 'text', 'label' => '管理员分组名称', 'help' => '如:`部门，分店`'],
     ],
 ];

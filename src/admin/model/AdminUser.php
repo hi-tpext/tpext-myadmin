@@ -3,10 +3,44 @@
 namespace tpext\myadmin\admin\model;
 
 use think\Model;
+use tpext\myadmin\common\Module;
 
 class AdminUser extends Model
 {
     protected $autoWriteTimestamp = 'dateTime';
+
+    protected $adminGroupModel;
+
+    protected $adminGroupTitle = '分组';
+
+    protected function initialize()
+    {
+        parent::initialize();
+
+        $instance = Module::getInstance();
+
+        $config = $instance->getConfig();
+
+        if (!empty($config['admin_group_model']) && class_exists($config['admin_group_model'])) {
+            $this->adminGroupModel = new $config['admin_group_model'];
+        } else {
+            $this->adminGroupModel = new AdminGroup;
+        }
+
+        if (!empty($config['admin_group_title'])) {
+            $this->adminGroupTitle = $config['admin_group_title'];
+        }
+    }
+
+    public function getAdminGroupModel()
+    {
+        return $this->adminGroupModel;
+    }
+
+    public function getAdminGroupTitle()
+    {
+        return $this->adminGroupTitle;
+    }
 
     public static function current()
     {
@@ -53,7 +87,7 @@ class AdminUser extends Model
 
     public function getGroupNameAttr($value, $data)
     {
-        $group = AdminGroup::get($data['group_id']);
+        $group = $this->adminGroupModel->get($data['group_id']);
         return $group ? $group['name'] : '--';
     }
 
@@ -74,7 +108,7 @@ class AdminUser extends Model
         if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
             return true;
         }
-        
+
         if ($data['role_id'] == 1) {
             return true;
         }

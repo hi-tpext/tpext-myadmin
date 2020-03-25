@@ -37,6 +37,8 @@ class Group extends Controller
         $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
         $form->text('name', '名称')->required();
+
+        $form->textarea('description', '描述')->maxlength(100);
         $form->select('parent_id', '上级')->required()->options($tree);
         $form->tags('tags', '标签');
         $form->text('sort', '排序')->default(1)->required();
@@ -89,6 +91,7 @@ class Group extends Controller
     {
         $data = request()->only([
             'name',
+            'description',
             'tags',
             'sort',
             'parent_id',

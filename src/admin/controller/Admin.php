@@ -4,7 +4,6 @@ namespace tpext\myadmin\admin\controller;
 use think\Controller;
 use tpext\builder\common\Builder;
 use tpext\builder\traits\HasBuilder;
-use tpext\myadmin\admin\model\AdminGroup;
 use tpext\myadmin\admin\model\AdminRole;
 use tpext\myadmin\admin\model\AdminUser;
 
@@ -20,7 +19,7 @@ class Admin extends Controller
     {
         $this->dataModel = new AdminUser;
         $this->roleModel = new AdminRole;
-        $this->groupModel = new AdminGroup;
+        $this->groupModel = $this->dataModel->getAdminGroupModel();
 
         $this->pageTitle = '用户管理';
         $this->postAllowFields = ['phone', 'name', 'email'];
@@ -52,6 +51,10 @@ class Admin extends Controller
             $where[] = ['role_id', 'eq', $searchData['role_id']];
         }
 
+        if (!empty($searchData['group_id'])) {
+            $where[] = ['group_id', 'eq', $searchData['group_id']];
+        }
+
         return $where;
     }
 
@@ -69,6 +72,11 @@ class Admin extends Controller
         $search->text('phone', '手机号', 3)->maxlength(20);
         $search->text('email', '邮箱', 3)->maxlength(20);
         $search->select('role_id', '角色组', 3)->optionsData($this->roleModel->all(), 'name');
+        if (method_exists($this->groupModel, 'buildTree')) {
+            $search->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
+        } else {
+            $search->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
+        }
     }
     /**
      * 构建表格
@@ -83,8 +91,8 @@ class Admin extends Controller
         $table->show('username', '登录帐号');
         $table->text('name', '姓名')->autoPost()->getWapper()->addStyle('max-width:80px');
         $table->show('role_name', '角色');
-        $table->show('group_name', '分组');
-        $table->match('enable', '启用')->options([0 => '<label class="label label-danger">禁用</label>', 1 => '<label class="label label-success">正常</label>']);;
+        $table->show('group_name', $this->dataModel->getAdminGroupTitle());
+        $table->match('enable', '启用')->options([0 => '<label class="label label-danger">禁用</label>', 1 => '<label class="label label-success">正常</label>']);
         $table->show('email', '电子邮箱')->default('无');
         $table->show('phone', '手机号')->default('无');
         $table->show('errors', '登录失败');
@@ -134,7 +142,13 @@ class Admin extends Controller
         $form->select('role_id', '角色')->required()->optionsData($this->roleModel->all(), 'name')->disabled($isEdit && $data['id'] == 1);
         $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
         $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
-        $form->select('group_id', '用户组')->options([0 => '未分组'] + $this->groupModel->buildTree());
+
+        if (method_exists($this->groupModel, 'buildTree')) {
+            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
+        } else {
+            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
+        }
+
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
         $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
         $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
