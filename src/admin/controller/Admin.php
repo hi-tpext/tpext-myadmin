@@ -84,6 +84,7 @@ class Admin extends Controller
         $table->text('name', '姓名')->autoPost()->getWapper()->addStyle('max-width:80px');
         $table->show('role_name', '角色');
         $table->show('group_name', '分组');
+        $table->match('enable', '启用')->options([0 => '<label class="label label-danger">禁用</label>', 1 => '<label class="label label-success">正常</label>']);;
         $table->show('email', '电子邮箱')->default('无');
         $table->show('phone', '手机号')->default('无');
         $table->show('errors', '登录失败');
@@ -97,7 +98,7 @@ class Admin extends Controller
             $d['__h_clr__'] = $d['errors'] < 1;
         }
         unset($d);
-        
+
         $table->getToolbar()
             ->btnAdd()
             ->btnEnable()
@@ -137,6 +138,8 @@ class Admin extends Controller
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
         $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
         $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
+        $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->help('禁用后无法登录后台');
+
         $form->tags('tags', '标签');
 
         if ($isEdit) {
