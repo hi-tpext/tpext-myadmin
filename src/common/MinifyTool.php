@@ -108,7 +108,9 @@ class MinifyTool
         $this->createBuilder();
 
         foreach (static::$js as $j) {
-            $minifier->addFile($this->public . $j);
+            if (is_file($this->public . $j)) {
+                $minifier->addFile($this->public . $j);
+            }
         }
 
         $minifier->minify($this->path . 'min.js');
@@ -123,7 +125,9 @@ class MinifyTool
         $minifier = new Minify\CSS();
 
         foreach (static::$css as $c) {
-            $minifier->addFile($this->public . $c);
+            if (is_file($this->public . $c)) {
+                $minifier->addFile($this->public . $c);
+            }
         }
 
         $minifier->minify($this->path . 'min.css');
@@ -148,11 +152,13 @@ class MinifyTool
         $this->addJs($builder->commonJs());
         $this->addCss($builder->commonCss());
 
+        ExtLoader::trigger('befor_minify', $this->path);
+
         $dirs = ['assets', 'js', 'layer', 'theme'];
         $layerDir = BModule::getInstance()->getRoot() . implode(DIRECTORY_SEPARATOR, $dirs);
         Tool::copyDir($layerDir, $this->path . DIRECTORY_SEPARATOR . 'theme');
 
-        ExtLoader::trigger('minifying', $this->path);
+        ExtLoader::trigger('after_minify', $this->path);
     }
 
     private function checkAssetsDir($dirName)

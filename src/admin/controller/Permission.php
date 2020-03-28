@@ -117,8 +117,8 @@ class Permission extends Controller
         $table->field('controller', '控制器');
         $table->field('action', '动作');
         $table->field('_url', 'url链接');
-        $table->text('action_name', '动作名称')->mapClassWhen([''], 'hidden')->autoPost()->getWapper()->addStyle('max-width:100px');
-        $table->radio('action_type', '权限')->options([0 => '否', 1 => '是'])->default(1)->autoPost()->mapClassWhen(['-1'], 'hidden')->getWapper()->addStyle('max-width:80px');
+        $table->text('action_name', '动作名称')->mapClassWhen([''], 'hidden')->autoPost('', false)->getWapper()->addStyle('max-width:100px');
+        $table->radio('action_type', '权限')->options([0 => '否', 1 => '是'])->default(1)->autoPost('', false)->mapClassWhen(['-1'], 'hidden')->getWapper()->addStyle('max-width:80px');
 
         $table->data($data);
         $table->paginator(count($data), $pagesize);
