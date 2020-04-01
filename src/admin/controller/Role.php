@@ -31,6 +31,7 @@ class Role extends Controller
         $this->pageTitle = '用户管理';
         $this->postAllowFields = ['sort', 'name'];
         $this->delNotAllowed = [1];
+        $this->sortOrder = 'sort asc';
     }
 
     protected function filterWhere()
@@ -72,6 +73,7 @@ class Role extends Controller
         $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+        $table->sortable('id,sort');
     }
 
     /**

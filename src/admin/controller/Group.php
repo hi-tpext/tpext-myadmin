@@ -64,7 +64,7 @@ class Group extends Controller
         $data = $this->dataModel->buildList(0, 0);
         $this->buildTable($data);
         $table->fill($data);
-        $table->paginator(1, $this->pagesize);
+        $table->paginator(count($data), $this->pagesize);
     }
 
     /**

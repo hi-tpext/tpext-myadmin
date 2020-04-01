@@ -93,7 +93,7 @@ class Operationlog extends Controller
         $header_data = ['编号', '登录帐号', '姓名', '路径', '方式', 'IP', '数据', '时间'];
 
         foreach ($header_data as $key => $value) {
-            $header_data[$key] = iconv('utf-8', 'gbk', $value);
+            $header_data[$key] = mb_convert_encoding($value, "GBK", "UTF-8");
         }
         fputcsv($fp, $header_data);
 
@@ -142,7 +142,7 @@ class Operationlog extends Controller
                 }
                 $row = $data[$i];
                 foreach ($row as $key => $value) {
-                    $row[$key] = iconv('utf-8', 'gb2312', $value);
+                    $row[$key] = mb_convert_encoding($value, "GBK", "UTF-8");
                 }
                 fputcsv($fp, $row);
             }
