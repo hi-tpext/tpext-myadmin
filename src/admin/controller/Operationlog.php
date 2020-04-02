@@ -2,13 +2,17 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use tpext\builder\traits\HasBuilder;
+use tpext\builder\traits\actions\HasBase;
+use tpext\builder\traits\actions\HasIndex;
+use tpext\builder\traits\actions\HasDelete;
 use tpext\myadmin\admin\model\AdminOperationLog;
 use tpext\myadmin\admin\model\AdminUser;
 
 class Operationlog extends Controller
 {
-    use HasBuilder;
+    use HasBase;
+    use HasIndex;
+    use HasDelete;
 
     protected $dataModel;
     protected $roleModel;
@@ -74,7 +78,8 @@ class Operationlog extends Controller
 
         $table->getToolbar()
             ->btnDelete()
-            ->btnExport()
+        //->btnExport()
+            ->btnExports(['csv' => 'CSV文件'])
             ->btnRefresh();
 
         $table->getActionbar()

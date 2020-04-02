@@ -3,12 +3,14 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use tpext\builder\common\Builder;
-use tpext\builder\traits\HasBuilder;
+use tpext\builder\traits\actions\HasIAED;
+use tpext\builder\traits\actions\HasAutopost;
 use tpext\myadmin\admin\model\AdminGroup;
 
 class Group extends Controller
 {
-    use HasBuilder;
+    use HasIAED;
+    use HasAutopost;
 
     protected $dataModel;
 

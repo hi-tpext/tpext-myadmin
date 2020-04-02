@@ -4,7 +4,6 @@ namespace tpext\myadmin\common\hooks;
 use think\Db;
 use think\facade\Request;
 use tpext\myadmin\admin\model\AdminOperationLog;
-use tpext\myadmin\common\Module;
 
 class Log
 {
@@ -45,6 +44,8 @@ class Log
             } else if ($controller == 'config' && in_array($action, ['extconfig', 'index'])) {
                 $param = [];
             }
+
+            unset($param['password'], $param['__table__'], $param['__search__']);
 
             AdminOperationLog::create([
                 'user_id' => $admin_id,
