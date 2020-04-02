@@ -13,6 +13,7 @@ use tpext\myadmin\admin\model\AdminPermission;
 use tpext\myadmin\admin\model\AdminRoleMenu;
 use tpext\myadmin\admin\model\AdminRolePermission;
 use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\common\Module;
 
 class Index extends Controller
 {
@@ -248,7 +249,7 @@ class Index extends Controller
             $where['user_id'] = ['eq', session('admin_id')];
             $where['path'] = ['like', 'admin/index/login'];
 
-            $sortOrder = input('__sort__' ,'id desc');
+            $sortOrder = input('__sort__', 'id desc');
 
             $count = AdminOperationLog::where($where)->count();
             $data = AdminOperationLog::where($where)->order($sortOrder)->limit(($page - 1) * $pagesize, $pagesize)->select();
@@ -347,6 +348,14 @@ class Index extends Controller
 
     public function login()
     {
+        $config = Module::getInstance()->getConfig();
+
+        if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
+            if (!session('?login_session_key')) {
+                $this->error('请从后台入口地址进入', '/');
+            }
+        }
+
         if (request()->isPost()) {
             $data = request()->only([
                 'username',

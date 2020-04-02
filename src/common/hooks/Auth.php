@@ -115,6 +115,13 @@ class Auth
             }
 
             if (!$isLogin && !$isAdmin && $this->isInstalled()) {
+                $config = Module::getInstance()->getConfig();
+
+                if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
+                    if (!session('?login_session_key')) {
+                        $this->error('请从后台入口地址进入', '/');
+                    }
+                }
                 $this->error('登录超时，请重新登录！', url('index/login'));
             } else if ($isLogin && $isAdmin) {
                 $this->success('您已经登录！', url('index/index'));
