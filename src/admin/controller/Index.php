@@ -352,7 +352,8 @@ class Index extends Controller
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
             if (!session('?login_session_key')) {
-                $this->error('请从后台入口地址进入', '/');
+                header("HTTP/1.1 404 Not Found");
+                exit;
             }
         }
 
