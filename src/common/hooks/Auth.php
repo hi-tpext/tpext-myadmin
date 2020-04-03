@@ -119,7 +119,8 @@ class Auth
 
                 if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
                     if (!session('?login_session_key')) {
-                        exit('404 Not Found');
+                        header("HTTP/1.1 404 Not Found");
+                        exit;
                     }
                 }
                 $this->error('登录超时，请重新登录！', url('index/login'));
