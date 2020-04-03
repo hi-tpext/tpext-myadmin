@@ -165,7 +165,7 @@ class Index extends Controller
             }
 
             if ($data['password_new'] == $data['password_old']) {
-                $this->error('新旧密码一样' . json_encode($data));
+                $this->error('新旧密码一样');
             }
 
             $password = $this->dataModel->passCrypt($data['password_new']);
