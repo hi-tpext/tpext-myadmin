@@ -23,7 +23,6 @@ class Setup
 
             $tplPath = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'tpl', '']);
 
-            //config('exception_tmpl', $tplPath . 'exception_tmpl.tpl');
             config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
             config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
 
