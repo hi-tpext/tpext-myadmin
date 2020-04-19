@@ -5,7 +5,7 @@
     "keywords": [
         "thinkphp"
     ],
-    "homepage": "http://thinkphp.cn/",
+    "homepage": "http://www.ynyysc.com/",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -16,10 +16,6 @@
     "require": {
         "topthink/framework": "5.1.*",
         "topthink/think-captcha": "^2.0",
-        "ichynul/tpext": "^1.1.1",
-        "ichynul/tpextbuilder": "^1.1.1",
-        "ichynul/tpextmanager": "^1.1.1",
-        "ichynul/lightyearadmin": "^1.0.1",
         "matthiasmullie/minify": "^1.3"
     },
     "autoload": {
