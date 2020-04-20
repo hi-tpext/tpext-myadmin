@@ -174,7 +174,7 @@ class MinifyTool
             return $minifyDir;
         }
 
-        mkdir($minifyDir, 0775);
+        mkdir($minifyDir, 0775, true);
 
         return $minifyDir;
     }

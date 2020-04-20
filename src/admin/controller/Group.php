@@ -126,21 +126,4 @@ class Group extends Controller
 
         return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
     }
-
-    protected function filterWhere()
-    {
-        $where = [];
-
-        return $where;
-    }
-
-    /**
-     * 构建搜索
-     *
-     * @return void
-     */
-    protected function builSearch()
-    {
-        $search = $this->search;
-    }
 }
