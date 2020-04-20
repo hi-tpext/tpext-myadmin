@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_menu` (
   `title` varchar(55) NOT NULL DEFAULT '' COMMENT '标题',
   `url` varchar(100) NOT NULL DEFAULT '' COMMENT 'url地址',
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '图标',
+  `enable` tinyint(1) DEFAULT '1' COMMENT '是否启用',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`),

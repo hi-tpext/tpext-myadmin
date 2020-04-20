@@ -3,9 +3,10 @@ namespace tpext\myadmin\common\hooks;
 
 use think\facade\Request;
 use think\facade\View;
+use tpext\builder\common\Builder;
+use tpext\common\ExtLoader;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\common\Module;
-use tpext\builder\common\Builder;
 
 class Setup
 {
@@ -13,7 +14,10 @@ class Setup
     {
         $module = Request::module();
 
-        if ($module == 'admin') { //admin模块， 替换错误和跳转模板
+        if ($module == 'admin') { //admin模块， 替换错误和跳转模板 ,其他事件监听
+
+            ExtLoader::watch('tpext_menus', Menu::class, false, '接收菜单创建/删除事件');
+            ExtLoader::watch('app_end', Log::class, false, '记录日志');
 
             $instance = Module::getInstance();
 

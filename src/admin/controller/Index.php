@@ -37,7 +37,7 @@ class Index extends Controller
         $admin_user = session('admin_user');
         $menus = [];
         if ($admin_user['role_id'] == 1) {
-            $list = $this->menuModel->order('parent_id,sort')->all();
+            $list = $this->menuModel->where(['enable' => 1])->order('parent_id,sort')->all();
             if (count($list) == 0 && $admin_user['id'] == 1) {
                 $menus = [
                     [

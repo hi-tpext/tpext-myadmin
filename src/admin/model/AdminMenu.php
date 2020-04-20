@@ -8,6 +8,13 @@ class AdminMenu extends Model
 {
     protected $autoWriteTimestamp = 'dateTime';
 
+    protected static function init()
+    {
+        self::afterDelete(function ($menu) {
+            static::where(['parent_id' => $menu['id']])->update(['parent_id' => $menu['parent_id']]);
+        });
+    }
+
     public function buildList($parent = 0, $deep = 0)
     {
         $roots = static::where(['parent_id' => $parent])->order('sort')->select();
@@ -27,7 +34,7 @@ class AdminMenu extends Model
                 $root['title_show'] = str_repeat('&nbsp;', 24) . '├─' . $root['title'];
             } else if ($deep == 5) {
                 $root['title_show'] = str_repeat('&nbsp;', 32) . '├─' . $root['title'];
-            } else if ($deep == 5) {
+            } else if ($deep == 6) {
                 $root['title_show'] = str_repeat('&nbsp;', 40) . '├─' . $root['title'];
             }
 
@@ -61,7 +68,7 @@ class AdminMenu extends Model
                 $root['title_show'] = '──────├─' . $root['title'];
             } else if ($deep == 5) {
                 $root['title_show'] = '────────├─' . $root['title'];
-            } else if ($deep == 5) {
+            } else if ($deep == 6) {
                 $root['title_show'] = '──────────├─' . $root['title'];
             }
 
@@ -85,7 +92,7 @@ class AdminMenu extends Model
     public function buildMenus($admin_user)
     {
         $roleMenus = AdminRoleMenu::where(['role_id' => $admin_user['role_id']])->column('menu_id');
-        $roots = AdminMenu::where(['parent_id' => 0])->select();
+        $roots = static::where(['parent_id' => 0, 'enable' => 1])->select();
         $list = [];
 
         foreach ($roots as $root) {
@@ -117,7 +124,7 @@ class AdminMenu extends Model
             $data = [];
 
             $data[] = $root;
-            $children = static::where(['parent_id' => $root['id']])->order('sort')->select();
+            $children = static::where(['parent_id' => $root['id'], 'enable' => 1])->order('sort')->select();
             foreach ($children as $child) {
                 $data = array_merge($data, $this->getChildren($child, $role_id));
             }

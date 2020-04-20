@@ -3,8 +3,8 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use tpext\builder\common\Builder;
-use tpext\builder\traits\actions\HasIAED;
 use tpext\builder\traits\actions\HasAutopost;
+use tpext\builder\traits\actions\HasIAED;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 
@@ -24,8 +24,7 @@ class Menu extends Controller
         $this->pageTitle = '菜单管理';
         $this->sortOrder = 'id desc';
         $this->pagesize = 999;
-        $this->postAllowFields = ['title', 'sort'];
-        $this->delNotAllowed = [1];
+        $this->postAllowFields = ['title', 'sort', 'enable'];
     }
 
     /**
@@ -83,6 +82,8 @@ class Menu extends Controller
         $form->select('parent_id', '上级')->required()->options($tree);
         $form->select('url', 'url')->required()->options($urls);
         $form->icon('icon', '图标')->required()->default('mdi mdi-access-point');
+        $form->radio('enable', '启用')->default(1)->required()->options([1 => '已启用', 0 => '未启用'])
+            ->disabled($isEdit && $data['url'] == '/admin/menu/index');
         $form->text('sort', '排序')->default(1)->required();
 
         if ($isEdit) {
@@ -114,7 +115,7 @@ class Menu extends Controller
      *
      * @return void
      */
-    protected function buildTable()
+    protected function buildTable($data = [])
     {
         $table = $this->table;
         $table->show('id', 'ID');
@@ -122,11 +123,20 @@ class Menu extends Controller
         $table->show('url', 'url');
         $table->raw('icon_show', '图标');
         $table->text('title', '名称')->autoPost()->getWapper()->addStyle('max-width:80px');
-        $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
+        $table->switchBtn('enable', '启用')->default(1)->autoPost()->mapClassWhen('/admin/menu/index', 'hidden', 'url')->getWapper()->addStyle('max-width:120px');
+        $table->text('sort', '排序')->autoPost('', true)->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
         $table->sortable([]);
+
+        foreach ($data as &$d) {
+            $d['__dis_del__'] = $d['url'] == '/admin/menu/index';
+        }
+
+        $table->getActionbar()->mapClass([
+            'delete' => ['disabled' => '__dis_del__'],
+        ]);
     }
 
     private function save($id = 0)
@@ -136,6 +146,7 @@ class Menu extends Controller
             'url',
             'icon',
             'sort',
+            'enable',
             'parent_id',
         ], 'post');
 
@@ -167,22 +178,5 @@ class Menu extends Controller
         }
 
         return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
-    }
-
-    protected function filterWhere()
-    {
-        $where = [];
-
-        return $where;
-    }
-
-    /**
-     * 构建搜索
-     *
-     * @return void
-     */
-    protected function builSearch()
-    {
-        $search = $this->search;
     }
 }

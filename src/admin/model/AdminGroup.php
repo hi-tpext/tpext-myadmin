@@ -8,6 +8,13 @@ class AdminGroup extends Model
 {
     protected $autoWriteTimestamp = 'dateTime';
 
+    protected static function init()
+    {
+        self::afterDelete(function ($group) {
+            static::where(['parent_id' => $group['id']])->update(['parent_id' => $group['parent_id']]);
+        });
+    }
+
     public function getUsersAttr($value, $data)
     {
         $count = AdminUser::where('group_id', $data['id'])->count();
