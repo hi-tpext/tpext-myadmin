@@ -3,6 +3,7 @@
 return [
     'name' => 'Tpext后台管理系统',
     'description' => 'Tpext后台管理系统',
+    'images' => '',
     'logo' => '<img src="/assets/lightyearadmin/images/logo.png" alt="Admin logo" title="Tpext后台管理系统">',
     'favicon' => '/assets/lightyearadmin/favicon.ico',
     'copyright' => 'Copyright &copy; 2020. <a target="_blank" href="#">Tpext后台管理系统</a> All rights reserved.',
@@ -18,6 +19,7 @@ return [
     '__config__' => [
         'name' => ['type' => 'text', 'label' => '名称'],
         'description' => ['type' => 'textarea', 'label' => '描述'],
+        'images' => ['type' => 'divider', 'label' => '注意，涉及到`/assets/`目录中的图片等资源文件，不要直接上传文件替换，请在`/static/`中创建目录然后上传，然后修改链接'],
         'logo' => ['type' => 'text', 'label' => '左上角Logo'],
         'favicon' => ['type' => 'text', 'label' => 'Favicon图片'],
         'copyright' => ['type' => 'textarea', 'label' => '版权'],

@@ -115,7 +115,7 @@ class Menu extends Controller
      *
      * @return void
      */
-    protected function buildTable($data = [])
+    protected function buildTable(&$data = [])
     {
         $table = $this->table;
         $table->show('id', 'ID');

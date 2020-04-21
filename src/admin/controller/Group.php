@@ -74,7 +74,7 @@ class Group extends Controller
      *
      * @return void
      */
-    protected function buildTable()
+    protected function buildTable(&$data = [])
     {
         $table = $this->table;
         $table->show('id', 'ID');
