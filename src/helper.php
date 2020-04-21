@@ -1,8 +1,8 @@
 <?php
 
 use tpext\common\ExtLoader;
-use tpext\myadmin\common\hooks\Auth;
-use tpext\myadmin\common\hooks\Setup;
+use tpext\myadmin\common\behavior\Auth;
+use tpext\myadmin\common\behavior\Setup;
 
 $classMap = [
     'tpext\\myadmin\\common\\Module',

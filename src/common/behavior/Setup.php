@@ -1,5 +1,5 @@
 <?php
-namespace tpext\myadmin\common\hooks;
+namespace tpext\myadmin\common\behavior;
 
 use think\facade\Request;
 use think\facade\View;
