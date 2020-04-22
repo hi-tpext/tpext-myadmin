@@ -24,26 +24,11 @@ class AdminMenu extends Model
 
         foreach ($roots as $root) {
 
-            if ($deep == 1) {
-                $root['title_show'] = '├─' . $root['title'];
-            } else if ($deep == 2) {
-                $root['title_show'] = str_repeat('&nbsp;', 8) . '├─' . $root['title'];
-            } else if ($deep == 3) {
-                $root['title_show'] = str_repeat('&nbsp;', 16) . '├─' . $root['title'];
-            } else if ($deep == 4) {
-                $root['title_show'] = str_repeat('&nbsp;', 24) . '├─' . $root['title'];
-            } else if ($deep == 5) {
-                $root['title_show'] = str_repeat('&nbsp;', 32) . '├─' . $root['title'];
-            } else if ($deep == 6) {
-                $root['title_show'] = str_repeat('&nbsp;', 40) . '├─' . $root['title'];
-            }
-
-            $root['title_show'];
-            $root['icon_show'] = '<i class="' . $root['icon'] . '"></i>';
+            $root['title_show'] = str_repeat('&nbsp;', ($deep - 1) * 6) . '├─' . $root['title'];
 
             $data[] = $root;
 
-            $data = array_merge($data, $this->buildList($root->id, $deep));
+            $data = array_merge($data, $this->buildList($root['id'], $deep));
         }
 
         return $data;
@@ -58,19 +43,7 @@ class AdminMenu extends Model
 
         foreach ($roots as $root) {
 
-            if ($deep == 1) {
-                $root['title_show'] = '├─' . $root['title'];
-            } else if ($deep == 2) {
-                $root['title_show'] = '──├─' . $root['title'];
-            } else if ($deep == 3) {
-                $root['title_show'] = '────├─' . $root['title'];
-            } else if ($deep == 4) {
-                $root['title_show'] = '──────├─' . $root['title'];
-            } else if ($deep == 5) {
-                $root['title_show'] = '────────├─' . $root['title'];
-            } else if ($deep == 6) {
-                $root['title_show'] = '──────────├─' . $root['title'];
-            }
+            $root['title_show'] = '|' . str_repeat('──', $deep) . $root['title'];
 
             if ($root['id'] == $except) {
                 continue;
@@ -84,8 +57,9 @@ class AdminMenu extends Model
 
             $data[$root['id']] = $root['title_show'];
 
-            $data += $this->buildTree($root->id, $deep);
+            $data += $this->buildTree($root['id'], $deep, $except);
         }
+
         return $data;
     }
 

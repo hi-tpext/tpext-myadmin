@@ -30,25 +30,13 @@ class AdminGroup extends Model
 
         foreach ($roots as $root) {
 
-            if ($deep == 1) {
-                $root['title_show'] = '├─' . $root['name'];
-            } else if ($deep == 2) {
-                $root['title_show'] = str_repeat('&nbsp;', 8) . '├─' . $root['name'];
-            } else if ($deep == 3) {
-                $root['title_show'] = str_repeat('&nbsp;', 16) . '├─' . $root['name'];
-            } else if ($deep == 4) {
-                $root['title_show'] = str_repeat('&nbsp;', 24) . '├─' . $root['name'];
-            } else if ($deep == 5) {
-                $root['title_show'] = str_repeat('&nbsp;', 32) . '├─' . $root['name'];
-            } else if ($deep == 5) {
-                $root['title_show'] = str_repeat('&nbsp;', 40) . '├─' . $root['name'];
-            }
+            $root['title_show'] = str_repeat('&nbsp;', ($deep - 1) * 6) . '├─' . $root['name'];
 
             $root['title_show'];
 
             $data[] = $root;
 
-            $data = array_merge($data, $this->buildList($root->id, $deep));
+            $data = array_merge($data, $this->buildList($root['id'], $deep));
         }
 
         return $data;
@@ -63,30 +51,17 @@ class AdminGroup extends Model
 
         foreach ($roots as $root) {
 
-            if ($deep == 1) {
-                $root['title_show'] = '├─' . $root['name'];
-            } else if ($deep == 2) {
-                $root['title_show'] = '──├─' . $root['name'];
-            } else if ($deep == 3) {
-                $root['title_show'] = '────├─' . $root['name'];
-            } else if ($deep == 4) {
-                $root['title_show'] = '──────├─' . $root['name'];
-            } else if ($deep == 5) {
-                $root['title_show'] = '────────├─' . $root['name'];
-            } else if ($deep == 5) {
-                $root['title_show'] = '──────────├─' . $root['name'];
-            }
+            $root['title_show'] = '|' . str_repeat('──', $deep) . $root['name'];
 
             if ($root['id'] == $except) {
                 continue;
             }
 
-            $root['title_show'];
-
             $data[$root['id']] = $root['title_show'];
 
-            $data += $this->buildTree($root->id, $deep);
+            $data += $this->buildTree($root['id'], $deep, $except);
         }
+
         return $data;
     }
 }
