@@ -84,6 +84,7 @@ class AdminPermission extends Model
             if (!empty($mods)) {
 
                 $controllers[$instance->getId()]['title'] = $instance->getTitle();
+                $controllers[$instance->getId()]['controllers'] = [];
 
                 foreach ($mods as $module => $modControllers) {
 
@@ -118,8 +119,7 @@ class AdminPermission extends Model
 
     public function scanControllers($path, $controllers = [])
     {
-        if(!is_dir($path))
-        {
+        if (!is_dir($path)) {
             return [];
         }
         $dir = opendir($path);
