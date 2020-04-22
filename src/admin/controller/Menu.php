@@ -167,8 +167,7 @@ class Menu extends Controller
             if ($data['parent_id'] == $id) {
                 $this->error('上级不能是自己');
             }
-            $data['update_time'] = date('Y-m-d H:i:s');
-            $res = $this->dataModel->where(['id' => $id])->update($data);
+            $res = $this->dataModel->update($data, ['id' => $id]);
         } else {
             $res = $this->dataModel->create($data);
         }

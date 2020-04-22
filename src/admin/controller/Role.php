@@ -182,8 +182,7 @@ class Role extends Controller
         }
 
         if ($id) {
-            $data['update_time'] = date('Y-m-d H:i:s');
-            $res = $this->dataModel->where(['id' => $id])->update($data);
+            $res = $this->dataModel->update($data, ['id' => $id]);
         } else {
             $res = Db::name('admin_role')->insertGetId($data);
         }

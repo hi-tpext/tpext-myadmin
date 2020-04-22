@@ -173,7 +173,7 @@ class Index extends Controller
             $editData['password'] = $password[0];
             $editData['salt'] = $password[1];
 
-            $res = $this->dataModel->where(['id' => $user['id']])->update($editData);
+            $res = $this->dataModel->update($editData, ['id' => $user['id']]);
 
             if ($res) {
                 ExtLoader::trigger('admin_change_pwd', $user);
@@ -285,15 +285,11 @@ class Index extends Controller
             $this->error($result);
         }
 
-        $user = $this->dataModel->get(session('admin_id'));
-
-        $data['update_time'] = date('Y-m-d H:i:s');
-
-        $res = $this->dataModel->where(['id' => $user['id']])->update($data);
+        $res = $this->dataModel->update($data, ['id' => session('admin_id')]);
 
         if ($res) {
 
-            $user = $this->dataModel->get($user['id']);
+            $user = $this->dataModel->get(session('admin_id'));
 
             unset($user['password'], $user['salt']);
 

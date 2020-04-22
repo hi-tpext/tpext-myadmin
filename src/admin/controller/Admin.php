@@ -231,8 +231,7 @@ class Admin extends Controller
         }
 
         if ($id) {
-            $data['update_time'] = date('Y-m-d H:i:s');
-            $res = $this->dataModel->where(['id' => $id])->update($data);
+            $res = $this->dataModel->update($data, ['id' => $id]);
         } else {
             if (!isset($data['password']) || empty($data['password'])) {
                 $this->error('请输入密码');

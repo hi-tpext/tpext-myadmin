@@ -148,7 +148,7 @@ class Permission extends Controller
             $this->error('不允许的操作');
         }
 
-        $res = $this->dataModel->where(['id' => $id])->update([$name => $value]);
+        $res = $this->dataModel->update([$name => $value], ['id' => $id]);
 
         if ($res) {
             $this->success('修改成功');
