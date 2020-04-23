@@ -8,7 +8,7 @@ return [
     'favicon' => '/assets/lightyearadmin/favicon.ico',
     'copyright' => 'Copyright &copy; 2020. <a target="_blank" href="#">Tpext后台管理系统</a> All rights reserved.',
     'login_logo' => '/assets/lightyearadmin/images/logo-ico.png',
-    'login_background_img' => 'https://img.zcool.cn/community/01d46d5d1ca689a801213763ef5aa9.jpg@3000w_1l_0o_100sh.jpg',
+    'login_background_img' => '/assets/lightyearadmin/images/login-bg.jpg',
     'login_timeout' => 20,
     'login_session_key' => 0,
     'assets_ver' => '1.0',
