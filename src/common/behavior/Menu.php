@@ -11,7 +11,7 @@ class Menu
         $action = $data[0];
         $menus = $data[1];
         $parent_id = isset($data[2]) ? $data[2] : 0;
-        
+
         Db::startTrans();
 
         if ($action == 'create') {
@@ -19,10 +19,23 @@ class Menu
             foreach ($menus as $menu) {
                 $this->createMenu($menu, $parent_id);
             }
+
         } else if ($action == 'delete') {
 
             foreach ($menus as $menu) {
                 $this->deleteMenu($menu);
+            }
+
+        } else if ($action == 'enable') {
+
+            foreach ($menus as $menu) {
+                $this->enableMenu($menu, 1);
+            }
+
+        } else if ($action == 'disable') {
+
+            foreach ($menus as $menu) {
+                $this->enableMenu($menu, 0);
             }
         }
 
@@ -61,6 +74,22 @@ class Menu
 
             foreach ($menu['children'] as $sub_menu) {
                 $this->deleteMenu($sub_menu);
+            }
+        }
+    }
+
+    private function enableMenu($menu, $enable)
+    {
+        $m = AdminMenu::where(['url' => $menu['url']])->find();
+
+        if ($m && $m['parent_id']) {
+            AdminMenu::where(['id' => $m['parent_id']])->update(['enable' => $enable]);
+        }
+
+        if (isset($menu['children'])) {
+            
+            foreach ($menu['children'] as $sub_menu) {
+                $this->enableMenu($sub_menu, $enable);
             }
         }
     }

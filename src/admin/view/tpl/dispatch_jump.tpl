@@ -22,6 +22,11 @@
     {
       margin-top: 20px;
     }
+
+    .alert-info
+    {
+      margin-top:30px;
+    }
   </style>
 </head>
 
@@ -51,8 +56,9 @@
                   <?php break;?>
                   <?php } ?>
 
+                  <p>页面自动跳转：<b id="wait"><?php echo($wait);?></b></p>
+
                   <div class="alert alert-info" role="alert">
-                    <p>页面自动跳转：<b id="wait"><?php echo($wait);?></b></p>
                     <a id="href" href="<?php echo($url);?>" class="btn btn-danger btn-w-xl">跳转</a>
                     <a onclick="history.go(-1)" class="btn btn-default btn-w-xl">返回</a>
                   </div>
