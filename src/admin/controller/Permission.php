@@ -26,7 +26,7 @@ class Permission extends Controller
 
         $table = $builder->table();
 
-        $table->rowCheckbox(false);
+        $table->useCheckbox(false);
 
         foreach ($modControllers as $key => $modController) {
 

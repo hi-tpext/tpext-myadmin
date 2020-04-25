@@ -236,7 +236,7 @@ class Index extends Controller
             $table->getToolbar()
                 ->btnRefresh();
             $table->useActionbar(false);
-            $table->rowCheckbox(false);
+            $table->useCheckbox(false);
 
             $pagesize = 10;
 
