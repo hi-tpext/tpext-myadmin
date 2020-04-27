@@ -238,7 +238,9 @@ class Index extends Controller
             $table->useActionbar(false);
             $table->useCheckbox(false);
 
-            $pagesize = 10;
+            $pagesize = input('__pagesize__/d');
+        
+            $pagesize = $pagesize ? $pagesize : 10;
 
             $page = input('__page__/d', 1);
 
