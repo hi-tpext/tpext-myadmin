@@ -23,7 +23,6 @@ class Menu extends Controller
 
         $this->pageTitle = '菜单管理';
         $this->sortOrder = 'id desc';
-        $this->pagesize = 999;
         $this->postAllowFields = ['title', 'sort', 'enable'];
     }
 
@@ -107,7 +106,6 @@ class Menu extends Controller
         $data = $this->dataModel->buildList(0, 0);
         $this->buildTable($data);
         $table->fill($data);
-        $table->paginator(count($data), $this->pagesize);
     }
 
     /**
