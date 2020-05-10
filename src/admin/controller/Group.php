@@ -3,9 +3,10 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use tpext\builder\common\Builder;
-use tpext\builder\traits\actions\HasIAED;
 use tpext\builder\traits\actions\HasAutopost;
+use tpext\builder\traits\actions\HasIAED;
 use tpext\myadmin\admin\model\AdminGroup;
+use tpext\myadmin\common\Module;
 
 class Group extends Controller
 {
@@ -32,9 +33,19 @@ class Group extends Controller
      */
     protected function builForm($isEdit, &$data = [])
     {
+        $adminGroupTitle = '分组';
+
+        $instance = Module::getInstance();
+
+        $config = $instance->getConfig();
+
+        if (!empty($config['admin_group_title'])) {
+            $adminGroupTitle = $config['admin_group_title'];
+        }
+
         $form = $this->form;
 
-        $tree = [0 => '顶级分组'];
+        $tree = [0 => '顶级' . $adminGroupTitle];
 
         $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
@@ -80,8 +91,8 @@ class Group extends Controller
         $table->raw('title_show', '名称')->getWapper()->addStyle('text-align:left;');
         $table->show('users', '用户数');
         $table->show('description', '描述')->default('无描述');
-        $table->text('name', '名称')->autoPost()->getWapper()->addStyle('max-width:80px');
-        $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
+        $table->text('name', '名称')->autoPost('', true)->getWapper()->addStyle('max-width:80px');
+        $table->text('sort', '排序')->autoPost('', true)->getWapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
 
