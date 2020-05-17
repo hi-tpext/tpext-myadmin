@@ -81,7 +81,7 @@ class Auth
 
             if (!$this->isInstalled()) {
                 if ($controller != 'extension') {
-                    $this->error('请安装扩展！', url('extension/index'));
+                    $this->error('请安装扩展！', url('/admin/extension/index'));
                 } else {
                     return;
                 }
@@ -109,7 +109,7 @@ class Auth
                     $res = $userModel->checkPermission($admin_id, $controller, $action);
 
                     if (!$res) {
-                        $this->error('无权限访问！', url('index/denied'));
+                        $this->error('无权限访问！', url('/admin/index/denied'));
                     }
                 }
             }
@@ -123,9 +123,9 @@ class Auth
                         exit;
                     }
                 }
-                $this->error('登录超时，请重新登录！', url('index/login'));
+                $this->error('登录超时，请重新登录！', url('/admin/index/login'));
             } else if ($isLogin && $isAdmin) {
-                $this->success('您已经登录！', url('index/index'));
+                $this->success('您已经登录！', url('/admin/index/index'));
             }
         }
     }

@@ -50,6 +50,7 @@ class Menu
             'title' => $menu['title'],
             'url' => isset($menu['children']) && count($menu['children']) ? '#' : $menu['url'],
             'icon' => $menu['icon'],
+            'module' => isset($menu['module']) ? $menu['module'] : '',
             'create_time' => date('Y-m-d H:i:s'),
             'update_time' => date('Y-m-d H:i:s'),
         ];
@@ -59,6 +60,7 @@ class Menu
         if ($id && isset($menu['children'])) {
 
             foreach ($menu['children'] as $sub_menu) {
+                $sub_menu['module'] = isset($menu['module']) ? $menu['module'] : '';
                 $this->createMenu($sub_menu, $id);
             }
         }
@@ -67,7 +69,11 @@ class Menu
     private function deleteMenu($menu)
     {
         if ($menu['url'] != '#') {
+            
             AdminMenu::where(['url' => $menu['url']])->delete();
+        } else if (isset($menu['module']) && !empty($menu['module'])) {
+
+            AdminMenu::where(['url' => '#', 'module' => $menu['module']])->delete();
         }
 
         if (isset($menu['children'])) {
@@ -87,7 +93,7 @@ class Menu
         }
 
         if (isset($menu['children'])) {
-            
+
             foreach ($menu['children'] as $sub_menu) {
                 $this->enableMenu($sub_menu, $enable);
             }
