@@ -23,7 +23,7 @@ class Admin extends Controller
 
         $this->pageTitle = '用户管理';
         $this->postAllowFields = ['phone', 'name', 'email'];
-        $this->delNotAllowed = [1];
+        $this->delNotAllowed = [1, session('admin_id')];
     }
 
     protected function filterWhere()
