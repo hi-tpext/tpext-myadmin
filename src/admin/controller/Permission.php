@@ -2,6 +2,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
+use think\Loader;
 use tpext\builder\common\Builder;
 use tpext\myadmin\admin\model\AdminPermission;
 
@@ -49,7 +50,7 @@ class Permission extends Controller
                 $data[] = $row_;
 
                 foreach ($methods as $method) {
-                    $url = url('/admin/' . strtolower($contrl) . '/' . $method, '', false);
+                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method, '', false);
 
                     if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
                         continue;

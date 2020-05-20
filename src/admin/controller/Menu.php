@@ -2,6 +2,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
+use think\Loader;
 use tpext\builder\common\Builder;
 use tpext\builder\traits\actions\HasAutopost;
 use tpext\builder\traits\actions\HasIAED;
@@ -65,7 +66,7 @@ class Menu extends Controller
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
                 foreach ($methods as $method) {
-                    $url = url('/admin/' . strtolower($contrl) . '/' . $method, '', false);
+                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method, '', false);
 
                     $perm = $this->permModel->where(['url' => $url])->find();
 
