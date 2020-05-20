@@ -152,7 +152,7 @@ class Admin extends Controller
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
         $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
         $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
-        $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->help('禁用后无法登录后台');
+        $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->default(1)->help('禁用后无法登录后台');
 
         $form->tags('tags', '标签');
 

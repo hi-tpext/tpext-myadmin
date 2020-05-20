@@ -93,23 +93,23 @@ class Auth
             $isAdmin = !empty($admin_id) && is_numeric($admin_id) && $admin_id > 0;
 
             if ($isAdmin) {
-                $now = time();
-                $login_timeout = $this->getLoginTimeout();
-                $admin_last_time = session('admin_last_time');
 
-                if ($admin_last_time && $now - $admin_last_time > $login_timeout * 60) {
+                if (empty(cookie('admin_last_time'))) {
                     $isAdmin = 0;
                     session('admin_user', null);
                     session('admin_id', null);
                 } else {
-                    session('admin_last_time', $now);
+
+                    $login_timeout = $this->getLoginTimeout();
+
+                    cookie('admin_last_time', '1', ['expire' => $login_timeout * 60, 'httponly' => true]);
 
                     $userModel = new AdminUser;
 
                     $res = $userModel->checkPermission($admin_id, $controller, $action);
 
                     if (!$res) {
-                        $this->error('无权限访问！', url('/admin/index/denied'));
+                        $this->error('无权限访问！', url('/admin/index/denied'), '', 1);
                     }
                 }
             }

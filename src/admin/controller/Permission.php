@@ -52,7 +52,7 @@ class Permission extends Controller
                 foreach ($methods as $method) {
                     $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method, '', false);
 
-                    if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+                    if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
                         continue;
                     }
 
@@ -64,6 +64,7 @@ class Permission extends Controller
                         'add' => '添加',
                         'create' => '新建',
                         'edit' => '修改',
+                        'view' => '查看',
                         'update' => '更新',
                         'delete' => '删除',
                         'enable' => '启用',
@@ -74,12 +75,12 @@ class Permission extends Controller
                         'login' => '登录',
                         'logout' => '注销',
                         'dashbord' => '仪表盘',
-                        'postback' => '列修改',
                         'upload' => '上传',
                         'download' => '下载',
                         'autopost' => '字段编辑',
                         'import' => '导入',
                         'export' => '导出',
+                        'welcom' => '欢迎',
                     ];
 
                     if (isset($action_names[$method])) {

@@ -74,6 +74,20 @@ class Role extends Controller
         $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
         $table->sortable('id,sort');
+
+        foreach ($data as &$d) {
+            $d['__h_del__'] = $d['id'] == 1;
+        }
+
+        unset($d);
+
+        $table->getActionbar()
+            ->btnEdit()
+            ->btnDelete()
+            ->mapClass([
+                'delete' => ['hidden' => '__h_del__'],
+            ]);
+
     }
 
     /**

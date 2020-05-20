@@ -93,33 +93,46 @@ class AdminUser extends Model
 
     public function checkPermission($admin_id, $controller, $action)
     {
-        $data = static::get($admin_id);
+        $user = static::get($admin_id);
 
-        if (!$data) {
+        if (!$user) {
             return false;
         }
 
-        unset($data['password'], $data['salt']);
-
-        session('admin_user', $data);
-
-        $url = "/admin/$controller/$action";
-
-        if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
-            return true;
-        }
-
-        if ($data['role_id'] == 1) {
-            return true;
-        }
-
-        if ($data['enable'] == 0) {
+        if ($user['enable'] == 0) {
             session('admin_user', null);
             session('admin_id', null);
             return false;
         }
 
-        $role = AdminRole::get($data['role_id']);
+        unset($user['password'], $user['salt']);
+
+        session('admin_user', $user);
+
+        $url = "/admin/$controller/$action";
+
+        return static::checkUrl($url, $user);
+    }
+
+    public static function checkUrl($url, $user = null)
+    {
+        if (!$user) {
+            $user = session('admin_user');
+
+            if (!$user) {
+                return false;
+            }
+        }
+
+        if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+            return true;
+        }
+
+        if ($user['role_id'] == 1) {
+            return true;
+        }
+
+        $role = AdminRole::get($user['role_id']);
 
         if (!$role) {
             return false;
@@ -131,7 +144,7 @@ class AdminUser extends Model
             return false;
         }
 
-        $rolePrmission = AdminRolePermission::where(['role_id' => $data['role_id'], 'permission_id' => $prmission['id']])->find();
+        $rolePrmission = AdminRolePermission::where(['role_id' => $user['role_id'], 'permission_id' => $prmission['id']])->find();
 
         if (!$rolePrmission) {
             return false;

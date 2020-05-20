@@ -118,7 +118,7 @@ class Index extends Controller
 
     public function denied()
     {
-        return '<p>无权访问</p>';
+        return '<span style="color:#333;font-size:12px;">无权限访问！</span>';
     }
 
     public function welcome()
@@ -131,7 +131,15 @@ class Index extends Controller
         session('admin_user', null);
         session('admin_id', null);
 
-        $this->success('注销成功！', url('login'));
+        $config = Module::getInstance()->getConfig();
+
+        cookie('admin_last_time', null);
+
+        if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
+            $this->success('注销成功！', '/');
+        } else {
+            $this->success('注销成功！', url('/admin/index/login'));
+        }
     }
 
     public function changePwd()
@@ -239,7 +247,7 @@ class Index extends Controller
             $table->useCheckbox(false);
 
             $pagesize = input('__pagesize__/d');
-        
+
             $pagesize = $pagesize ? $pagesize : 10;
 
             $page = input('__page__/d', 1);
@@ -414,7 +422,11 @@ class Index extends Controller
             unset($user['password'], $user['salt']);
             session('admin_user', $user);
             session('admin_id', $user['id']);
-            session('admin_last_time', time());
+            session('login_session_key', null);
+
+            $login_timeout = isset($config['login_timeout']) ? $config['login_timeout'] : 10;
+
+            cookie('admin_last_time', '1', ['expire' => $login_timeout * 60, 'httponly' => true]);
 
             AdminOperationLog::create([
                 'user_id' => $user['id'],
