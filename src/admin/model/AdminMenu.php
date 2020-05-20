@@ -66,7 +66,7 @@ class AdminMenu extends Model
     public function buildMenus($admin_user)
     {
         $roleMenus = AdminRoleMenu::where(['role_id' => $admin_user['role_id']])->column('menu_id');
-        $roots = static::where(['parent_id' => 0, 'enable' => 1])->select();
+        $roots = static::where(['parent_id' => 0, 'enable' => 1])->order('sort')->select();
         $list = [];
 
         foreach ($roots as $root) {

@@ -51,6 +51,10 @@ class Permission extends Controller
                 foreach ($methods as $method) {
                     $url = url('/admin/' . strtolower($contrl) . '/' . $method, '', false);
 
+                    if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+                        continue;
+                    }
+
                     $action_name = $method;
 
                     $action_names = [
@@ -88,6 +92,9 @@ class Permission extends Controller
             }
         }
 
+        $allIds = $this->dataModel->column('id');
+        $activeIds = [];
+
         foreach ($data as &$row) {
             if ($row['action'] != '') {
                 $perm = $this->dataModel->where(['controller' => $row['controller'], 'action' => $row['action']])->find();
@@ -95,6 +102,7 @@ class Permission extends Controller
                     $row['action_type'] = $perm['action_type'];
                     $row['action_name'] = $perm['action_name'] ? $perm['action_name'] : $row['action_name'];
                     $row['id'] = $perm['id'];
+                    $activeIds[] = $perm['id'];
                 } else {
                     $row['id'] = $this->dataModel->create([
                         'module_name' => $modController['title'],
@@ -110,6 +118,12 @@ class Permission extends Controller
             if ($row['action'] == '' || $row['action'] == '#') {
                 $row['action_type'] = '-1';
             }
+        }
+
+        $delIds = array_diff($allIds, $activeIds);
+
+        if (!empty($delIds)) {
+            $this->dataModel->destroy(array_values($delIds));
         }
 
         $table->field('controller', '控制器');

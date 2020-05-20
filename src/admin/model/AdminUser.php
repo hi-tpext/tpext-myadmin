@@ -105,7 +105,7 @@ class AdminUser extends Model
 
         $url = "/admin/$controller/$action";
 
-        if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+        if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
             return true;
         }
 
