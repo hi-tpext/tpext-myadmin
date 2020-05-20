@@ -3,9 +3,10 @@
 namespace tpext\myadmin\admin\model;
 
 use think\Model;
+use tpext\builder\common\Auth;
 use tpext\myadmin\common\Module;
 
-class AdminUser extends Model
+class AdminUser extends Model implements Auth
 {
     protected $autoWriteTimestamp = 'dateTime';
 
@@ -123,6 +124,8 @@ class AdminUser extends Model
                 return false;
             }
         }
+
+        $url = str_replace('.html', '', $url);
 
         if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
             return true;
