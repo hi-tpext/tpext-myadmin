@@ -3,7 +3,6 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use think\Loader;
-use tpext\builder\common\Builder;
 use tpext\builder\traits\actions\HasAutopost;
 use tpext\builder\traits\actions\HasIAED;
 use tpext\myadmin\admin\model\AdminMenu;
@@ -175,6 +174,6 @@ class Menu extends Controller
             $this->error('保存失败');
         }
 
-        return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
+        return $this->builder()->layer()->closeRefresh(1, '保存成功');
     }
 }

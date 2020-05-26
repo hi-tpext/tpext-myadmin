@@ -99,10 +99,14 @@ class Auth
                     session('admin_user', null);
                     session('admin_id', null);
                 } else {
+                    $now = $_SERVER['REQUEST_TIME'];
 
-                    $login_timeout = $this->getLoginTimeout();
+                    if ($now - cookie('admin_last_time') > 60) {
 
-                    cookie('admin_last_time', '1', ['expire' => $login_timeout * 60, 'httponly' => true]);
+                        $login_timeout = $this->getLoginTimeout();
+
+                        cookie('admin_last_time', $_SERVER['REQUEST_TIME'], ['expire' => $login_timeout * 60, 'httponly' => true]);
+                    }
 
                     $userModel = new AdminUser;
 
@@ -123,6 +127,9 @@ class Auth
                         exit;
                     }
                 }
+
+                cookie('after_login_url', request()->url(), ['expire' => 0, 'httponly' => true]);
+
                 $this->error('登录超时，请重新登录！', url('/admin/index/login'));
             } else if ($isLogin && $isAdmin) {
                 $this->success('您已经登录！', url('/admin/index/index'));

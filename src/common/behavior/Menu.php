@@ -8,6 +8,14 @@ class Menu
 {
     public function run($data = [])
     {
+        $tableName = config('database.prefix') . 'admin_menu';
+
+        $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
+
+        if (empty($isTable)) {
+            return false;
+        }
+
         $action = $data[0];
         $menus = $data[1];
         $parent_id = isset($data[2]) ? $data[2] : 0;
@@ -46,7 +54,7 @@ class Menu
     {
         $data = [
             'parent_id' => $parent_id,
-            'sort' => isset($menu['sort']) ? $menu['sort'] : 99,
+            'sort' => isset($menu['sort']) ? $menu['sort'] : 1,
             'title' => $menu['title'],
             'url' => isset($menu['children']) && count($menu['children']) ? '#' : $menu['url'],
             'icon' => $menu['icon'],

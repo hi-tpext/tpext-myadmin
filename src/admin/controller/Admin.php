@@ -2,7 +2,6 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use tpext\builder\common\Builder;
 use tpext\builder\traits\HasBuilder;
 use tpext\myadmin\admin\model\AdminRole;
 use tpext\myadmin\admin\model\AdminUser;
@@ -139,10 +138,10 @@ class Admin extends Controller
         $form = $this->form;
 
         $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
-        $form->select('role_id', '角色')->required()->optionsData($this->roleModel->all(), 'name')->disabled($isEdit && $data['id'] == 1);
-        $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
         $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
-
+        $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
+        $form->select('role_id', '角色')->required()->optionsData($this->roleModel->all(), 'name')->disabled($isEdit && $data['id'] == 1);
+        
         if (method_exists($this->groupModel, 'buildTree')) {
             $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
         } else {
@@ -243,7 +242,7 @@ class Admin extends Controller
             $this->error('保存失败');
         }
 
-        return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
+        return $this->builder()->layer()->closeRefresh(1, '保存成功');
     }
 
     public function clearErrors()

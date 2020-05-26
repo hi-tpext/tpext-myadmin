@@ -12,9 +12,12 @@
     <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}"
         rel="stylesheet">
     <link href="/assets/lightyearadmin/css/style.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
+    {notempty name="$login_css_file"}
+    <link href="{$login_css_file}" rel="stylesheet">
+    {/notempty}
     <script>
-        if (window != top) {
-            top.location.replace("{:url('admin/index/login')}");
+        if ('{$login_in_top}' == '1' && window != top) {
+            top.location.replace("{:url('/admin/index/login')}");
 
             document.querySelector('body').innerHTML =
 
@@ -81,48 +84,49 @@
 <body>
     {:\\tpext\\common\\ExtLoader::trigger('admin_login_page')}
     <div class="row lyear-wrapper" {if condition="$admin_login_background_img"
-        }style="background: url({$admin_login_background_img}) no-repeat;background-size: 100% 100%;" {/if}> <div
-        class="lyear-login">
-        <div class="login-center">
-            <div class="login-header text-center">
-                <a> <img alt="{$admin_page_title|default=''}"
-                        src="{$admin_login_logo|default='/assets/lightyearadmin/images/logo-ico.png'}">
-                </a>
-            </div>
-            <form action="" method="post" id="login-form">
-                <div class="form-group has-feedback feedback-left">
-                    <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username" />
-                    <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
+        }style="background: url({$admin_login_background_img}) no-repeat;background-size: 100% 100%;" {/if}>
+        <div class="lyear-login">
+            <div class="login-center">
+                <div class="login-header text-center">
+                    <a> <img alt="{$admin_page_title|default=''}"
+                            src="{$admin_login_logo|default='/assets/lightyearadmin/images/logo-ico.png'}">
+                    </a>
                 </div>
-                <div class="form-group has-feedback feedback-left">
-                    <input type="password" placeholder="请输入密码" class="form-control" id="password"
-                        autocomplete="new-password" name="password" />
-                    <span class="mdi mdi-lock form-control-feedback" aria-hidden="true"></span>
-                </div>
-                <div class="form-group has-feedback feedback-left row">
-                    <div class="col-xs-7">
-                        <input type="text" name="captcha" class="form-control" placeholder="验证码">
-                        <span class="mdi mdi-check-all
+                <form action="" method="post" id="login-form">
+                    <div class="form-group has-feedback feedback-left">
+                        <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username" />
+                        <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group has-feedback feedback-left">
+                        <input type="password" placeholder="请输入密码" class="form-control" id="password"
+                            autocomplete="new-password" name="password" />
+                        <span class="mdi mdi-lock form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group has-feedback feedback-left row">
+                        <div class="col-xs-7">
+                            <input type="text" name="captcha" class="form-control" placeholder="验证码">
+                            <span class="mdi mdi-check-all
                                     form-control-feedback" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-xs-5">
+                            <img src="/index.php/captcha/admin" class="pull-right" id="captcha"
+                                style="cursor: pointer;" onclick="this.src='/index.php/captcha/admin?d='+Math.random();"
+                                title="点击刷新" alt="captcha">
+                        </div>
                     </div>
-                    <div class="col-xs-5">
-                        <img src="/index.php/captcha/id/admin" class="pull-right" id="captcha" style="cursor: pointer;"
-                            onclick="this.src='/index.php/captcha/admin?d='+Math.random();" title="点击刷新" alt="captcha">
+                    <div class="form-group">
+                        <button class="btn btn-block btn-primary" type="submit">立即登录</button>
                     </div>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-block btn-primary" type="submit">立即登录</button>
-                </div>
-            </form>
-            <hr>
-            {notempty name="$admin_copyright"}
-            <footer class="col-sm-12 text-center">
-                {$admin_copyright|raw}
-            </footer>
-            {/notempty}
-            {:\\tpext\\common\\ExtLoader::trigger('admin_login_box_footer')}
+                </form>
+                <hr>
+                {notempty name="$admin_copyright"}
+                <footer class="col-sm-12 text-center">
+                    {$admin_copyright|raw}
+                </footer>
+                {/notempty}
+                {:\\tpext\\common\\ExtLoader::trigger('admin_login_box_footer')}
+            </div>
         </div>
-    </div>
     </div>
     <script type="text/javascript" src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}">
     </script>
@@ -130,7 +134,7 @@
     </script>
     <script type="text/javascript"
         src="/assets/tpextbuilder/js/jquery-validate/jquery.validate.min.js?v={$admin_assets_ver|default='1.0'}">
-    </script>
+        </script>
     <script type="text/javascript"
         src="/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js?v={$admin_assets_ver|default='1.0'}"></script>
     <script type="text/javascript"
@@ -193,7 +197,12 @@
 
                     if (data.code) {
                         lightyear.notify(data.msg || data.message || '登录成功', 'success');
-                        location.href = 'index';
+                        if (window == top || '{$login_in_top}' == '1' || !data.url) {
+                            location.href = "{:url('/admin/index/index')}";
+                        }
+                        else {
+                            location.href = data.url;
+                        }
                     } else {
                         lightyear.notify(data.msg || data.message || '登录失败', 'warning');
                         $('#captcha').attr('src', '/index.php/captcha/id/admin?d=' + Math.random());

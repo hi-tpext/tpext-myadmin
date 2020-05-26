@@ -3,7 +3,7 @@
 namespace tpext\myadmin\admin\model;
 
 use think\Model;
-use tpext\builder\common\Auth;
+use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
 
 class AdminUser extends Model implements Auth

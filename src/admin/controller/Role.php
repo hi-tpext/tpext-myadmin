@@ -214,8 +214,7 @@ class Role extends Controller
             $this->savePermissions($id);
         }
 
-        return Builder::getInstance()->layer()->closeRefresh(1, '保存成功');
-
+        return $this->builder()->layer()->closeRefresh(1, '保存成功');
     }
 
     private function saveMenus($roleId)

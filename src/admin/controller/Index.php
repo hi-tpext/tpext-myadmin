@@ -418,6 +418,7 @@ class Index extends Controller
             }
 
             $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
+
             cache('admin_try_login_' . $user['id'], null);
             unset($user['password'], $user['salt']);
             session('admin_user', $user);
@@ -426,7 +427,7 @@ class Index extends Controller
 
             $login_timeout = isset($config['login_timeout']) ? $config['login_timeout'] : 10;
 
-            cookie('admin_last_time', '1', ['expire' => $login_timeout * 60, 'httponly' => true]);
+            cookie('admin_last_time', time(), ['expire' => $login_timeout * 60, 'httponly' => true]);
 
             AdminOperationLog::create([
                 'user_id' => $user['id'],
@@ -438,7 +439,7 @@ class Index extends Controller
 
             ExtLoader::trigger('admin_login', $user);
 
-            $this->success('登录成功');
+            $this->success('登录成功', cookie('after_login_url'));
         } else {
 
             $tableName = config('database.prefix') . 'admin_user';
@@ -448,6 +449,8 @@ class Index extends Controller
             if (empty($isTable)) {
                 Tool::deleteDir(app()->getRuntimePath() . 'cache');
             }
+
+            $this->assign(['login_in_top' => $config['login_in_top'], 'login_css_file' => $config['login_css_file']]);
 
             return $this->fetch();
         }

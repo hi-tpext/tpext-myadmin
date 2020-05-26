@@ -144,13 +144,13 @@
                   <span>{$admin_user.name|default='Tpext'}<span class="caret"></span></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
-                  <li> <a class="open-tab" href="{:url('admin/index/profile')}"><i class="mdi
+                  <li> <a class="open-tab" href="{:url('/admin/index/profile')}"><i class="mdi
                           mdi-account"></i> 个人信息</a>
                   </li>
-                  <li> <a class="open-tab" href="{:url('admin/index/changePwd')}"><i class="mdi
+                  <li> <a class="open-tab" href="{:url('/admin/index/changePwd')}"><i class="mdi
                           mdi-lock-outline"></i>
                       修改密码</a> </li>
-                  <li> <a class="open-tab" href="{:url('admin/index/clearCache')}"><i class="mdi
+                  <li> <a class="open-tab" href="{:url('/admin/index/clearCache')}"><i class="mdi
                           mdi-delete"></i>
                       清空缓存</a></li>
                   <li class="divider"></li>
@@ -404,7 +404,7 @@
         time: 4000,
         btn: ['确定', '取消'],
         yes: function (params) {
-          location.replace("{:url('admin/index/logout')}");
+          location.replace("{:url('/admin/index/logout')}");
         }
       });
     };

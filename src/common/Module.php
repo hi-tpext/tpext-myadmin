@@ -12,7 +12,7 @@ class Module extends baseModule
 
     protected $title = '后台框架';
 
-    protected $description = '后台框架基础功能';
+    protected $description = '后台框架基础功能，建议优先安装，再装其他扩展';
 
     protected $root = __DIR__ . '/../../';
 
