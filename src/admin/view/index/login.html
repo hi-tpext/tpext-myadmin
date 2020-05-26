@@ -205,7 +205,7 @@
                         }
                     } else {
                         lightyear.notify(data.msg || data.message || '登录失败', 'warning');
-                        $('#captcha').attr('src', '/index.php/captcha/id/admin?d=' + Math.random());
+                        $('#captcha').attr('src', '/index.php/captcha/admin?d=' + Math.random());
                     }
                 },
                 error: function () {
