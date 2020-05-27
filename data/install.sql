@@ -133,5 +133,5 @@ INSERT INTO `__PREFIX__admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `
 (8, 2, 6, '操作记录', '/admin/operationlog/index', 'mdi mdi-playlist-check', '', 1, '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
 (9, 0, 99, '系统管理', '#', 'mdi mdi-settings', '', 1, '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
 (10, 9, 1, '扩展管理', '/admin/extension/index', 'mdi mdi-puzzle', '', 1, '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
-(11, 9, 2, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '', 1, '2020-03-03 20:37:29', '2020-03-03 20:37:29');
+(11, 9, 2, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '', 1, '2020-03-03 20:37:29', '2020-03-03 20:37:29'),
 (12, 9, 3, '文件管理', '/admin/attachment/index', 'mdi mdi-folder-multiple-image', '', 1, '2020-05-23 22:43:44', '2020-05-23 22:43:44');
