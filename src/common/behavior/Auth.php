@@ -24,6 +24,7 @@ class Auth
         $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
 
         if (empty($isTable)) {
+            cache('tpextmyadmin_installed', 0);
             return false;
         }
 
@@ -34,18 +35,19 @@ class Auth
         $installed = ExtLoader::getInstalled();
 
         if (empty($installed)) {
+            cache('tpextmyadmin_installed', 0);
             return false;
         }
 
         $is = false;
         foreach ($installed as $install) {
             if ($install['key'] == Module::class) {
-
                 $is = true;
-                cache('tpextmyadmin_installed', 1);
                 break;
             }
         }
+
+        cache('tpextmyadmin_installed', $is ? 1 : 0);
 
         return $is;
     }

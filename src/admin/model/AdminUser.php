@@ -2,6 +2,7 @@
 
 namespace tpext\myadmin\admin\model;
 
+use think\Db;
 use think\Model;
 use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
@@ -117,6 +118,17 @@ class AdminUser extends Model implements Auth
 
     public static function checkUrl($url, $user = null)
     {
+
+        $tableName = config('database.prefix') . 'admin_user';
+
+        $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
+
+        if (!$isTable) {
+            if (preg_match('/^\/admin\/extension\/\w+$/i', $url)) {
+                return true;
+            }
+        }
+
         if (!$user) {
             $user = session('admin_user');
 

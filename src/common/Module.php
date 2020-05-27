@@ -3,6 +3,7 @@
 namespace tpext\myadmin\common;
 
 use tpext\common\Module as baseModule;
+use tpext\myadmin\admin\model\AdminUser;
 
 class Module extends baseModule
 {
@@ -23,7 +24,14 @@ class Module extends baseModule
     public function install()
     {
         if (parent::install()) {
+
             session('admin_id', 1);
+            $user = AdminUser::get(1);
+
+            if ($user) {
+                unset($user['password'], $user['salt']);
+                session('admin_user', $user);
+            }
 
             return true;
         }
