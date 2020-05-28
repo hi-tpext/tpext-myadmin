@@ -118,12 +118,7 @@ class AdminUser extends Model implements Auth
 
     public static function checkUrl($url, $user = null)
     {
-
-        $tableName = config('database.prefix') . 'admin_user';
-
-        $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
-
-        if (!$isTable) {
+        if (!Module::getInstance()->isInstalled()) {
             if (preg_match('/^\/admin\/extension\/\w+$/i', $url)) {
                 return true;
             }
@@ -131,7 +126,7 @@ class AdminUser extends Model implements Auth
 
         if (!$user) {
             $user = session('admin_user');
-
+            \think\facade\Log::info(json_encode(session('admin_user')));
             if (!$user) {
                 return false;
             }

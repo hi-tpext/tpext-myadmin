@@ -133,7 +133,7 @@ class Index extends Controller
 
         $config = Module::getInstance()->getConfig();
 
-        cookie('admin_last_time', null);
+        session('admin_last_time', null);
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
             $this->success('注销成功！', '/');
@@ -400,7 +400,7 @@ class Index extends Controller
 
                 if ($try_login) {
 
-                    $time_gone = time() - $try_login;
+                    $time_gone = $_SERVER['REQUEST_TIME'] - $try_login;
 
                     if ($time_gone < $user['errors']) {
                         $this->error('错误次数过多，请' . ($user['errors'] - $time_gone) . '秒后再试' . $time_gone);
@@ -412,7 +412,7 @@ class Index extends Controller
 
                 $this->dataModel->where(['id' => $user['id']])->setInc('errors');
 
-                cache('admin_try_login_' . $user['id'], time());
+                cache('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
 
                 $this->error('密码错误');
             }
@@ -425,9 +425,7 @@ class Index extends Controller
             session('admin_id', $user['id']);
             session('login_session_key', null);
 
-            $login_timeout = isset($config['login_timeout']) ? $config['login_timeout'] : 10;
-
-            cookie('admin_last_time', time(), ['expire' => $login_timeout * 60, 'httponly' => true]);
+            session('admin_last_time', $_SERVER['REQUEST_TIME']);
 
             AdminOperationLog::create([
                 'user_id' => $user['id'],

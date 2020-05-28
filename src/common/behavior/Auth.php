@@ -1,56 +1,16 @@
 <?php
+
 namespace tpext\myadmin\common\behavior;
 
-use think\Container;
-use think\Db;
-use think\facade\Request;
 use think\Response;
-use tpext\common\ExtLoader;
-use tpext\myadmin\admin\model\AdminUser;
+use think\Container;
+use think\facade\Request;
 use tpext\myadmin\common\Module;
+use tpext\myadmin\admin\model\AdminUser;
 
 class Auth
 {
     protected $app;
-
-    public function isInstalled()
-    {
-        if (empty(config('database.database'))) {
-            return false;
-        }
-
-        $tableName = config('database.prefix') . 'admin_user';
-
-        $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
-
-        if (empty($isTable)) {
-            cache('tpextmyadmin_installed', 0);
-            return false;
-        }
-
-        if (cache('tpextmyadmin_installed')) {
-            return true;
-        }
-
-        $installed = ExtLoader::getInstalled();
-
-        if (empty($installed)) {
-            cache('tpextmyadmin_installed', 0);
-            return false;
-        }
-
-        $is = false;
-        foreach ($installed as $install) {
-            if ($install['key'] == Module::class) {
-                $is = true;
-                break;
-            }
-        }
-
-        cache('tpextmyadmin_installed', $is ? 1 : 0);
-
-        return $is;
-    }
 
     private function getLoginTimeout()
     {
@@ -81,7 +41,7 @@ class Auth
             $controller = strtolower(Request::controller());
             $action = strtolower(Request::action());
 
-            if (!$this->isInstalled()) {
+            if (!Module::getInstance()->isInstalled()) {
                 if ($controller != 'extension') {
                     $this->error('请安装扩展！', url('/admin/extension/index'));
                 } else {
@@ -96,18 +56,18 @@ class Auth
 
             if ($isAdmin) {
 
-                if (empty(cookie('admin_last_time'))) {
+                if (empty(session('admin_last_time'))) {
                     $isAdmin = 0;
                     session('admin_user', null);
                     session('admin_id', null);
                 } else {
                     $now = $_SERVER['REQUEST_TIME'];
 
-                    if ($now - cookie('admin_last_time') > 60) {
+                    if ($now - session('admin_last_time') > 60) {
 
                         $login_timeout = $this->getLoginTimeout();
 
-                        cookie('admin_last_time', $_SERVER['REQUEST_TIME'], ['expire' => $login_timeout * 60, 'httponly' => true]);
+                        session('admin_last_time', $now);
                     }
 
                     $userModel = new AdminUser;
@@ -229,7 +189,7 @@ class Auth
         $config = $this->app['config'];
 
         return $isAjax
-        ? $config->get('default_ajax_return')
-        : $config->get('default_return_type');
+            ? $config->get('default_ajax_return')
+            : $config->get('default_return_type');
     }
 }
