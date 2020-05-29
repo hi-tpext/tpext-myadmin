@@ -52,7 +52,7 @@ class Module extends baseModule
         return false;
     }
 
-    public function isInstalled()
+    public static function isInstalled()
     {
         if (empty(config('database.database'))) {
             return false;

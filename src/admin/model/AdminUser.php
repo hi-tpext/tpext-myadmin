@@ -118,18 +118,15 @@ class AdminUser extends Model implements Auth
 
     public static function checkUrl($url, $user = null)
     {
-        if (!Module::getInstance()->isInstalled()) {
+        if (!Module::isInstalled()) {
             if (preg_match('/^\/admin\/extension\/\w+$/i', $url)) {
                 return true;
             }
         }
-
+        $user = $user ? $user: session('admin_user');
+        
         if (!$user) {
-            $user = session('admin_user');
-            \think\facade\Log::info(json_encode(session('admin_user')));
-            if (!$user) {
-                return false;
-            }
+            return false;
         }
 
         $url = str_replace('.html', '', $url);

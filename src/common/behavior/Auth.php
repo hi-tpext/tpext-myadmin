@@ -32,6 +32,11 @@ class Auth
         return $login_timeout;
     }
 
+    private function isInstalled()
+    {
+        return Module::isInstalled();
+    }
+
     public function run($data = [])
     {
         $module = Request::module();
@@ -41,7 +46,7 @@ class Auth
             $controller = strtolower(Request::controller());
             $action = strtolower(Request::action());
 
-            if (!Module::getInstance()->isInstalled()) {
+            if (!$this->isInstalled()) {
                 if ($controller != 'extension') {
                     $this->error('请安装扩展！', url('/admin/extension/index'));
                 } else {
@@ -55,17 +60,15 @@ class Auth
             $isAdmin = !empty($admin_id) && is_numeric($admin_id) && $admin_id > 0;
 
             if ($isAdmin) {
+                $login_timeout = $this->getLoginTimeout();
+                $now = $_SERVER['REQUEST_TIME'];
 
-                if (empty(session('admin_last_time'))) {
+                if (!session('?admin_last_time') || $now - session('admin_last_time') > $login_timeout * 60) {
                     $isAdmin = 0;
                     session('admin_user', null);
                     session('admin_id', null);
                 } else {
-                    $now = $_SERVER['REQUEST_TIME'];
-
                     if ($now - session('admin_last_time') > 60) {
-
-                        $login_timeout = $this->getLoginTimeout();
 
                         session('admin_last_time', $now);
                     }
