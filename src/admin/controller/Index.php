@@ -388,22 +388,27 @@ class Index extends Controller
             $user = $this->dataModel->where(['username' => $data['username']])->find();
 
             if (!$user) {
+                sleep(5);
                 $this->error('用户帐号不存');
             }
 
             if ($user['enable'] == 0) {
+                sleep(2);
                 $this->error('帐号已禁用');
             }
 
             if ($user['errors'] > 10) {
+
+                $errors = $user['errors'] > 300 ? 300 : $user['errors'];
+
                 $try_login = cache('admin_try_login_' . $user['id']);
 
                 if ($try_login) {
 
                     $time_gone = $_SERVER['REQUEST_TIME'] - $try_login;
 
-                    if ($time_gone < $user['errors']) {
-                        $this->error('错误次数过多，请' . ($user['errors'] - $time_gone) . '秒后再试' . $time_gone);
+                    if ($time_gone < $errors) {
+                        $this->error('错误次数过多，请' . ($errors - $time_gone) . '秒后再试');
                     }
                 }
             }
@@ -414,6 +419,7 @@ class Index extends Controller
 
                 cache('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
 
+                sleep(2);
                 $this->error('密码错误');
             }
 
