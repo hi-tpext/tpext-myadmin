@@ -11,7 +11,7 @@ return [
     'login_logo' => '/assets/lightyearadmin/images/logo-ico.png',
     'login_background_img' => '/assets/lightyearadmin/images/login-bg.jpg',
     '__br__2' => '',
-    'login_in_top' => 1,
+    'login_in_top' => 0,
     'login_timeout' => 20,
     '__br__3' => '',
     'login_session_key' => 0,
