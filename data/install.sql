@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_permission` (
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   INDEX (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='操作记录表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_menu` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -134,4 +134,5 @@ INSERT INTO `__PREFIX__admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `
 (9, 0, 99, '系统管理', '#', 'mdi mdi-settings', '', 1, '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
 (10, 9, 1, '扩展管理', '/admin/extension/index', 'mdi mdi-puzzle', '', 1, '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
 (11, 9, 2, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '', 1, '2020-03-03 20:37:29', '2020-03-03 20:37:29'),
-(12, 9, 3, '文件管理', '/admin/attachment/index', 'mdi mdi-folder-multiple-image', '', 1, '2020-05-23 22:43:44', '2020-05-23 22:43:44');
+(12, 9, 3, '文件管理', '/admin/attachment/index', 'mdi mdi-folder-multiple-image', '', 1, '2020-05-23 22:43:44', '2020-05-23 22:43:44')
+(1３, 9, ４, '数据库管理', '/admin/table/index', 'mdi mdi-database', '', 1, '2020-06-10 12:43:44', '2020-06-10 12:43:44');

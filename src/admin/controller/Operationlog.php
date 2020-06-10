@@ -133,7 +133,7 @@ class Operationlog extends Controller
         //来源网络
         $num = 0;
         //每隔$limit行，刷新一下输出buffer，不要太大，也不要太小
-        $limit = 10000;
+        $limit = 5000;
         //逐行取出数据，不浪费内存
         $count = count($data);
         if ($count > 0) {
@@ -141,7 +141,9 @@ class Operationlog extends Controller
                 $num++;
                 //刷新一下输出buffer，防止由于数据过多造成问题
                 if ($limit == $num) {
-                    ob_flush();
+                    if (ob_get_level() > 0) {
+                        ob_flush();
+                    }
                     flush();
                     $num = 0;
                 }
