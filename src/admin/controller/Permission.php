@@ -131,8 +131,8 @@ class Permission extends Controller
         $table->field('controller', '控制器');
         $table->field('action', '动作');
         $table->field('_url', 'url链接');
-        $table->text('action_name', '动作名称')->mapClassWhen([''], 'hidden')->autoPost('', false)->getWapper()->addStyle('max-width:100px');
-        $table->switchBtn('action_type', '是权限')->autoPost('', false)->mapClassWhen(['-1'], 'hidden')->getWapper()->addStyle('max-width:80px');
+        $table->text('action_name', '动作名称')->mapClassWhen([''], 'hidden')->autoPost('', false)->getWrapper()->addStyle('max-width:100px');
+        $table->switchBtn('action_type', '是权限')->autoPost('', false)->mapClassWhen(['-1'], 'hidden')->getWrapper()->addStyle('max-width:80px');
 
         $table->data($data);
         $table->getToolbar()->btnRefresh();

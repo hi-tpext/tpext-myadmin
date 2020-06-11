@@ -88,15 +88,15 @@ class Admin extends Controller
 
         $table->show('id', 'ID');
         $table->show('username', '登录帐号');
-        $table->text('name', '姓名')->autoPost()->getWapper()->addStyle('max-width:80px');
+        $table->text('name', '姓名')->autoPost()->getWrapper()->addStyle('max-width:80px');
         $table->show('role_name', '角色');
         $table->show('group_name', $this->dataModel->getAdminGroupTitle());
         $table->match('enable', '启用')->options([0 => '<label class="label label-danger">禁用</label>', 1 => '<label class="label label-success">正常</label>']);
         $table->show('email', '电子邮箱')->default('无');
         $table->show('phone', '手机号')->default('无');
         $table->show('errors', '登录失败');
-        $table->show('login_time', '登录时间')->getWapper()->addStyle('width:180px');
-        $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
+        $table->show('login_time', '登录时间')->getWrapper()->addStyle('width:180px');
+        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
 
         foreach ($data as &$d) {
             $d['__h_del__'] = $d['id'] == 1;

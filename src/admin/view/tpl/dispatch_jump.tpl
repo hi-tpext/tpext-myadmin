@@ -27,6 +27,22 @@
     {
       margin-top:30px;
     }
+
+    .card-body
+    {
+      margin-top : 30px;
+    }
+    
+    .powerd
+    {
+      position : fixed;
+      bottom : 10px;
+      width : 100%;
+      padding : 0;
+      margin : 0;
+      font-size : 12px;
+    }
+
   </style>
 </head>
 
@@ -66,10 +82,12 @@
               </div>
             </div>
           </div>
+          <div class="powerd text-center"><span>Powerd by tpextmyadmin</span></div>
         </div>
       </main>
     </div>
   </div>
+
   <script type="text/javascript">
     (function () {
       var wait = document.getElementById('wait'),

@@ -67,14 +67,14 @@ class Operationlog extends Controller
     {
         $table = $this->table;
 
-        $table->show('id', 'ID')->getWapper();
+        $table->show('id', 'ID')->getWrapper();
         $table->show('username', '登录帐号');
         $table->show('name', '姓名');
         $table->show('path', '路径');
         $table->show('method', '提交方式');
         $table->show('ip', 'IP');
-        $table->show('data', '数据')->getWapper()->style('width:40%;');
-        $table->show('create_time', '时间')->getWapper()->addStyle('width:180px');
+        $table->show('data', '数据')->getWrapper()->style('width:40%;');
+        $table->show('create_time', '时间')->getWrapper()->addStyle('width:180px');
 
         $table->getToolbar()
             ->btnDelete()

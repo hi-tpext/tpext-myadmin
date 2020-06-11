@@ -87,13 +87,13 @@ class Group extends Controller
     {
         $table = $this->table;
         $table->show('id', 'ID');
-        $table->raw('title_show', '名称')->getWapper()->addStyle('text-align:left;');
+        $table->raw('title_show', '名称')->getWrapper()->addStyle('text-align:left;');
         $table->show('users', '用户数');
         $table->show('description', '描述')->default('无描述');
-        $table->text('name', '名称')->autoPost('', true)->getWapper()->addStyle('max-width:80px');
-        $table->text('sort', '排序')->autoPost('', true)->getWapper()->addStyle('max-width:40px');
-        $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+        $table->text('name', '名称')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
+        $table->text('sort', '排序')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
+        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
+        $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
 
         $table->sortable([]);
     }

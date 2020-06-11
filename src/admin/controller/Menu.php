@@ -117,14 +117,14 @@ class Menu extends Controller
     {
         $table = $this->table;
         $table->show('id', 'ID');
-        $table->raw('title_show', '名称')->getWapper()->addStyle('text-align:left;');
+        $table->raw('title_show', '名称')->getWrapper()->addStyle('text-align:left;');
         $table->show('url', 'url');
         $table->raw('icon', '图标')->to('<i class="mid {val}"></i>');
-        $table->text('title', '名称')->autoPost()->getWapper()->addStyle('max-width:80px');
-        $table->switchBtn('enable', '启用')->default(1)->autoPost()->mapClassWhen('/admin/menu/index', 'hidden', 'url')->getWapper()->addStyle('max-width:120px');
-        $table->text('sort', '排序')->autoPost('', true)->getWapper()->addStyle('max-width:40px');
-        $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+        $table->text('title', '名称')->autoPost()->getWrapper()->addStyle('max-width:80px');
+        $table->switchBtn('enable', '启用')->default(1)->autoPost()->mapClassWhen('/admin/menu/index', 'hidden', 'url')->getWrapper()->addStyle('max-width:120px');
+        $table->text('sort', '排序')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
+        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
+        $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
 
         $table->sortable([]);
 

@@ -70,9 +70,9 @@ class Role extends Controller
         $table->show('name', '名称');
         $table->show('users', '用户数');
         $table->show('description', '描述')->default('无描述');
-        $table->text('sort', '排序')->autoPost()->getWapper()->addStyle('max-width:40px');
-        $table->show('create_time', '添加时间')->getWapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWapper()->addStyle('width:180px');
+        $table->text('sort', '排序')->autoPost()->getWrapper()->addStyle('max-width:40px');
+        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
+        $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
         $table->sortable('id,sort');
 
         foreach ($data as &$d) {
