@@ -1,4 +1,5 @@
 <?php
+
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
@@ -7,6 +8,10 @@ use tpext\builder\traits\actions\HasIAED;
 use tpext\myadmin\admin\model\AdminGroup;
 use tpext\myadmin\common\Module;
 
+/**
+ * Undocumented class
+ * @title 分组管理 
+ */
 class Group extends Controller
 {
     use HasIAED;

@@ -1,4 +1,5 @@
 <?php
+
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
@@ -8,6 +9,10 @@ use tpext\builder\traits\actions\HasIAED;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 
+/**
+ * Undocumented class
+ * @title 菜单管理 
+ */
 class Menu extends Controller
 {
     use HasIAED;

@@ -1,4 +1,5 @@
 <?php
+
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
@@ -6,6 +7,10 @@ use think\Loader;
 use tpext\builder\common\Builder;
 use tpext\myadmin\admin\model\AdminPermission;
 
+/**
+ * Undocumented class
+ * @title 权限管理 
+ */
 class Permission extends Controller
 {
     protected $dataModel;
@@ -27,6 +32,40 @@ class Permission extends Controller
 
         $table->useCheckbox(false);
 
+        $reflectionClass = null;
+
+        $contrl = null;
+        $controllerName = null;
+        $controllerDoc = null;
+        $action = null;
+        $actionName = null;
+        $actionDoc = null;
+
+        $actionNames = [
+            'index' => '列表',
+            'list' => '列表',
+            'add' => '添加',
+            'create' => '新建',
+            'edit' => '修改',
+            'view' => '查看',
+            'update' => '更新',
+            'delete' => '删除',
+            'enable' => '启用',
+            'disable' => '禁用',
+            'status' => '状态',
+            'install' => '安装',
+            'uninstall' => '卸载',
+            'login' => '登录',
+            'logout' => '注销',
+            'dashbord' => '仪表盘',
+            'upload' => '上传',
+            'download' => '下载',
+            'autopost' => '字段编辑',
+            'import' => '导入',
+            'export' => '导出',
+            'welcom' => '欢迎',
+        ];
+
         foreach ($modControllers as $key => $modController) {
 
             $row = [
@@ -41,58 +80,65 @@ class Permission extends Controller
 
             $data[] = $row;
 
-            foreach ($modController['controllers'] as $controller => $methods) {
+            if (empty($modController['controllers'])) {
+                $data[] =  [
+                    'id' => $key . '_empty',
+                    'controller' => '<lable class="label label-default">无控制器～<label/>',
+                    'action' => '#',
+                    'url' => '--',
+                    '_url' => '--',
+                    'action_name' => '',
+                    'action_type' => '',
+                ];
+                continue;
+            }
 
-                $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
+            foreach ($modController['controllers'] as $controller => $info) {
 
-                $row_ = array_merge($row, ['controller' => $controller . '::class', 'action_name' => $contrl, 'action_type' => '', 'action' => '#']);
+                $controllerName = $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
+
+                $reflectionClass = $info['reflection'];
+
+                $controllerDoc = $reflectionClass->getDocComment();
+
+                if ($controllerDoc && preg_match('/@title\s(.+?)[\r\n]/i', $controllerDoc, $cname)) {
+                    $controllerName = trim($cname[1]);
+                }
+
+                $row_ = array_merge($row, ['controller' => $controller . '::class', 'action_name' => $controllerName, 'action_type' => '', 'action' => '#']);
 
                 $data[] = $row_;
 
-                foreach ($methods as $method) {
-                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method, '', false);
+                if (empty($info['methods'])) {
+                    continue;
+                }
+
+                foreach ($info['methods'] as $method) {
+
+                    $actionName = $action = strtolower($method->name);
+
+                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $action, '', false);
 
                     if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
                         continue;
                     }
 
-                    $action_name = $method;
+                    $actionDoc = $method->getDocComment();
 
-                    $action_names = [
-                        'index' => '列表',
-                        'list' => '列表',
-                        'add' => '添加',
-                        'create' => '新建',
-                        'edit' => '修改',
-                        'view' => '查看',
-                        'update' => '更新',
-                        'delete' => '删除',
-                        'enable' => '启用',
-                        'disable' => '禁用',
-                        'status' => '状态',
-                        'install' => '安装',
-                        'uninstall' => '卸载',
-                        'login' => '登录',
-                        'logout' => '注销',
-                        'dashbord' => '仪表盘',
-                        'upload' => '上传',
-                        'download' => '下载',
-                        'autopost' => '字段编辑',
-                        'import' => '导入',
-                        'export' => '导出',
-                        'welcom' => '欢迎',
-                    ];
-
-                    if (isset($action_names[$method])) {
-                        $action_name = $action_names[$method];
+                    if (isset($actionNames[$action])) {
+                        $actionName = $actionNames[$action];
+                    } else if ($actionDoc && preg_match('/@title\s(.+?)[\r\n]/i', $actionDoc, $aname)) {
+                        $actionName = trim($aname[1]);
                     }
 
-                    $row__ = array_merge($row_, ['action' => '@' . $method, '_url' => '<a target="_blank" href="' . $url . '">' . $url . '</a>', 'url' => $url, 'action_name' => $action_name, 'action_type' => 1]);
+                    $row__ = array_merge($row_, ['action' => '@' . $action, '_url' => '<a target="_blank" href="' . $url . '">' . $url . '</a>', 'url' => $url, 'action_name' => $actionName, 'action_type' => 1]);
 
                     $data[] = $row__;
                 }
             }
         }
+
+        unset($reflectionClass);
 
         $allIds = $this->dataModel->column('id');
         $activeIds = [];

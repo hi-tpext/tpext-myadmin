@@ -1,9 +1,9 @@
 <?php
+
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use think\Db;
-use tpext\builder\common\Builder;
 use tpext\builder\traits\HasBuilder;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
@@ -11,6 +11,10 @@ use tpext\myadmin\admin\model\AdminRole;
 use tpext\myadmin\admin\model\AdminRoleMenu;
 use tpext\myadmin\admin\model\AdminRolePermission;
 
+/**
+ * Undocumented class
+ * @title 角色管理 
+ */
 class Role extends Controller
 {
     use HasBuilder;
@@ -87,7 +91,6 @@ class Role extends Controller
             ->mapClass([
                 'delete' => ['hidden' => '__h_del__'],
             ]);
-
     }
 
     /**
@@ -128,11 +131,17 @@ class Role extends Controller
 
             $modControllers = $this->permModel->getControllers();
 
+            $controllerPerm = null;
+            $actionPerm = null;
+            $action = null;
+            $options = null;
+            $perIds = null;
+
             foreach ($modControllers as $modController) {
 
                 $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
 
-                foreach ($modController['controllers'] as $controller => $methods) {
+                foreach ($modController['controllers'] as $controller => $info) {
 
                     $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
 
@@ -140,22 +149,24 @@ class Role extends Controller
                         continue;
                     }
 
-                    if (empty($methods)) {
+                    if (empty($info['methods'])) {
                         continue;
                     }
 
                     $options = [];
 
-                    foreach ($methods as $method) {
+                    foreach ($info['methods'] as $method) {
 
-                        $actionPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '@' . $method])->find();
+                        $action = strtolower($method->name);
+
+                        $actionPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '@' . $action])->find();
 
                         if (!$actionPerm || $actionPerm['action_type'] == 0) {
                             continue;
                         }
 
                         if (!$actionPerm['action_name']) {
-                            $actionPerm['action_name'] = $method;
+                            $actionPerm['action_name'] = $action;
                         }
 
                         $options[$actionPerm['id']] = $actionPerm['action_name'];

@@ -1,4 +1,5 @@
 <?php
+
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
@@ -15,6 +16,10 @@ use tpext\myadmin\admin\model\AdminRolePermission;
 use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\common\Module;
 
+/**
+ * Undocumented class
+ * @title 首页 
+ */
 class Index extends Controller
 {
     protected $dataModel;
@@ -121,6 +126,12 @@ class Index extends Controller
         return '<span style="color:#333;font-size:12px;">无权限访问！</span>';
     }
 
+    /**
+     * Undocumented function
+     *
+     * @title 默认欢迎页码
+     * @return mixed
+     */
     public function welcome()
     {
         return $this->fetch();
@@ -142,6 +153,12 @@ class Index extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @title 修改个人密码
+     * @return mixed
+     */
     public function changePwd()
     {
         if (request()->isPost()) {
@@ -196,7 +213,6 @@ class Index extends Controller
             } else {
                 $this->error('修改失败');
             }
-
         } else {
             $builder = Builder::getInstance('个人设置', '修改密码');
 
@@ -210,6 +226,12 @@ class Index extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @title 个人资料
+     * @return mixed
+     */
     public function profile()
     {
         if (request()->isPost() && !input('post.__search__', '0')) {
@@ -311,6 +333,12 @@ class Index extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @title 清空缓存
+     * @return mixed
+     */
     public function clearCache()
     {
         if (request()->isPost()) {
@@ -336,7 +364,6 @@ class Index extends Controller
             }
 
             $this->success('操作成功！');
-
         } else {
             $builder = Builder::getInstance('系统设置', '清空缓存');
 

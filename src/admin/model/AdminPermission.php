@@ -20,8 +20,8 @@ class AdminPermission extends Model
     {
         $methods = [];
         foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($method->class == $reflection->getName() && !in_array($method->name, ['__construct', '_initialize'])) {
-                $methods[] = $method->name;
+            if ($method->class == $reflection->getName() && !in_array($method->name, ['__construct', '_initialize', 'initialize'])) {
+                $methods[] = $method;
             }
         }
 
@@ -55,6 +55,10 @@ class AdminPermission extends Model
 
         $installed = ExtLoader::getInstalled();
 
+        $reflectionClass = null;
+
+        $url_controller_layer = 'controller';
+
         foreach ($extensions as $key => $instance) {
             $is_enable = 0;
 
@@ -79,7 +83,6 @@ class AdminPermission extends Model
             }
 
             $namespace = rtrim($namespaceMap[0], '\\');
-            $url_controller_layer = 'controller';
 
             if (!empty($mods)) {
 
@@ -96,7 +99,6 @@ class AdminPermission extends Model
 
                         if (false !== strpos($modController, '\\')) {
                             $class = '\\' . $module . '\\' . $modController . ltrim($module, '\\');
-
                         } else {
                             $class = '\\' . $module . '\\' . $url_controller_layer . '\\' . ucfirst($modController);
                         }
@@ -107,12 +109,15 @@ class AdminPermission extends Model
                             $reflectionClass = new \ReflectionClass($controller);
                             $methods = $this->getMethods($reflectionClass);
 
-                            $controllers[$instance->getId()]['controllers'][$controller] = $methods;
+                            $controllers[$instance->getId()]['controllers'][$controller]['reflection'] = $reflectionClass;
+                            $controllers[$instance->getId()]['controllers'][$controller]['methods'] = $methods;
                         }
                     }
                 }
             }
         }
+
+        unset($reflectionClass);
 
         return $controllers;
     }
@@ -123,6 +128,10 @@ class AdminPermission extends Model
             return [];
         }
         $dir = opendir($path);
+
+        $reflectionClass = null;
+
+        $sonDir = null;
 
         while (false !== ($file = readdir($dir))) {
 
@@ -141,12 +150,15 @@ class AdminPermission extends Model
                             $reflectionClass = new \ReflectionClass($controller);
                             $methods = $this->getMethods($reflectionClass);
 
-                            $controllers[$controller] = $methods;
+                            $controllers[$controller]['reflection'] = $reflectionClass;
+                            $controllers[$controller]['methods'] = $methods;
                         }
                     }
                 }
             }
         }
+
+        unset($reflectionClass, $sonDir);
 
         return $controllers;
     }
