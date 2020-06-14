@@ -129,7 +129,7 @@ class Index extends Controller
     /**
      * Undocumented function
      *
-     * @title 默认欢迎页码
+     * @title 欢迎页面
      * @return mixed
      */
     public function welcome()
