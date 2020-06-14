@@ -9,7 +9,7 @@ use tpext\myadmin\admin\model\AdminUser;
 
 /**
  * Undocumented class
- * @title 管理员管理 
+ * @title 管理员管理
  */
 class Admin extends Controller
 {

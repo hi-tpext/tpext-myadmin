@@ -11,7 +11,7 @@ use tpext\myadmin\admin\model\AdminPermission;
 
 /**
  * Undocumented class
- * @title 菜单管理 
+ * @title 菜单管理
  */
 class Menu extends Controller
 {

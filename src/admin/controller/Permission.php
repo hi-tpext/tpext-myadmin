@@ -9,7 +9,7 @@ use tpext\myadmin\admin\model\AdminPermission;
 
 /**
  * Undocumented class
- * @title 权限管理 
+ * @title 权限管理
  */
 class Permission extends Controller
 {

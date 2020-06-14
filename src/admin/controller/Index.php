@@ -18,7 +18,7 @@ use tpext\myadmin\common\Module;
 
 /**
  * Undocumented class
- * @title 首页 
+ * @title 首页
  */
 class Index extends Controller
 {

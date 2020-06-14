@@ -11,7 +11,7 @@ use tpext\myadmin\admin\model\AdminUser;
 
 /**
  * Undocumented class
- * @title 操作日志 
+ * @title 操作日志
  */
 class Operationlog extends Controller
 {

@@ -13,7 +13,7 @@ use tpext\myadmin\admin\model\AdminRolePermission;
 
 /**
  * Undocumented class
- * @title 角色管理 
+ * @title 角色管理
  */
 class Role extends Controller
 {

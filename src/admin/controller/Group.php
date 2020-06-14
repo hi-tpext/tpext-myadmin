@@ -10,7 +10,7 @@ use tpext\myadmin\common\Module;
 
 /**
  * Undocumented class
- * @title 分组管理 
+ * @title 分组管理
  */
 class Group extends Controller
 {
