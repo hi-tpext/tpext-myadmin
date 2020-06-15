@@ -56,12 +56,17 @@ class Menu extends Controller
                 '#' => '是目录，拥有下级节点',
             ],
         ];
+
+        $contrl = null;
+        $permission = null;
+        $perm = null;
+
         foreach ($modControllers as $key => $modController) {
 
             $urls[$key]['label'] = '[' . $modController['title'] . ']';
             $urls[$key]['options'] = [];
 
-            foreach ($modController['controllers'] as $controller => $methods) {
+            foreach ($modController['controllers'] as $controller => $info) {
 
                 $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
 
@@ -69,7 +74,7 @@ class Menu extends Controller
 
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
-                foreach ($methods as $method) {
+                foreach ($info['methods'] as $method) {
                     $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method, '', false);
 
                     $perm = $this->permModel->where(['url' => $url])->find();
@@ -82,6 +87,7 @@ class Menu extends Controller
                 }
             }
         }
+
         $form->text('title', '名称')->required();
         $form->select('parent_id', '上级')->required()->options($tree);
         $form->select('url', 'url')->required()->options($urls);
