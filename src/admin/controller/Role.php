@@ -230,7 +230,8 @@ class Role extends Controller
 
     private function saveMenus($roleId)
     {
-        $menuIds = request()->post('menus/a');
+        $menuIds = array_filter(request()->post('menus/a'), 'strlen');
+
         if (empty($menuIds)) {
             $menuIds = [];
         }
@@ -286,7 +287,7 @@ class Role extends Controller
 
                 if (isset($data['permissions' . $controllerPerm['id']])) {
 
-                    $saveIds = $data['permissions' . $controllerPerm['id']];
+                    $saveIds = array_filter($data['permissions' . $controllerPerm['id']], 'strlen');
 
                     foreach ($saveIds as $id) {
                         $exist = $this->rolePermModel->where(['permission_id' => $id, 'role_id' => $roleId])->find();

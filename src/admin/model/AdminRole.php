@@ -13,4 +13,11 @@ class AdminRole extends Model
         $count = AdminUser::where('role_id', $data['id'])->count();
         return $count ? $count : 0;
     }
+
+    protected static function init()
+    {
+        self::afterDelete(function ($role) {
+            AdminRolePermission::where(['role_id' => $role['id']])->delete();
+        });
+    }
 }
