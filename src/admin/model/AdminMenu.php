@@ -24,7 +24,11 @@ class AdminMenu extends Model
 
         foreach ($roots as $root) {
 
-            $root['title_show'] = str_repeat('&nbsp;', ($deep - 1) * 6) . '├─' . $root['title'];
+            if ($parent == 0) {
+                $root['title_show'] = $root['title'];
+            } else {
+                $root['title_show'] = str_repeat('&nbsp;', ($deep - 1) * 6) . '├─' . $root['title'];
+            }
 
             $data[] = $root;
 
