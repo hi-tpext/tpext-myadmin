@@ -40,9 +40,9 @@ class Module extends baseModule
         return false;
     }
 
-    public function uninstall()
+    public function uninstall($runSql = true)
     {
-        if (parent::uninstall()) {
+        if (parent::uninstall($runSql)) {
             session('admin_user', null);
             session('admin_id', null);
             cache('tpextmyadmin_installed', null);

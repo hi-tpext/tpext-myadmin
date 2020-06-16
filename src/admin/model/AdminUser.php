@@ -44,6 +44,11 @@ class AdminUser extends Model implements Auth
         return $this->adminGroupTitle;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return $this
+     */
     public static function current()
     {
         $admin_id = session('admin_id');
