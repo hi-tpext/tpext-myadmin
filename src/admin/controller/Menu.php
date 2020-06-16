@@ -75,7 +75,7 @@ class Menu extends Controller
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
                 foreach ($info['methods'] as $method) {
-                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method, '', false);
+                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method->name, '', false);
 
                     $perm = $this->permModel->where(['url' => $url])->find();
 
@@ -142,6 +142,8 @@ class Menu extends Controller
         foreach ($data as &$d) {
             $d['__dis_del__'] = $d['url'] == '/admin/menu/index';
         }
+
+        unset($d);
 
         $table->getActionbar()->mapClass([
             'delete' => ['disabled' => '__dis_del__'],
