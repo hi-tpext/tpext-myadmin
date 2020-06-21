@@ -4,6 +4,7 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use think\Loader;
+use tpext\builder\traits\actions\HasAutopost;
 use tpext\builder\traits\actions\HasBase;
 use tpext\builder\traits\actions\HasIndex;
 use tpext\myadmin\admin\model\AdminPermission;
@@ -16,6 +17,7 @@ class Permission extends Controller
 {
     use HasBase;
     use HasIndex;
+    use HasAutopost;
 
     protected $dataModel;
 
@@ -143,7 +145,7 @@ class Permission extends Controller
 
         $allIds = $this->dataModel->column('id');
         $activeIds = [];
-
+        $perm = null;
         foreach ($data as &$row) {
             if ($row['action'] != '') {
                 $perm = $this->dataModel->where(['controller' => $row['controller'], 'action' => $row['action']])->find();
@@ -153,7 +155,7 @@ class Permission extends Controller
                     $row['id'] = $perm['id'];
                     $activeIds[] = $perm['id'];
                 } else {
-                    $row['id'] = $this->dataModel->create([
+                    $res = $this->dataModel->create([
                         'module_name' => $modController['title'],
                         'controller' => $row['controller'],
                         'action' => $row['action'],
@@ -161,6 +163,10 @@ class Permission extends Controller
                         'action_type' => $row['action_type'],
                         'action_name' => $row['action_name'],
                     ]);
+                    if ($res) {
+                        $perm = $this->dataModel->where(['controller' => $row['controller'], 'action' => $row['action']])->find();
+                        $row['id'] = $perm ? $perm['id'] : $row['id'];
+                    }
                 }
             }
 
@@ -173,6 +179,20 @@ class Permission extends Controller
 
         if (!empty($delIds)) {
             $this->dataModel->destroy(array_values($delIds));
+        }
+
+        if ($this->isExporting) {
+            $__ids__ = input('post.__ids__');
+            if (!empty($__ids__)) {
+                $ids = explode(',', $__ids__);
+                $newd = [];
+                foreach ($data as $d) {
+                    if (in_array($d['id'], $ids)) {
+                        $newd[] = $d;
+                    }
+                }
+                $data = $newd;
+            }
         }
 
         $this->buildTable($data);
