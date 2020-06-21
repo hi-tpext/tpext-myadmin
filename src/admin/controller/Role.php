@@ -32,7 +32,7 @@ class Role extends Controller
         $this->menuModel = new AdminMenu;
         $this->roleMenuModel = new AdminRoleMenu;
 
-        $this->pageTitle = '用户管理';
+        $this->pageTitle = '角色管理';
         $this->postAllowFields = ['sort', 'name'];
         $this->delNotAllowed = [1];
         $this->sortOrder = 'sort asc';

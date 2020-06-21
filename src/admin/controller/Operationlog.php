@@ -4,8 +4,9 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use tpext\builder\traits\actions\HasBase;
-use tpext\builder\traits\actions\HasIndex;
 use tpext\builder\traits\actions\HasDelete;
+use tpext\builder\traits\actions\HasIndex;
+use tpext\builder\traits\actions\HasView;
 use tpext\myadmin\admin\model\AdminOperationLog;
 use tpext\myadmin\admin\model\AdminUser;
 
@@ -17,6 +18,7 @@ class Operationlog extends Controller
 {
     use HasBase;
     use HasIndex;
+    use HasView;
     use HasDelete;
 
     protected $dataModel;
@@ -61,8 +63,29 @@ class Operationlog extends Controller
 
         $search->select('user_id', '管理员', 3)->optionsData($this->userModel->all(), 'username');
         $search->text('path', '路径', 3);
-        $search->radio('method', '提交方式', 3)->options(['' => '全部', 'GET' => 'get', 'POST' => 'post']);
+        $search->radio('method', '提交方式', 3)->options(['' => '全部', 'GET' => 'GET', 'POST' => 'POST']);
     }
+
+    /**
+     * 构建表单
+     *
+     * @param boolean $isEdit
+     * @param array $data
+     */
+    protected function builForm($isEdit, &$data = [])
+    {
+        $form = $this->form;
+        $form->show('id', 'ID');
+        $form->show('user_id', '管理员id');
+        $form->show('username', '登录帐号');
+        $form->show('name', '姓名');
+        $form->show('path', '路径');
+        $form->show('method', '提交方式');
+        $form->show('ip', 'IP');
+        $form->show('data', '数据');
+        $form->show('create_time', '时间');
+    }
+
     /**
      * 构建表格
      *
@@ -72,93 +95,28 @@ class Operationlog extends Controller
     {
         $table = $this->table;
 
-        $table->show('id', 'ID')->getWrapper();
+        $table->show('id', 'ID');
         $table->show('username', '登录帐号');
         $table->show('name', '姓名');
         $table->show('path', '路径');
         $table->show('method', '提交方式');
         $table->show('ip', 'IP');
-        $table->show('data', '数据')->getWrapper()->style('width:40%;');
-        $table->show('create_time', '时间')->getWrapper()->addStyle('width:180px');
+        $table->show('data', '数据')->getWrapper()->style('width:25%;');
+        $table->show('create_time', '时间')->getWrapper()->addStyle('width:160px');
+
+        foreach ($data as &$d) {
+            if ($d['method'] == 'POST' && mb_strlen($d['data']) > 50) {
+
+                $d['data'] = mb_substr($d['data'], 0, 50) . '...}';
+            }
+        }
 
         $table->getToolbar()
             ->btnDelete()
-            //->btnExport()
-            ->btnExports(['csv' => 'CSV文件'])
             ->btnRefresh();
 
         $table->getActionbar()
+            ->btnView()
             ->btnDelete();
-    }
-
-    public function export()
-    {
-        // TODO
-        ob_end_clean();
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=' . 'operation_log' . "_" . date('Y-m-d-H-i-s') . ".csv");
-        header('Cache-Control: max-age=0');
-        $fp = fopen('php://output', 'a');
-
-        $header_data = ['编号', '登录帐号', '姓名', '路径', '方式', 'IP', '数据', '时间'];
-
-        foreach ($header_data as $key => $value) {
-            $header_data[$key] = mb_convert_encoding($value, "GBK", "UTF-8");
-        }
-        fputcsv($fp, $header_data);
-
-        $__ids__ = input('post.__ids__');
-
-        $where = [];
-
-        if (!empty($__ids__)) {
-            $where[] = ['id', 'in', $__ids__];
-        } else {
-            $where = $this->filterWhere();
-        }
-
-        $sortOrder = input('__sort__', $this->sortOrder);
-
-        $list = $this->dataModel->where($where)->order($sortOrder)->select();
-
-        $data = [];
-
-        foreach ($list as $li) {
-            $row = [];
-            $row[] = $li['id'];
-            $row[] = $li['username'];
-            $row[] = $li['name'];
-            $row[] = $li['path'];
-            $row[] = $li['method'];
-            $row[] = $li['ip'];
-            $row[] = $li['data'];
-            $row[] = $li['create_time'];
-            $data[] = $row;
-        }
-        //来源网络
-        $num = 0;
-        //每隔$limit行，刷新一下输出buffer，不要太大，也不要太小
-        $limit = 5000;
-        //逐行取出数据，不浪费内存
-        $count = count($data);
-        if ($count > 0) {
-            for ($i = 0; $i < $count; $i++) {
-                $num++;
-                //刷新一下输出buffer，防止由于数据过多造成问题
-                if ($limit == $num) {
-                    if (ob_get_level() > 0) {
-                        ob_flush();
-                    }
-                    flush();
-                    $num = 0;
-                }
-                $row = $data[$i];
-                foreach ($row as $key => $value) {
-                    $row[$key] = mb_convert_encoding($value, "GBK", "UTF-8");
-                }
-                fputcsv($fp, $row);
-            }
-        }
-        fclose($fp);
     }
 }

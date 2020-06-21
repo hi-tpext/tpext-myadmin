@@ -4,33 +4,32 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use think\Loader;
-use tpext\builder\common\Builder;
+use tpext\builder\traits\actions\HasBase;
+use tpext\builder\traits\actions\HasIndex;
 use tpext\myadmin\admin\model\AdminPermission;
 
 /**
  * Undocumented class
- * @title 权限管理
+ * @title 权限设置
  */
 class Permission extends Controller
 {
+    use HasBase;
+    use HasIndex;
+
     protected $dataModel;
 
     protected function initialize()
     {
         $this->dataModel = new AdminPermission;
+        $this->pageTitle = '权限设置';
     }
 
-    public function index()
+    protected function buildDataList()
     {
-        $modControllers = $this->dataModel->getControllers();
+        $table = $this->table;
 
         $data = [];
-
-        $builder = Builder::getInstance('权限管理', '动作设置');
-
-        $table = $builder->table();
-
-        $table->useCheckbox(false);
 
         $reflectionClass = null;
 
@@ -66,11 +65,13 @@ class Permission extends Controller
             'welcom' => '欢迎',
         ];
 
+        $modControllers = $this->dataModel->getControllers();
+
         foreach ($modControllers as $key => $modController) {
 
             $row = [
                 'id' => $key,
-                'controller' => '<lable class="label label-success">' . $modController['title'] . '<label/>',
+                'controller' => '<label class="label label-success">' . $modController['title'] . '</label>',
                 'action' => '',
                 'url' => '',
                 '_url' => '',
@@ -81,9 +82,9 @@ class Permission extends Controller
             $data[] = $row;
 
             if (empty($modController['controllers'])) {
-                $data[] =  [
+                $data[] = [
                     'id' => $key . '_empty',
-                    'controller' => '<lable class="label label-default">无控制器～<label/>',
+                    'controller' => '<label class="label label-default">无控制器～</label>',
                     'action' => '#',
                     'url' => '--',
                     '_url' => '--',
@@ -174,6 +175,21 @@ class Permission extends Controller
             $this->dataModel->destroy(array_values($delIds));
         }
 
+        $this->buildTable($data);
+        $table->data($data);
+
+        return $data;
+    }
+
+    /**
+     * 构建表格
+     *
+     * @return void
+     */
+    protected function buildTable(&$data = [])
+    {
+        $table = $this->table;
+
         $table->field('controller', '控制器');
         $table->field('action', '动作');
         $table->field('_url', 'url链接');
@@ -183,36 +199,5 @@ class Permission extends Controller
         $table->data($data);
         $table->getToolbar()->btnRefresh();
         $table->useActionbar(false);
-
-        if (request()->isAjax()) {
-            return $table->partial()->render();
-        }
-
-        return $builder->render();
-    }
-
-    public function autopost()
-    {
-        $id = input('id/d', '');
-        $name = input('name', '');
-        $value = input('value', '');
-
-        if (empty($id) || empty($name)) {
-            $this->error('参数有误');
-        }
-
-        $allow = ['action_name', 'action_type'];
-
-        if (!in_array($name, $allow)) {
-            $this->error('不允许的操作');
-        }
-
-        $res = $this->dataModel->update([$name => $value], ['id' => $id]);
-
-        if ($res) {
-            $this->success('修改成功');
-        } else {
-            $this->error('修改失败');
-        }
     }
 }
