@@ -120,8 +120,8 @@ class Admin extends Controller
 
         $table->getActionbar()
             ->btnEdit()
-            ->btnEnable()
-            ->btnDisable()
+            ->btnEnableAndDisable()
+            ->btnView()
             ->btnDelete()
             ->btnPostRowid('clear_errors', url('clearErrors'), '', 'btn-info', 'mdi-backup-restore', 'title="重置登录失败次数"')
             ->mapClass([

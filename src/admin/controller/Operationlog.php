@@ -28,7 +28,6 @@ class Operationlog extends Controller
     {
         $this->dataModel = new AdminOperationLog;
         $this->userModel = new AdminUser;
-
         $this->pageTitle = '操作记录';
     }
 
