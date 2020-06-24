@@ -52,6 +52,10 @@ class Menu
 
     private function createMenu($menu, $parent_id = 0)
     {
+        if ($parent_id == 0) {
+            $menu['sort'] = AdminMenu::where(['parent_id' => 0])->max('sort') + 5;
+        }
+
         $data = [
             'parent_id' => $parent_id,
             'sort' => isset($menu['sort']) ? $menu['sort'] : 1,
@@ -77,7 +81,7 @@ class Menu
     private function deleteMenu($menu)
     {
         if ($menu['url'] != '#') {
-            
+
             AdminMenu::where(['url' => $menu['url']])->delete();
         } else if (isset($menu['module']) && !empty($menu['module'])) {
 
