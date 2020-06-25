@@ -71,11 +71,11 @@ class Admin extends Controller
     {
         $search = $this->search;
 
-        $search->text('username', '账号', 3)->maxlength(20);
-        $search->text('name', '姓名', 3)->maxlength(20);
-        $search->text('phone', '手机号', 3)->maxlength(20);
-        $search->text('email', '邮箱', 3)->maxlength(20);
-        $search->select('role_id', '角色组', 3)->optionsData($this->roleModel->all(), 'name');
+        $search->text('username', '账号')->maxlength(20);
+        $search->text('name', '姓名')->maxlength(20);
+        $search->text('phone', '手机号')->maxlength(20);
+        $search->text('email', '邮箱')->maxlength(20);
+        $search->select('role_id', '角色组')->optionsData($this->roleModel->all(), 'name');
         if (method_exists($this->groupModel, 'buildTree')) {
             $search->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
         } else {

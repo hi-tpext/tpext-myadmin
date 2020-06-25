@@ -60,8 +60,8 @@ class Operationlog extends Controller
     {
         $search = $this->search;
 
-        $search->select('user_id', '管理员', 3)->optionsData($this->userModel->all(), 'username');
-        $search->text('path', '路径', 3);
+        $search->select('user_id', '管理员')->optionsData($this->userModel->all(), 'username');
+        $search->text('path', '路径');
         $search->radio('method', '提交方式', 3)->options(['' => '全部', 'GET' => 'GET', 'POST' => 'POST']);
     }
 

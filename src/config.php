@@ -4,7 +4,7 @@ return [
     'name' => 'Tpext后台管理系统',
     'description' => 'Tpext后台管理系统',
     'copyright' => 'Copyright &copy; 2020. <a target="_blank" href="#">Tpext后台管理系统</a> All rights reserved.',
-    '__hr__1' => '注意，涉及到`/assets/`目录中的图片等资源文件，不要直接上传文件替换，请在`/static/`中创建目录然后上传，然后修改链接',
+    '__hr__1' => '注意，涉及到`/assets/`目录中的图片等资源文件，不要直接上传文件替换，请在根目录`public/static/`中创建目录然后上传，然后修改链接',
     'logo' => '<img src="/assets/lightyearadmin/images/logo.png" alt="Admin logo" title="Tpext后台管理系统">',
     'favicon' => '/assets/lightyearadmin/favicon.ico',
     '__br__1' => '',
