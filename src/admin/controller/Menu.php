@@ -18,8 +18,19 @@ class Menu extends Controller
     use HasIAED;
     use HasAutopost;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminMenu
+     */
     protected $dataModel;
-    protected $roleModel;
+
+    /**
+     * Undocumented variable
+     *
+     * @var AdminPermission
+     */
+    protected $permModel;
 
     protected function initialize()
     {

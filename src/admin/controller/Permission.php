@@ -19,6 +19,11 @@ class Permission extends Controller
     use HasIndex;
     use HasAutopost;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminPermission
+     */
     protected $dataModel;
 
     protected function initialize()
@@ -65,6 +70,7 @@ class Permission extends Controller
             'import' => '导入',
             'export' => '导出',
             'welcom' => '欢迎',
+            'selectpage' => '下拉选择',
         ];
 
         $modControllers = $this->dataModel->getControllers();

@@ -21,8 +21,19 @@ class Operationlog extends Controller
     use HasView;
     use HasDelete;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminOperationLog
+     */
     protected $dataModel;
-    protected $roleModel;
+
+    /**
+     * Undocumented variable
+     *
+     * @var AdminUser
+     */
+    protected $userModel;
 
     protected function initialize()
     {

@@ -17,6 +17,11 @@ class Group extends Controller
     use HasIAED;
     use HasAutopost;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminGroup
+     */
     protected $dataModel;
 
     protected $adminGroupTitle = '分组';

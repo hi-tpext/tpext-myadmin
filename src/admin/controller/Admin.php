@@ -15,8 +15,25 @@ class Admin extends Controller
 {
     use HasBuilder;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminUser
+     */
     protected $dataModel;
+
+    /**
+     * Undocumented variable
+     *
+     * @var AdminRole
+     */
     protected $roleModel;
+
+    /**
+     * Undocumented variable
+     *
+     * @var \think\Model
+     */
     protected $groupModel;
 
     protected function initialize()
