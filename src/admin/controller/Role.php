@@ -207,17 +207,17 @@ class Role extends Controller
         }
 
         if ($id) {
-            $res = $this->dataModel->update($data, ['id' => $id]);
+            $res = $this->dataModel->save($data, [$this->getPk() => $id]);
         } else {
-            $res = Db::name('admin_role')->insertGetId($data);
+            $res = $this->dataModel->save($data);
+            if($res)
+            {
+                $id = $this->dataModel->id;
+            }
         }
 
         if (!$res) {
             $this->error('保存失败');
-        }
-
-        if (!$id) {
-            $id = $res;
         }
 
         if ($id > 1) {

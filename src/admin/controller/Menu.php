@@ -200,19 +200,10 @@ class Menu extends Controller
             $this->error($result);
         }
 
-        if ($id) {
-            if ($data['parent_id'] == $id) {
-                $this->error('上级不能是自己');
-            }
-            $res = $this->dataModel->update($data, ['id' => $id]);
-        } else {
-            $res = $this->dataModel->create($data);
+        if ($id && $data['parent_id'] == $id) {
+            $this->error('上级不能是自己');
         }
 
-        if (!$res) {
-            $this->error('保存失败');
-        }
-
-        return $this->builder()->layer()->closeRefresh(1, '保存成功');
+        return $this->doSave($data, $id);
     }
 }

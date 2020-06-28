@@ -198,7 +198,7 @@ class Index extends Controller
             $editData['password'] = $password[0];
             $editData['salt'] = $password[1];
 
-            $res = $this->dataModel->update($editData, ['id' => $user['id']]);
+            $res = $this->dataModel->save($data, ['id' => $user['id']]);
 
             if ($res) {
                 ExtLoader::trigger('admin_change_pwd', $user);
@@ -318,7 +318,7 @@ class Index extends Controller
             $this->error($result);
         }
 
-        $res = $this->dataModel->update($data, ['id' => session('admin_id')]);
+        $res = $this->dataModel->allowField(true)->save($data, ['id' => session('admin_id')]);
 
         if ($res) {
 

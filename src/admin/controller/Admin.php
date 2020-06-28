@@ -252,12 +252,12 @@ class Admin extends Controller
         }
 
         if ($id) {
-            $res = $this->dataModel->update($data, ['id' => $id]);
+            $res = $this->dataModel->save($data, [$this->getPk() => $id]);
         } else {
             if (!isset($data['password']) || empty($data['password'])) {
                 $this->error('请输入密码');
             }
-            $res = $this->dataModel->create($data);
+            $res = $this->dataModel->allowField(true)->save($data);
         }
 
         if (!$res) {
