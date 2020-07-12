@@ -48,7 +48,7 @@ class Menu extends Controller
      * @param boolean $isEdit
      * @param array $data
      */
-    protected function builForm($isEdit, &$data = [])
+    protected function buildForm($isEdit, &$data = [])
     {
         $form = $this->form;
 
