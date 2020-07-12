@@ -1,19 +1,17 @@
 <?php
 namespace tpext\myadmin\common\behavior;
 
-use think\facade\Request;
-use think\facade\View;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
+use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\common\Module;
-use tpext\myadmin\admin\model\AdminUser;
 
 class Setup
 {
     public function run($data = [])
     {
-        $module = Request::module();
+        $module = request()->module();
 
         if ($module == 'admin') { //admin模块， 替换错误和跳转模板 ,其他事件监听
 
@@ -60,8 +58,7 @@ class Setup
 
             Builder::aver($config['assets_ver']);
             Builder::auth(AdminUser::class);
-
-            View::share([
+            app('view')->share([
                 'admin_page_position' => '',
                 'admin_page_title' => isset($config['name']) ? $config['name'] : '',
                 'admin_page_description' => isset($config['description']) ? $config['description'] : '',

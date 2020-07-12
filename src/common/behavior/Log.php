@@ -2,17 +2,16 @@
 namespace tpext\myadmin\common\behavior;
 
 use think\Db;
-use think\facade\Request;
 use tpext\myadmin\admin\model\AdminOperationLog;
 
 class Log
 {
     public function run($data = [])
     {
-        $module = Request::module();
+        $module = request()->module();
 
-        $controller = strtolower(Request::controller());
-        $action = strtolower(Request::action());
+        $controller = strtolower(request()->controller());
+        $action = strtolower(request()->action());
 
         $admin_id = session('admin_id');
 
@@ -33,7 +32,7 @@ class Log
         if (empty($isTable)) {
             return;
         }
-        $param = Request::param();
+        $param = request()->param();
 
         if ($controller == 'admin' && in_array($action, ['add', 'edit'])) {
             $param = [];
@@ -48,8 +47,8 @@ class Log
         AdminOperationLog::create([
             'user_id' => $admin_id,
             'path' => implode('/', [$module, $controller, $action]),
-            'method' => Request::method(),
-            'ip' => Request::ip(),
+            'method' => request()->method(),
+            'ip' => request()->ip(),
             'data' => json_encode($param),
         ]);
     }

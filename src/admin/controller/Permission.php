@@ -225,5 +225,6 @@ class Permission extends Controller
         $table->data($data);
         $table->getToolbar()->btnRefresh();
         $table->useActionbar(false);
+        $table->useCheckbox(false);
     }
 }

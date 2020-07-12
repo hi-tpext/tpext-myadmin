@@ -4,7 +4,6 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use think\Db;
-use think\facade\Request;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
@@ -464,8 +463,8 @@ class Index extends Controller
             AdminOperationLog::create([
                 'user_id' => $user['id'],
                 'path' => 'admin/index/login',
-                'method' => Request::method(),
-                'ip' => Request::ip(),
+                'method' => request()->method(),
+                'ip' => request()->ip(),
                 'data' => json_encode([])
             ]);
 

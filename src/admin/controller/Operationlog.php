@@ -67,7 +67,7 @@ class Operationlog extends Controller
      *
      * @return void
      */
-    protected function builSearch()
+    protected function buildSearch()
     {
         $search = $this->search;
 
