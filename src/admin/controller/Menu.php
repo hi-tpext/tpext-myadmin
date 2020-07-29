@@ -71,6 +71,7 @@ class Menu extends Controller
         $contrl = null;
         $permission = null;
         $perm = null;
+        $arr = null;
 
         foreach ($modControllers as $key => $modController) {
 
@@ -81,12 +82,18 @@ class Menu extends Controller
 
                 $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
 
-                $permission = $this->permModel->where(['controller' => $controller, 'action' => '#'])->find();
+                $contrl = preg_replace('/.+?\\\controller\\\(.+)$/', '$1', $controller);
+                if (strpos($contrl, '\\') !== false) {
+                    $arr = explode('\\', $contrl);
+                    $contrl = $arr[0] . '/' . Loader::parseName($arr[1]);
+                }
+
+                $permission = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
 
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
                 foreach ($info['methods'] as $method) {
-                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $method->name, '', false);
+                    $url = url('/admin/' . $contrl . '/' . $method->name, '', false);
 
                     $perm = $this->permModel->where(['url' => $url])->find();
 

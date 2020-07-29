@@ -2,7 +2,7 @@
 
 namespace tpext\myadmin\admin\model;
 
-use think\Db;
+use think\Loader;
 use think\Model;
 use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
@@ -100,6 +100,8 @@ class AdminUser extends Model implements Auth
 
     public function checkPermission($admin_id, $controller, $action)
     {
+        $controller = str_replace('.', '/', $controller);
+        $controller = Loader::parseName($controller);
         $user = static::get($admin_id);
 
         if (!$user) {
@@ -128,8 +130,8 @@ class AdminUser extends Model implements Auth
                 return true;
             }
         }
-        $user = $user ? $user: session('admin_user');
-        
+        $user = $user ? $user : session('admin_user');
+
         if (!$user) {
             return false;
         }

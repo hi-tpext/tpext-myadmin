@@ -21,10 +21,35 @@ use tpext\myadmin\common\Module;
  */
 class Index extends Controller
 {
+    /**
+     * Undocumented variable
+     *
+     * @var AdminUser
+     */
     protected $dataModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminMenu
+     */
     protected $menuModel;
+    /**
+     * AdminRoleMenu
+     *
+     * @var AdminRolePermission
+     */
     protected $roleMenuModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminRolePermission
+     */
     protected $rolePerModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminPermission
+     */
     protected $perModel;
 
     protected function initialize()

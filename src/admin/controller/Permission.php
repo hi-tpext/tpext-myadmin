@@ -46,6 +46,7 @@ class Permission extends Controller
         $action = null;
         $actionName = null;
         $actionDoc = null;
+        $arr = null;
 
         $actionNames = [
             'index' => '列表',
@@ -103,8 +104,14 @@ class Permission extends Controller
             }
 
             foreach ($modController['controllers'] as $controller => $info) {
-
-                $controllerName = $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
+                $contrl = preg_replace('/.+?\\\controller\\\(.+)$/', '$1', $controller);
+                if (strpos($contrl, '\\') !== false) {
+                    $arr = explode('\\', $contrl);
+                    $controllerName = $arr[1];
+                    $contrl = $arr[0] . '/' . Loader::parseName($arr[1]);
+                } else {
+                    $controllerName = $contrl;
+                }
 
                 $reflectionClass = $info['reflection'];
 
@@ -126,7 +133,7 @@ class Permission extends Controller
 
                     $actionName = $action = strtolower($method->name);
 
-                    $url = url('/admin/' . Loader::parseName($contrl) . '/' . $action, '', false);
+                    $url = url('/admin/' . $contrl . '/' . $action, '', false);
 
                     if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
                         continue;

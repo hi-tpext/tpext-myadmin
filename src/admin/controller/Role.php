@@ -19,10 +19,36 @@ class Role extends Controller
 {
     use HasBuilder;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminRole
+     */
     protected $dataModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminPermission
+     */
     protected $permModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminRolePermission
+     */
     protected $rolePermModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminMenu
+     */
     protected $menuModel;
+    /**
+     * Undocumented variable
+     *
+     * @var AdminRoleMenu
+     */
+    protected $roleMenuModel;
 
     protected function initialize()
     {
@@ -103,7 +129,13 @@ class Role extends Controller
     {
         $form = $this->form;
 
-        $form->hidden('id');
+        $this->builder()->addStyleSheet('
+        .form-horizontal .control-label.permission-item
+        {
+            text-align : left;
+        }
+');
+
         $form->text('name', '名称')->maxlength(25)->required();
         $form->textarea('description', '描述')->maxlength(100);
         $form->text('sort', '排序')->required()->default(1);
@@ -125,66 +157,49 @@ class Role extends Controller
                 $menuIds = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->column('id');
             }
 
-            $form->checkbox('menus', '菜单')->required()->optionsData($this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select(), 'title')->default($menuIds)->size(2, 10)->checkallBtn('全部菜单');
+            $form->checkbox('menus', '菜单')->required()->optionsData($this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select(), 'title')->default($menuIds)->checkallBtn('全部菜单');
 
             $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
 
-            $modControllers = $this->permModel->getControllers();
-
-            $controllerPerm = null;
-            $actionPerm = null;
-            $action = null;
-            $options = null;
             $perIds = null;
+            $tree = $this->menuModel->buildList();
 
-            foreach ($modControllers as $modController) {
-
-                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $modController['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
-
-                foreach ($modController['controllers'] as $controller => $info) {
-
-                    $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
-
-                    if (!$controllerPerm) {
-                        continue;
-                    }
-
-                    if (empty($info['methods'])) {
-                        continue;
-                    }
-
-                    $options = [];
-
-                    foreach ($info['methods'] as $method) {
-
-                        $action = strtolower($method->name);
-
-                        $actionPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '@' . $action])->find();
-
-                        if (!$actionPerm || $actionPerm['action_type'] == 0) {
-                            continue;
-                        }
-
-                        if (!$actionPerm['action_name']) {
-                            $actionPerm['action_name'] = $action;
-                        }
-
-                        $options[$actionPerm['id']] = $actionPerm['action_name'];
-                    }
-
-                    $perIds = [];
-                    if ($isEdit) {
-                        $perIds = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
-                    }
-
-                    $form->checkbox("permissions" . $controllerPerm['id'], $controllerPerm['action_name'])
-                        ->default($perIds)->size(2, 10)
-                        ->options($options)
-                        ->inline()
-                        ->checkallBtn();
+            foreach ($tree as $tr) {
+                if ($tr['parent_id'] == '0') {
+                    $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $tr['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
+                } else if ($tr['url'] == '#') {
+                    $form->raw('title', $tr['title_show'])
+                        ->labelClass('permission-item');
                 }
+
+                $controllerPerm = $this->permModel->where(['url' => $tr['url']])->find();
+                if (!$controllerPerm) {
+                    continue;
+                }
+
+                $permissions = $this->permModel->where([
+                    ['controller', 'eq', $controllerPerm['controller']],
+                    ['action', 'neq', '#'],
+                ])->order('action desc')->field('id,action_name,url')->select();
+
+                $perIds = [];
+                if ($isEdit) {
+                    $perIds = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
+                }
+
+                $form->checkbox("permissions" . $controllerPerm['id'], $tr['title_show'])
+                    ->default($perIds)
+                    ->labelClass('permission-item')
+                    ->optionsData($permissions, 'action_name')
+                    ->inline()
+                    ->checkallBtn();
             }
         }
+    }
+
+    protected function findActionByMenu()
+    {
+
     }
 
     private function save($id = 0)
@@ -210,8 +225,7 @@ class Role extends Controller
             $res = $this->dataModel->save($data, [$this->getPk() => $id]);
         } else {
             $res = $this->dataModel->save($data);
-            if($res)
-            {
+            if ($res) {
                 $id = $this->dataModel->id;
             }
         }
@@ -271,37 +285,33 @@ class Role extends Controller
         $allIds = $this->rolePermModel->where(['role_id' => $roleId])->column('id');
         $existIds = [];
 
-        $modControllers = $this->permModel->getControllers();
-
         Db::startTrans();
 
-        foreach ($modControllers as $modController) {
+        $tree = $this->menuModel->buildList();
 
-            foreach ($modController['controllers'] as $controller => $methods) {
+        foreach ($tree as $tr) {
 
-                $controllerPerm = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
+            $controllerPerm = $this->permModel->where(['url' => $tr['url']])->find();
+            if (!$controllerPerm) {
+                continue;
+            }
 
-                if (!$controllerPerm || empty($methods)) {
-                    continue;
-                }
+            if (isset($data['permissions' . $controllerPerm['id']])) {
 
-                if (isset($data['permissions' . $controllerPerm['id']])) {
+                $saveIds = array_filter($data['permissions' . $controllerPerm['id']], 'strlen');
 
-                    $saveIds = array_filter($data['permissions' . $controllerPerm['id']], 'strlen');
+                foreach ($saveIds as $id) {
+                    $exist = $this->rolePermModel->where(['permission_id' => $id, 'role_id' => $roleId])->find();
 
-                    foreach ($saveIds as $id) {
-                        $exist = $this->rolePermModel->where(['permission_id' => $id, 'role_id' => $roleId])->find();
-
-                        if ($exist) {
-                            $existIds[] = $exist['id'];
-                            continue;
-                        } else {
-                            $this->rolePermModel->create([
-                                'permission_id' => $id,
-                                'role_id' => $roleId,
-                                'controller_id' => $controllerPerm['id'],
-                            ]);
-                        }
+                    if ($exist) {
+                        $existIds[] = $exist['id'];
+                        continue;
+                    } else {
+                        $this->rolePermModel->create([
+                            'permission_id' => $id,
+                            'role_id' => $roleId,
+                            'controller_id' => $controllerPerm['id'],
+                        ]);
                     }
                 }
             }

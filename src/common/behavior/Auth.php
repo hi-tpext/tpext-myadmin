@@ -42,7 +42,7 @@ class Auth
 
         if ($module == 'admin') { //admin模块
 
-            $controller = strtolower(request()->controller());
+            $controller = request()->controller();
             $action = strtolower(request()->action());
 
             if (!$this->isInstalled()) {
@@ -55,7 +55,7 @@ class Auth
 
             $admin_id = session('admin_id');
 
-            $isLogin = $controller == 'index' && $action == 'login';
+            $isLogin = strtolower($controller) == 'index' && $action == 'login';
             $isAdmin = !empty($admin_id) && is_numeric($admin_id) && $admin_id > 0;
 
             if ($isAdmin) {
