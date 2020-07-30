@@ -44,6 +44,18 @@ class AdminUser extends Model implements Auth
         return $this->adminGroupTitle;
     }
 
+    public function getRoleNameAttr($value, $data)
+    {
+        $role = AdminRole::get($data['role_id']);
+        return $role ? $role['name'] : '--';
+    }
+
+    public function getGroupNameAttr($value, $data)
+    {
+        $group = $this->adminGroupModel->get($data['group_id']);
+        return $group ? $group['name'] : '--';
+    }
+
     /**
      * Undocumented function
      *
@@ -86,21 +98,16 @@ class AdminUser extends Model implements Auth
         return $savedCryptPwd == md5($savedSalt . $inputPwd . $savedSalt);
     }
 
-    public function getRoleNameAttr($value, $data)
-    {
-        $role = AdminRole::get($data['role_id']);
-        return $role ? $role['name'] : '--';
-    }
-
-    public function getGroupNameAttr($value, $data)
-    {
-        $group = $this->adminGroupModel->get($data['group_id']);
-        return $group ? $group['name'] : '--';
-    }
-
+    /**
+     * Undocumented function
+     *
+     * @param int $admin_id
+     * @param string $controller
+     * @param string $action
+     * @return boolean
+     */
     public function checkPermission($admin_id, $controller, $action)
     {
-        $controller = str_replace('.', '/', $controller);
         $controller = Loader::parseName($controller);
         $user = static::get($admin_id);
 
@@ -123,8 +130,18 @@ class AdminUser extends Model implements Auth
         return static::checkUrl($url, $user);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $url
+     * @param array $user
+     * @return boolean
+     */
     public static function checkUrl($url, $user = null)
     {
+        $url = str_replace('.html', '', $url);
+        $url = str_replace('.', '/', $url);
+
         if (!Module::isInstalled()) {
             if (preg_match('/^\/admin\/extension\/\w+$/i', $url)) {
                 return true;
@@ -136,15 +153,24 @@ class AdminUser extends Model implements Auth
             return false;
         }
 
-        $url = str_replace('.html', '', $url);
-
-        if (in_array($url, ['/admin/index/index', '/admin/index/captcha', '/admin/index/welcome',
-            '/admin/index/denied', '/admin/index/logout', '/admin/index/login'
-            , '/admin/index/profile', '/admin/index/changepwd'])) {
+        if ($user['role_id'] == 1) {
             return true;
         }
 
-        if ($user['role_id'] == 1) {
+        $path = explode('/', trim($url, '/'));
+
+        if (count($path) < 3) {
+            return false;
+        }
+
+        $url = implode('/', ['', $path[0], Loader::parseName($path[1]), strtolower($path[2])]);
+
+        $noNeed = [
+            '/admin/index/index', '/admin/index/captcha', '/admin/index/welcome', '/admin/index/denied',
+            '/admin/index/logout', '/admin/index/login', '/admin/index/profile', '/admin/index/changepwd',
+        ];
+
+        if (in_array($url, $noNeed)) {
             return true;
         }
 
@@ -155,6 +181,11 @@ class AdminUser extends Model implements Auth
         }
 
         $prmission = AdminPermission::where(['url' => $url])->find();
+
+        if (!$prmission && count($path) > 3) {
+            $url = implode('/', ['', Loader::parseName($path[0] . '/' . $path[1]), $path[2], $path[3]]);
+            $prmission = AdminPermission::where(['url' => $url])->find();
+        }
 
         if (!$prmission) {
             return false;
