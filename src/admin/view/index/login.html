@@ -41,7 +41,7 @@
             align-items: center !important;
             justify-content: center !important;
         }
-        
+
         .lyear-login:after{
             content:'';
             min-height:inherit;
@@ -116,8 +116,8 @@
                                     form-control-feedback" aria-hidden="true"></span>
                         </div>
                         <div class="col-xs-5">
-                            <img src="/index.php/captcha/admin" class="pull-right" id="captcha"
-                                style="cursor: pointer;" onclick="this.src='/index.php/captcha/admin?d='+Math.random();"
+                            <img src="{:url('/admin/index/captcha')}?d=1" class="pull-right" id="captcha"
+                                style="cursor: pointer;" onclick="this.src=this.src+'1';"
                                 title="点击刷新" alt="captcha">
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                         }
                     } else {
                         lightyear.notify(data.msg || data.message || '登录失败', 'warning');
-                        $('#captcha').attr('src', '/index.php/captcha/admin?d=' + Math.random());
+                        $('#captcha').attr('src', "{:url('/admin/index/captcha')}?d=" + Math.random());
                     }
                 },
                 error: function () {

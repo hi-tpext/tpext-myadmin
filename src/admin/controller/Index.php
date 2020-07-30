@@ -2,8 +2,10 @@
 
 namespace tpext\myadmin\admin\controller;
 
+use think\captcha\Captcha;
 use think\Controller;
 use think\Db;
+use think\facade\Config;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
@@ -510,5 +512,24 @@ class Index extends Controller
 
             return $this->fetch();
         }
+    }
+
+    public function captcha()
+    {
+        $config = Module::getInstance()->getConfig();
+
+        if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
+            if (!session('?login_session_key')) {
+                header("HTTP/1.1 404 Not Found");
+                exit;
+            }
+        }
+
+        $config = Config::pull('captcha');
+        if (empty($config)) {
+            $config = ['length' => 4];
+        }
+        $captcha = new Captcha($config);
+        return $captcha->entry('admin');
     }
 }

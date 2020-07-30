@@ -55,7 +55,7 @@ class Auth
 
             $admin_id = session('admin_id');
 
-            $isLogin = strtolower($controller) == 'index' && $action == 'login';
+            $isLogin = strtolower($controller) == 'index' && ($action == 'login' || $action == 'captcha');
             $isAdmin = !empty($admin_id) && is_numeric($admin_id) && $admin_id > 0;
 
             if ($isAdmin) {

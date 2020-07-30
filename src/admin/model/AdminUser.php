@@ -138,7 +138,9 @@ class AdminUser extends Model implements Auth
 
         $url = str_replace('.html', '', $url);
 
-        if (in_array($url, ['/admin/index/index', '/admin/index/welcome', '/admin/index/denied', '/admin/index/logout', '/admin/index/login'])) {
+        if (in_array($url, ['/admin/index/index', '/admin/index/captcha', '/admin/index/welcome',
+            '/admin/index/denied', '/admin/index/logout', '/admin/index/login'
+            , '/admin/index/profile', '/admin/index/changepwd'])) {
             return true;
         }
 

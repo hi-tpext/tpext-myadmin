@@ -197,11 +197,6 @@ class Role extends Controller
         }
     }
 
-    protected function findActionByMenu()
-    {
-
-    }
-
     private function save($id = 0)
     {
         $data = request()->only([
