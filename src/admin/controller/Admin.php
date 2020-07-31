@@ -133,16 +133,9 @@ class Admin extends Controller
             ->btnAdd()
             ->btnEnable()
             ->btnDisable()
-            ->btnActions(['delete' => '删除'])
             ->btnRefresh();
 
         $table->getActionbar()
-            ->btnActions(
-                [
-                    'edit' => ['url' => url('edit', ['id' => '__data.pk__']), 'label' => '编辑', 'confirm' => '2'],
-                    'delete' => '删除',
-                ]
-            )
             ->btnEdit()
             ->btnEnableAndDisable()
             ->btnView()
