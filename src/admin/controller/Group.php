@@ -3,8 +3,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use tpext\builder\traits\actions\HasAutopost;
-use tpext\builder\traits\actions\HasIAED;
+use tpext\builder\traits\actions;
 use tpext\myadmin\admin\model\AdminGroup;
 use tpext\myadmin\common\Module;
 
@@ -14,8 +13,8 @@ use tpext\myadmin\common\Module;
  */
 class Group extends Controller
 {
-    use HasIAED;
-    use HasAutopost;
+    use actions\HasIAED;
+    use actions\HasAutopost;
 
     /**
      * Undocumented variable

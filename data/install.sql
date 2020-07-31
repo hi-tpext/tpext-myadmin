@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_permission` (
   `action_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '动作类型',
   `create_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX(`controller`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='后台权限表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_menu` (

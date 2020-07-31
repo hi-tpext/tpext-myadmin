@@ -4,8 +4,7 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use think\Loader;
-use tpext\builder\traits\actions\HasAutopost;
-use tpext\builder\traits\actions\HasIAED;
+use tpext\builder\traits\actions;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 
@@ -15,8 +14,8 @@ use tpext\myadmin\admin\model\AdminPermission;
  */
 class Menu extends Controller
 {
-    use HasIAED;
-    use HasAutopost;
+    use actions\HasIAED;
+    use actions\HasAutopost;
 
     /**
      * Undocumented variable

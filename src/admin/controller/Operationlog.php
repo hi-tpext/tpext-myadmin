@@ -3,10 +3,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use tpext\builder\traits\actions\HasBase;
-use tpext\builder\traits\actions\HasDelete;
-use tpext\builder\traits\actions\HasIndex;
-use tpext\builder\traits\actions\HasView;
+use tpext\builder\traits\actions;
 use tpext\myadmin\admin\model\AdminOperationLog;
 use tpext\myadmin\admin\model\AdminUser;
 
@@ -16,10 +13,10 @@ use tpext\myadmin\admin\model\AdminUser;
  */
 class Operationlog extends Controller
 {
-    use HasBase;
-    use HasIndex;
-    use HasView;
-    use HasDelete;
+    use actions\HasBase;
+    use actions\HasIndex;
+    use actions\HasView;
+    use actions\HasDelete;
 
     /**
      * Undocumented variable

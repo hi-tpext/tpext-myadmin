@@ -99,6 +99,7 @@ class Admin extends Controller
             $search->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
         }
     }
+
     /**
      * 构建表格
      *
@@ -132,10 +133,16 @@ class Admin extends Controller
             ->btnAdd()
             ->btnEnable()
             ->btnDisable()
-            ->btnDelete()
+            ->btnActions(['delete' => '删除'])
             ->btnRefresh();
 
         $table->getActionbar()
+            ->btnActions(
+                [
+                    'edit' => ['url' => url('edit', ['id' => '__data.pk__']), 'label' => '编辑', 'confirm' => '2'],
+                    'delete' => '删除',
+                ]
+            )
             ->btnEdit()
             ->btnEnableAndDisable()
             ->btnView()

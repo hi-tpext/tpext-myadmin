@@ -83,7 +83,6 @@ class Permission extends Controller
                 'controller' => '<label class="label label-success">' . $modController['title'] . '</label>',
                 'action' => '',
                 'url' => '',
-                '_url' => '',
                 'action_name' => '',
                 'action_type' => '',
             ];
@@ -96,7 +95,6 @@ class Permission extends Controller
                     'controller' => '<label class="label label-default">无控制器～</label>',
                     'action' => '#',
                     'url' => '--',
-                    '_url' => '--',
                     'action_name' => '',
                     'action_type' => '',
                 ];
@@ -147,7 +145,7 @@ class Permission extends Controller
                         $actionName = trim($aname[1]);
                     }
 
-                    $row__ = array_merge($row_, ['action' => '@' . $action, '_url' => '<a target="_blank" href="' . $url . '">' . $url . '</a>', 'url' => $url, 'action_name' => $actionName, 'action_type' => 1]);
+                    $row__ = array_merge($row_, ['action' => '@' . $action, 'url' => $url, 'action_name' => $actionName, 'action_type' => 1]);
 
                     $data[] = $row__;
                 }
@@ -225,7 +223,7 @@ class Permission extends Controller
 
         $table->field('controller', '控制器');
         $table->field('action', '动作');
-        $table->field('_url', 'url链接');
+        $table->field('url', 'url链接')->to('<a target="_blank" href="{val}">{val}</a>');
         $table->text('action_name', '动作名称')->mapClassWhen([''], 'hidden')->autoPost('', false)->getWrapper()->addStyle('max-width:100px');
         $table->switchBtn('action_type', '是权限')->autoPost('', false)->mapClassWhen(['-1'], 'hidden')->getWrapper()->addStyle('max-width:80px');
 
