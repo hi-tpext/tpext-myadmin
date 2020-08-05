@@ -52,8 +52,20 @@ class Operationlog extends Controller
             $where[] = ['path', 'like', '%' . $searchData['path'] . '%'];
         }
 
+        if (!empty($searchData['ip'])) {
+            $where[] = ['ip', 'like', '%' . $searchData['ip'] . '%'];
+        }
+
         if (!empty($searchData['method'])) {
             $where[] = ['method', 'eq', $searchData['method']];
+        }
+
+        if (!empty($searchData['start'])) {
+            $where[] = ['create_time', 'egt', $searchData['start']];
+        }
+
+        if (!empty($searchData['end'])) {
+            $where[] = ['create_time', 'elt', $searchData['end']];
         }
 
         return $where;
@@ -70,7 +82,11 @@ class Operationlog extends Controller
 
         $search->select('user_id', '管理员')->optionsData($this->userModel->all(), 'username');
         $search->text('path', '路径');
-        $search->radio('method', '提交方式', 3)->options(['' => '全部', 'GET' => 'GET', 'POST' => 'POST']);
+        $search->text('ip', 'IP');
+        $search->select('method', '提交方式')->options(['GET' => 'GET', 'POST' => 'POST']);
+        $search->datetime('start ', '操作时间', 3)->placeholder('起始');
+        $search->datetime('end ', '~', 3)->placeholder('截止');
+
     }
 
     /**
