@@ -62,6 +62,10 @@ class Role extends Controller
         $this->postAllowFields = ['sort', 'name'];
         $this->delNotAllowed = [1];
         $this->sortOrder = 'sort asc';
+
+        $this->selectTextField = '{name}';
+        $this->selectFields = 'id,name';
+        $this->selectSearch = 'name';
     }
 
     protected function filterWhere()

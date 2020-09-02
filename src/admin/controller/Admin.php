@@ -45,6 +45,10 @@ class Admin extends Controller
         $this->pageTitle = '用户管理';
         $this->postAllowFields = ['phone', 'name', 'email'];
         $this->delNotAllowed = [1, session('admin_id')];
+
+        $this->selectTextField = '{id}#{name}({username})';
+        $this->selectFields = 'id,name,username';
+        $this->selectSearch = 'username|name|phone';
     }
 
     protected function filterWhere()
