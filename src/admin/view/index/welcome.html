@@ -245,19 +245,19 @@
                 <table class="table table-responsive">
                     <tr>
                         <td>服务器操作系统：</td>
-                        <td>{$sys_info.os}</td>
-                        <td>服务器域名&访问IP：</td>
-                        <td>{$sys_info.domain} [ {$sys_info.ip} ]</td>
+                        <td>{$sys_info.os} / {$sys_info.domain}</td>
+                        <td>PHP 版本：</td>
+                        <td>{$sys_info.php_version}</td>
                         <td>服务器环境：</td>
                         <td>{$sys_info.web_server}</td>
                     </tr>
                     <tr>
-                        <td>PHP 版本：</td>
-                        <td>{$sys_info.php_version}</td>
                         <td>Mysql 版本：</td>
                         <td>{$sys_info.mysql_version}</td>
                         <td>GD 版本</td>
                         <td>{$sys_info.gdinfo}</td>
+                        <td>浏览器：</td>
+                        <td>{$sys_info.user_agent} / {$sys_info.ip}</td>
                     </tr>
                     <tr>
                         <td>文件上传限制：</td>
@@ -281,7 +281,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-sm-6 col-lg-6">
         <div class="card">
             <div class="card-header">
                 <h4>myadmin</h4>
@@ -291,7 +291,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-sm-6 col-lg-6">
         <pre>
             修改此页面2
                 1.创建`application/admin/controller/Index.php`文件，

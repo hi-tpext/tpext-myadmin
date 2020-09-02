@@ -166,8 +166,9 @@ class Index extends Controller
         $sysInfo['timezone'] = function_exists("date_default_timezone_get") ? date_default_timezone_get() : "no_timezone";
         $sysInfo['curl'] = function_exists('curl_init') ? '是' : '否';
         $sysInfo['web_server'] = $_SERVER['SERVER_SOFTWARE'];
+        $sysInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
         $sysInfo['php_version'] = phpversion();
-        $sysInfo['ip'] = GetHostByName($_SERVER['SERVER_NAME']);
+        $sysInfo['ip'] = request()->ip();
         $sysInfo['fileupload'] = @ini_get('upload_max_filesize') ?: '未知';
         $sysInfo['sys_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
         $sysInfo['max_ex_time'] = @ini_get("max_execution_time") . 's';
