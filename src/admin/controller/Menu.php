@@ -39,6 +39,10 @@ class Menu extends Controller
         $this->pageTitle = '菜单管理';
         $this->sortOrder = 'id desc';
         $this->postAllowFields = ['title', 'sort', 'enable'];
+
+        $this->selectTextField = '{title}';
+        $this->selectFields = 'id,title';
+        $this->selectSearch = 'title';
     }
 
     /**

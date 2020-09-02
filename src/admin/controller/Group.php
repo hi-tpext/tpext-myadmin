@@ -41,6 +41,10 @@ class Group extends Controller
         $this->sortOrder = 'id desc';
         $this->pagesize = 999;
         $this->postAllowFields = ['name', 'sort'];
+
+        $this->selectTextField = '{id}#{name}';
+        $this->selectFields = 'id,name';
+        $this->selectSearch = 'name';
     }
 
     /**
