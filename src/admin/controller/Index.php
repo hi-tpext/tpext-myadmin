@@ -160,7 +160,29 @@ class Index extends Controller
      */
     public function welcome()
     {
-        return $this->fetch();
+        $sysInfo['os'] = PHP_OS;
+        $sysInfo['zlib'] = function_exists('gzclose') ? '是' : '否';
+
+        $sysInfo['timezone'] = function_exists("date_default_timezone_get") ? date_default_timezone_get() : "no_timezone";
+        $sysInfo['curl'] = function_exists('curl_init') ? '是' : '否';
+        $sysInfo['web_server'] = $_SERVER['SERVER_SOFTWARE'];
+        $sysInfo['php_version'] = phpversion();
+        $sysInfo['ip'] = GetHostByName($_SERVER['SERVER_NAME']);
+        $sysInfo['fileupload'] = @ini_get('upload_max_filesize') ?: '未知';
+        $sysInfo['sys_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $sysInfo['max_ex_time'] = @ini_get("max_execution_time") . 's';
+        $sysInfo['set_time_limit'] = function_exists("set_time_limit") ? true : false;
+        $sysInfo['domain'] = $_SERVER['HTTP_HOST'];
+        $sysInfo['memory_limit'] = ini_get('memory_limit');
+        $mysqlinfo = db()->query('select VERSION() as version');
+        $sysInfo['mysql_version'] = json_encode($mysqlinfo);
+        if (function_exists('gd_info')) {
+            $gd = gd_info();
+            $sysInfo['gdinfo'] = $gd['GD Version'];
+        } else {
+            $sysInfo['gdinfo'] = "未知";
+        }
+        return $this->fetch('', ['sys_info' => $sysInfo]);
     }
 
     public function logout()
