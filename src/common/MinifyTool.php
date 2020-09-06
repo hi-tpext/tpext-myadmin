@@ -5,7 +5,7 @@ namespace tpext\myadmin\common;
 use MatthiasMullie\Minify;
 use tpext\builder\common\Builder;
 use tpext\builder\common\Module as BModule;
-use tpext\builder\common\Wapper;
+use tpext\builder\common\Wrapper;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
 
@@ -136,7 +136,7 @@ class MinifyTool
 
     private function createBuilder()
     {
-        $displayerMap = Wapper::getDisplayerMap();
+        $displayerMap = Wrapper::getDisplayerMap();
 
         foreach ($displayerMap as $name => $class) {
 
