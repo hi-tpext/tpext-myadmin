@@ -108,7 +108,7 @@ class Permission extends Controller
                     $controllerName = $arr[1];
                     $contrl = $arr[0] . '/' . Loader::parseName($arr[1]);
                 } else {
-                    $controllerName = $contrl;
+                    $contrl = Loader::parseName($contrl);
                 }
 
                 $reflectionClass = $info['reflection'];

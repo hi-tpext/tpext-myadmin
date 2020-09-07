@@ -89,6 +89,8 @@ class Menu extends Controller
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
                     $contrl = $arr[0] . '/' . Loader::parseName($arr[1]);
+                } else {
+                    $contrl = Loader::parseName($contrl);
                 }
 
                 $permission = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
@@ -96,6 +98,7 @@ class Menu extends Controller
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
                 foreach ($info['methods'] as $method) {
+
                     $url = url('/admin/' . $contrl . '/' . $method->name, '', false);
 
                     $perm = $this->permModel->where(['url' => $url])->find();

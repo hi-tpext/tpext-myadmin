@@ -116,7 +116,7 @@ class Index extends Controller
                     ], [
                         'id' => 6,
                         'name' => '扩展管理',
-                        'url' => url('tpext/index'),
+                        'url' => url('extension/index'),
                         'pid' => 0,
                         'icon' => 'mdi mdi-blur',
                         'is_out' => 0,
