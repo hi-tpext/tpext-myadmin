@@ -165,8 +165,12 @@ class Role extends Controller
 
             $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
 
-            $perIds = null;
             $tree = $this->menuModel->buildList();
+
+            $perIds = [];
+            if ($isEdit) {
+                $perIds = $this->rolePermModel->where(['role_id' => $data['id']])->column('permission_id');
+            }
 
             foreach ($tree as $tr) {
                 if ($tr['parent_id'] == '0') {
@@ -185,11 +189,6 @@ class Role extends Controller
                     ['controller', 'eq', $controllerPerm['controller']],
                     ['action', 'neq', '#'],
                 ])->order('action desc')->field('id,action_name,url')->select();
-
-                $perIds = [];
-                if ($isEdit) {
-                    $perIds = $this->rolePermModel->where(['controller_id' => $controllerPerm['id'], 'role_id' => $data['id']])->column('permission_id');
-                }
 
                 $form->checkbox("permissions" . $controllerPerm['id'], $tr['title_show'])
                     ->default($perIds)
