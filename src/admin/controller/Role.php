@@ -195,6 +195,7 @@ class Role extends Controller
                     ->labelClass('permission-item')
                     ->optionsData($permissions, 'action_name')
                     ->inline()
+                    ->size(2, 10)
                     ->checkallBtn();
             }
         }
