@@ -40,7 +40,7 @@ class Auth
     {
         $module = request()->module();
 
-        if ($module == 'admin') { //admin模块
+        if (strtolower($module) == 'admin') { //admin模块
 
             $controller = strtolower(request()->controller());
             $action = strtolower(request()->action());

@@ -13,7 +13,7 @@ class Setup
     {
         $module = request()->module();
 
-        if ($module == 'admin') { //admin模块， 替换错误和跳转模板 ,其他事件监听
+        if (strtolower($module) == 'admin') { //admin模块， 替换错误和跳转模板 ,其他事件监听
 
             ExtLoader::watch('tpext_menus', Menu::class, false, '接收菜单创建/删除事件');
             ExtLoader::watch('app_end', Log::class, false, '记录日志');
