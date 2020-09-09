@@ -1,18 +1,29 @@
 <?php
-namespace tpext\myadmin\common\behavior;
+namespace tpext\myadmin\common\event;
 
-use think\Db;
+use think\facade\Db;
 use tpext\myadmin\admin\model\AdminMenu;
 
 class Menu
 {
-    public function run($data = [])
+    public function handle($data)
     {
-        $tableName = config('database.prefix') . 'admin_menu';
+        $type = Db::getConfig('default', 'mysql');
+
+        $connections = Db::getConfig('connections');
+
+        $config = $connections[$type] ?? [];
+
+        if (empty($config) || empty($config['database'])) {
+            return false;
+        }
+
+        $tableName = $config['prefix'] . 'admin_menu';
 
         $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
 
         if (empty($isTable)) {
+            cache('tpextmyadmin_installed', 0);
             return false;
         }
 
@@ -48,6 +59,8 @@ class Menu
         }
 
         Db::commit();
+
+        return true;
     }
 
     private function createMenu($menu, $parent_id = 0)

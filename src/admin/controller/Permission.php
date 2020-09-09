@@ -3,7 +3,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use think\Loader;
+use think\helper\Str;
 use tpext\builder\traits\actions\HasAutopost;
 use tpext\builder\traits\actions\HasBase;
 use tpext\builder\traits\actions\HasIndex;
@@ -106,9 +106,9 @@ class Permission extends Controller
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
                     $controllerName = $arr[1];
-                    $contrl = $arr[0] . '/' . Loader::parseName($arr[1]);
+                    $contrl = $arr[0] . '/' . Str::snake($arr[1]);
                 } else {
-                    $contrl = Loader::parseName($contrl);
+                    $contrl = Str::snake($contrl);
                 }
 
                 $reflectionClass = $info['reflection'];
@@ -131,7 +131,7 @@ class Permission extends Controller
 
                     $actionName = $action = strtolower($method->name);
 
-                    $url = url('/admin/' . $contrl . '/' . $action, '', false);
+                    $url = url('/admin/' . $contrl . '/' . $action, [], false)->__toString();
 
                     if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login', '/admin/index/captcha'])) {
                         continue;

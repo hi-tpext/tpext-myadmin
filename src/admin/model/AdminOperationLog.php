@@ -6,18 +6,18 @@ use think\Model;
 
 class AdminOperationLog extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
     public function getNameAttr($value, $data)
     {
-        $user = AdminUser::get($data['user_id']);
+        $user = AdminUser::find($data['user_id']);
 
         return $user ? $user['name'] : '';
     }
 
     public function getUsernameAttr($value, $data)
     {
-        $user = AdminUser::get($data['user_id']);
+        $user = AdminUser::find($data['user_id']);
 
         return $user ? $user['username'] : '';
     }

@@ -2,7 +2,7 @@
 
 namespace tpext\myadmin\common;
 
-use think\Db;
+use think\facade\Db;
 use tpext\common\ExtLoader;
 use tpext\common\Module as baseModule;
 use tpext\myadmin\admin\model\AdminUser;
@@ -22,6 +22,8 @@ class Module extends baseModule
     protected $modules = [
         'admin' => ['index', 'permission', 'role', 'admin', 'group', 'menu', 'operationlog'],
     ];
+
+    protected static $tpextmyadmin_installed = false;
 
     public function install()
     {
@@ -54,11 +56,21 @@ class Module extends baseModule
 
     public static function isInstalled()
     {
-        if (empty(config('database.database'))) {
+        if (static::$tpextmyadmin_installed) {
+            return true;
+        }
+
+        $type = Db::getConfig('default', 'mysql');
+
+        $connections = Db::getConfig('connections');
+
+        $config = $connections[$type] ?? [];
+
+        if (empty($config) || empty($config['database'])) {
             return false;
         }
 
-        $tableName = config('database.prefix') . 'admin_user';
+        $tableName = $config['prefix'] . 'admin_user';
 
         $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
 
@@ -68,6 +80,7 @@ class Module extends baseModule
         }
 
         if (cache('tpextmyadmin_installed')) {
+            static::$tpextmyadmin_installed = true;
             return true;
         }
 

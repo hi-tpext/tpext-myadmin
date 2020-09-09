@@ -73,11 +73,11 @@ class Admin extends Controller
         }
 
         if (!empty($searchData['role_id'])) {
-            $where[] = ['role_id', 'eq', $searchData['role_id']];
+            $where[] = ['role_id', '=', $searchData['role_id']];
         }
 
         if (!empty($searchData['group_id'])) {
-            $where[] = ['group_id', 'eq', $searchData['group_id']];
+            $where[] = ['group_id', '=', $searchData['group_id']];
         }
 
         return $where;
@@ -96,11 +96,11 @@ class Admin extends Controller
         $search->text('name', '姓名')->maxlength(20);
         $search->text('phone', '手机号')->maxlength(20);
         $search->text('email', '邮箱')->maxlength(20);
-        $search->select('role_id', '角色组')->optionsData($this->roleModel->all(), 'name');
+        $search->select('role_id', '角色组')->optionsData($this->roleModel->select(), 'name');
         if (method_exists($this->groupModel, 'buildTree')) {
             $search->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
         } else {
-            $search->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
+            $search->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->select(), 'name');
         }
     }
 
@@ -166,12 +166,12 @@ class Admin extends Controller
         $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
         $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
         $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
-        $form->select('role_id', '角色')->required()->optionsData($this->roleModel->all(), 'name')->disabled($isEdit && $data['id'] == 1);
+        $form->select('role_id', '角色')->required()->optionsData($this->roleModel->select(), 'name')->disabled($isEdit && $data['id'] == 1);
 
         if (method_exists($this->groupModel, 'buildTree')) {
             $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
         } else {
-            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
+            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->select(), 'name');
         }
 
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');

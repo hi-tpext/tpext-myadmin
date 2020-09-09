@@ -6,13 +6,11 @@ use think\Model;
 
 class AdminGroup extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
-    protected static function init()
+    public static function onAfterDelete($group)
     {
-        self::afterDelete(function ($group) {
-            static::where(['parent_id' => $group['id']])->update(['parent_id' => $group['parent_id']]);
-        });
+		static::where(['parent_id' => $group['id']])->update(['parent_id' => $group['parent_id']]);
     }
 
     public function getUsersAttr($value, $data)

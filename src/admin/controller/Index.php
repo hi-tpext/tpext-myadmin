@@ -2,10 +2,10 @@
 
 namespace tpext\myadmin\admin\controller;
 
-use think\captcha\Captcha;
+use think\captcha\facade\Captcha;
 use think\Controller;
-use think\Db;
 use think\facade\Config;
+use think\facade\Db;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
@@ -68,7 +68,7 @@ class Index extends Controller
         $admin_user = session('admin_user');
         $menus = [];
         if ($admin_user['role_id'] == 1) {
-            $list = $this->menuModel->where(['enable' => 1])->order('parent_id,sort')->all();
+            $list = $this->menuModel->where(['enable' => 1])->order('parent_id,sort')->select();
             if (count($list) == 0 && $admin_user['id'] == 1) {
                 $menus = [
                     [
@@ -175,7 +175,7 @@ class Index extends Controller
         $sysInfo['set_time_limit'] = function_exists("set_time_limit") ? true : false;
         $sysInfo['domain'] = $_SERVER['HTTP_HOST'];
         $sysInfo['memory_limit'] = ini_get('memory_limit');
-        $mysqlinfo = db()->query('select VERSION() as version');
+        $mysqlinfo = Db::query('select VERSION() as version');
         $sysInfo['mysql_version'] = json_encode($mysqlinfo);
         if (function_exists('gd_info')) {
             $gd = gd_info();
@@ -228,7 +228,7 @@ class Index extends Controller
                 $this->error($result);
             }
 
-            $user = $this->dataModel->get(session('admin_id'));
+            $user = $this->dataModel->find(session('admin_id'));
 
             if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password_old'])) {
                 $this->error('原密码不正确');
@@ -252,7 +252,7 @@ class Index extends Controller
             if ($res) {
                 ExtLoader::trigger('admin_change_pwd', $user);
 
-                $user = $this->dataModel->get($user['id']);
+                $user = $this->dataModel->find($user['id']);
 
                 unset($user['password'], $user['salt']);
 
@@ -300,7 +300,7 @@ class Index extends Controller
 
             $form->butonsSizeClass('btn-xs');
 
-            $user = $this->dataModel->get(session('admin_id'));
+            $user = $this->dataModel->find(session('admin_id'));
 
             $form->fill($user);
 
@@ -327,7 +327,7 @@ class Index extends Controller
 
             $count = 0;
 
-            $where['user_id'] = ['eq', session('admin_id')];
+            $where['user_id'] = ['=', session('admin_id')];
             $where['path'] = ['like', 'admin/index/login'];
 
             $sortOrder = input('__sort__', 'id desc');
@@ -371,7 +371,7 @@ class Index extends Controller
 
         if ($res) {
 
-            $user = $this->dataModel->get(session('admin_id'));
+            $user = $this->dataModel->find(session('admin_id'));
 
             unset($user['password'], $user['salt']);
 
@@ -458,7 +458,7 @@ class Index extends Controller
                 $this->error($result);
             }
 
-            if (!captcha_check($data['captcha'], 'admin')) {
+            if (!Captcha::check($data['captcha'])) {
                 $this->error('验证码错误');
             }
 
@@ -548,11 +548,13 @@ class Index extends Controller
             }
         }
 
-        $config = Config::pull('captcha');
-        if (empty($config)) {
-            $config = ['length' => 4];
+        $conf = Config::get('captcha');
+
+        if (empty($conf)) {
+            $conf = ['length' => 4];
+            Config::set($conf, 'captcha');
         }
-        $captcha = new Captcha($config);
-        return $captcha->entry('admin');
+
+        return Captcha::create();
     }
 }

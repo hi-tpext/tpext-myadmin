@@ -6,13 +6,11 @@ use think\Model;
 
 class AdminMenu extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
-    protected static function init()
+    public static function onAfterDelete($menu)
     {
-        self::afterDelete(function ($menu) {
-            static::where(['parent_id' => $menu['id']])->update(['parent_id' => $menu['parent_id']]);
-        });
+		static::where(['parent_id' => $menu['id']])->update(['parent_id' => $menu['parent_id']]);
     }
 
     public function buildList($parent = 0, $deep = 0)

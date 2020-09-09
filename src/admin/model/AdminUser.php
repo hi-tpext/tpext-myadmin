@@ -2,57 +2,55 @@
 
 namespace tpext\myadmin\admin\model;
 
-use think\Loader;
+use think\helper\Str;
 use think\Model;
 use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
 
 class AdminUser extends Model implements Auth
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
-    protected $adminGroupModel;
+    protected static $adminGroupModel;
 
-    protected $adminGroupTitle = '分组';
+    protected static $adminGroupTitle = '分组';
 
-    protected function initialize()
+    protected static function init()
     {
-        parent::initialize();
-
         $instance = Module::getInstance();
 
         $config = $instance->getConfig();
 
         if (!empty($config['admin_group_model']) && class_exists($config['admin_group_model'])) {
-            $this->adminGroupModel = new $config['admin_group_model'];
+            self::$adminGroupModel = new $config['admin_group_model'];
         } else {
-            $this->adminGroupModel = new AdminGroup;
+            self::$adminGroupModel = new AdminGroup;
         }
 
         if (!empty($config['admin_group_title'])) {
-            $this->adminGroupTitle = $config['admin_group_title'];
+            self::$adminGroupTitle = $config['admin_group_title'];
         }
     }
 
     public function getAdminGroupModel()
     {
-        return $this->adminGroupModel;
+        return self::$adminGroupModel;
     }
 
     public function getAdminGroupTitle()
     {
-        return $this->adminGroupTitle;
+        return self::$adminGroupTitle;
     }
 
     public function getRoleNameAttr($value, $data)
     {
-        $role = AdminRole::get($data['role_id']);
+        $role = AdminRole::find($data['role_id']);
         return $role ? $role['name'] : '--';
     }
 
     public function getGroupNameAttr($value, $data)
     {
-        $group = $this->adminGroupModel->get($data['group_id']);
+        $group = self::$adminGroupModel->find($data['group_id']);
         return $group ? $group['name'] : '--';
     }
 
@@ -65,7 +63,7 @@ class AdminUser extends Model implements Auth
     {
         $admin_id = session('admin_id');
 
-        return static::get($admin_id);
+        return static::find($admin_id);
     }
 
     /**
@@ -108,8 +106,8 @@ class AdminUser extends Model implements Auth
      */
     public function checkPermission($admin_id, $controller, $action)
     {
-        $controller = Loader::parseName($controller);
-        $user = static::get($admin_id);
+        $controller = Str::studly($controller);
+        $user = static::find($admin_id);
 
         if (!$user) {
             return false;
@@ -163,7 +161,7 @@ class AdminUser extends Model implements Auth
             return false;
         }
 
-        $url = implode('/', ['', $path[0], Loader::parseName($path[1]), strtolower($path[2])]);
+        $url = implode('/', ['', $path[0], Str::snake($path[1]), strtolower($path[2])]);
 
         $noNeed = [
             '/admin/index/index', '/admin/index/captcha', '/admin/index/welcome', '/admin/index/denied',
@@ -174,7 +172,7 @@ class AdminUser extends Model implements Auth
             return true;
         }
 
-        $role = AdminRole::get($user['role_id']);
+        $role = AdminRole::find($user['role_id']);
 
         if (!$role) {
             return false;
@@ -183,7 +181,7 @@ class AdminUser extends Model implements Auth
         $prmission = AdminPermission::where(['url' => $url])->find();
 
         if (!$prmission && count($path) > 3) {
-            $url = implode('/', ['', Loader::parseName($path[0] . '/' . $path[1]), $path[2], $path[3]]);
+            $url = implode('/', ['', Str::snake($path[0] . '/' . $path[1]), $path[2], $path[3]]);
             $prmission = AdminPermission::where(['url' => $url])->find();
         }
 

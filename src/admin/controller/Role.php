@@ -3,7 +3,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use think\Db;
+use think\facade\Db;
 use tpext\builder\traits\HasBuilder;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
@@ -186,8 +186,8 @@ class Role extends Controller
                 }
 
                 $permissions = $this->permModel->where([
-                    ['controller', 'eq', $controllerPerm['controller']],
-                    ['action', 'neq', '#'],
+                    ['controller', '=', $controllerPerm['controller']],
+                    ['action', '<>', '#'],
                 ])->order('action desc')->field('id,action_name,url')->select();
 
                 $form->checkbox("permissions" . $controllerPerm['id'], $tr['title_show'])
@@ -216,17 +216,16 @@ class Role extends Controller
         ]);
 
         if (true !== $result) {
-
             $this->error($result);
         }
 
         if ($id) {
-            $res = $this->dataModel->save($data, [$this->getPk() => $id]);
-        } else {
-            $res = $this->dataModel->save($data);
-            if ($res) {
-                $id = $this->dataModel->id;
+            $exists = $this->dataModel->where([$this->getPk() => $id])->find();
+            if ($exists) {
+                $res = $exists->force()->save($data);
             }
+        } else {
+            $res = $this->dataModel->exists(false)->save($data);
         }
 
         if (!$res) {

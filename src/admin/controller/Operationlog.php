@@ -45,7 +45,7 @@ class Operationlog extends Controller
 
         $where = [];
         if (!empty($searchData['user_id'])) {
-            $where[] = ['user_id', 'eq', $searchData['user_id']];
+            $where[] = ['user_id', '=', $searchData['user_id']];
         }
 
         if (!empty($searchData['path'])) {
@@ -57,15 +57,15 @@ class Operationlog extends Controller
         }
 
         if (!empty($searchData['method'])) {
-            $where[] = ['method', 'eq', $searchData['method']];
+            $where[] = ['method', '=', $searchData['method']];
         }
 
         if (!empty($searchData['start'])) {
-            $where[] = ['create_time', 'egt', $searchData['start']];
+            $where[] = ['create_time', '>=', $searchData['start']];
         }
 
         if (!empty($searchData['end'])) {
-            $where[] = ['create_time', 'elt', $searchData['end']];
+            $where[] = ['create_time', '<=', $searchData['end']];
         }
 
         return $where;
@@ -80,7 +80,7 @@ class Operationlog extends Controller
     {
         $search = $this->search;
 
-        $search->select('user_id', '管理员', 3)->optionsData($this->userModel->all(), 'username');
+        $search->select('user_id', '管理员', 3)->optionsData($this->userModel->select(), 'username');
         $search->text('path', '路径', 3);
         $search->text('ip', 'IP', 3);
         $search->select('method', '提交方式', 3)->options(['GET' => 'GET', 'POST' => 'POST']);

@@ -3,7 +3,8 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use think\Loader;
+use think\helper\Arr;
+use think\helper\Str;
 use tpext\builder\traits\actions;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
@@ -88,27 +89,30 @@ class Menu extends Controller
                 $contrl = preg_replace('/.+?\\\controller\\\(.+)$/', '$1', $controller);
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
-                    $contrl = $arr[0] . '/' . Loader::parseName($arr[1]);
+                    $contrl = $arr[0] . '/' . Str::snake($arr[1]);
                 } else {
-                    $contrl = Loader::parseName($contrl);
+                    $contrl = Str::snake($contrl);
                 }
 
                 $permission = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
 
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
+                $options = [];
+
                 foreach ($info['methods'] as $method) {
 
-                    $url = url('/admin/' . $contrl . '/' . $method->name, '', false);
+                    $url = url('/admin/' . $contrl . '/' . strtolower($method->name), [], false)->__toString();
 
                     $perm = $this->permModel->where(['url' => $url])->find();
 
                     if ($perm && $perm['action_type'] != 1) {
                         continue;
                     }
-
-                    $urls[$key . '_' . $contrl]['options'][$url] = $url;
+                    $options[$url] = $url;
                 }
+
+                $urls[$key . '_' . $contrl]['options'] = $options;
             }
         }
 

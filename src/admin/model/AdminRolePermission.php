@@ -6,5 +6,5 @@ use think\Model;
 
 class AdminRolePermission extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 }

@@ -150,7 +150,7 @@
                   <li> <a class="open-tab" href="{:url('/admin/index/changepwd')}"><i class="mdi
                           mdi-lock-outline"></i>
                       修改密码</a> </li>
-                  {if condition="tpext\myadmin\admin\model\AdminUser::checkUrl(url('/admin/index/clearcache'))"}
+                  {if condition="checkUrl('/admin/index/clearcache')"}
                   <li> <a class="open-tab" href="{:url('/admin/index/clearcache')}"><i class="mdi
                     mdi-delete"></i>清空缓存</a>
                   </li>
