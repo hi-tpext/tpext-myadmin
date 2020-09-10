@@ -24,12 +24,5 @@
         "files": [
             "src/helper.php"
         ]
-    },
-    "extra": {
-        "think": {
-            "services": [
-                "tpext\\myadmin\\common\\Service"
-            ]
-        }
     }
 }
