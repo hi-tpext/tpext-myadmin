@@ -23,6 +23,8 @@ class Module extends baseModule
         'admin' => ['index', 'permission', 'role', 'admin', 'group', 'menu', 'operationlog'],
     ];
 
+    protected static $tpextmyadmin_installed = false;
+
     public function install()
     {
         if (parent::install()) {
@@ -54,6 +56,10 @@ class Module extends baseModule
 
     public static function isInstalled()
     {
+        if (static::$tpextmyadmin_installed) {
+            return true;
+        }
+
         if (empty(config('database.database'))) {
             return false;
         }
@@ -68,6 +74,7 @@ class Module extends baseModule
         }
 
         if (cache('tpextmyadmin_installed')) {
+            static::$tpextmyadmin_installed = true;
             return true;
         }
 
