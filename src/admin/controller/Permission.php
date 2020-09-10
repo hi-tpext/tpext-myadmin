@@ -131,7 +131,7 @@ class Permission extends Controller
 
                     $actionName = $action = strtolower($method->name);
 
-                    $url = url('/admin/' . $contrl . '/' . $action, '', false);
+                    $url = url('/admin/' . $contrl . '/' . $action, [], false);
 
                     if (in_array($url, ['/admin/index/index', '/admin/index/denied', '/admin/index/logout', '/admin/index/login', '/admin/index/captcha'])) {
                         continue;

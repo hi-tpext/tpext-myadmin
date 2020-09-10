@@ -97,18 +97,21 @@ class Menu extends Controller
 
                 $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
 
+                $options = [];
+
                 foreach ($info['methods'] as $method) {
 
-                    $url = url('/admin/' . $contrl . '/' . $method->name, '', false);
+                    $url = url('/admin/' . $contrl . '/' . strtolower($method->name), [], false);
 
                     $perm = $this->permModel->where(['url' => $url])->find();
 
                     if ($perm && $perm['action_type'] != 1) {
                         continue;
                     }
-
-                    $urls[$key . '_' . $contrl]['options'][$url] = $url;
+                    $options[$url] = $url;
                 }
+
+                $urls[$key . '_' . $contrl]['options'] = $options;
             }
         }
 
