@@ -14,8 +14,12 @@
         }
     ],
     "require": {
+        "topthink/think-captcha": "^2.0",
         "matthiasmullie/minify": "^1.3",
-        "topthink/think-captcha": "^2.0"
+        "ichynul/tpext": "^1.1.1",
+        "ichynul/tpextbuilder": "^1.1.1",
+        "ichynul/tpextmanager": "^1.1.1",
+        "ichynul/lightyearadmin": "^1.0.1"
     },
     "autoload": {
         "psr-4": {
