@@ -548,11 +548,11 @@ class Index extends Controller
             }
         }
 
-        $config = Config::pull('captcha');
-        if (empty($config)) {
-            $config = ['length' => 4];
+        $conf = Config::pull('captcha');
+        if (empty($conf)) {
+            $conf = ['length' => 4];
         }
-        $captcha = new Captcha($config);
+        $captcha = new Captcha($conf);
         return $captcha->entry('admin');
     }
 }
