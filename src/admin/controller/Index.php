@@ -367,7 +367,7 @@ class Index extends Controller
             $this->error($result);
         }
 
-        $res = $this->dataModel->allowField(true)->save($data, ['id' => session('admin_id')]);
+        $res = $this->dataModel->where(['id' => session('admin_id')])->save($data);
 
         if ($res) {
 

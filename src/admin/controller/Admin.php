@@ -261,7 +261,7 @@ class Admin extends Controller
             if (!isset($data['password']) || empty($data['password'])) {
                 $this->error('请输入密码');
             }
-            $res = $this->dataModel->allowField(true)->save($data);
+            $res = $this->dataModel->exists(false)->save($data);
         }
 
         if (!$res) {
