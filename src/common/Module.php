@@ -28,7 +28,7 @@ class Module extends baseModule
     public function install()
     {
         if (parent::install()) {
-            $user = AdminUser::get(1);
+            $user = AdminUser::find(1);
             if ($user) {
                 session('admin_id', 1);
                 unset($user['password'], $user['salt']);
