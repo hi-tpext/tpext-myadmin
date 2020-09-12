@@ -108,7 +108,7 @@ class Permission extends Controller
                     $controllerName = $arr[1];
                     $contrl = $arr[0] . '/' . Str::snake($arr[1]);
                 } else {
-                    $contrl = Str::snake($contrl);
+                    $controllerName = $contrl = Str::snake($contrl);
                 }
 
                 $reflectionClass = $info['reflection'];
