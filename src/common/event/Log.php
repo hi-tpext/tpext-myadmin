@@ -38,7 +38,7 @@ class Log
 
         $config = $connections[$type] ?? [];
 
-        if (empty($config) || empty($config['database'])) {
+        if ($config['database'] == 'test' && $config['username'] == 'username' && $config['password'] == 'password') {
             return false;
         }
 
