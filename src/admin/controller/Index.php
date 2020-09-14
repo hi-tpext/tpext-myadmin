@@ -523,11 +523,7 @@ class Index extends Controller
             $this->success('登录成功', cookie('after_login_url'));
         } else {
 
-            $tableName = config('database.prefix') . 'admin_user';
-
-            $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
-
-            if (empty($isTable)) {
+            if (!Module::isInstalled()) {
                 Tool::deleteDir(app()->getRuntimePath() . 'cache');
             }
 
