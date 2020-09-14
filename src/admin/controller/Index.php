@@ -492,7 +492,7 @@ class Index extends Controller
 
             if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password'])) {
 
-                $this->dataModel->where(['id' => $user['id']])->setInc('errors');
+                $this->dataModel->where(['id' => $user['id']])->inc('errors');
 
                 cache('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
 
