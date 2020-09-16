@@ -138,7 +138,7 @@ class Auth
     /**
      * Undocumented function
      *
-     * @return boolean
+     * @return boolean|Response
      */
     public function check()
     {
