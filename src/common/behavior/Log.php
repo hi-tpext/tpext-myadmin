@@ -1,13 +1,17 @@
 <?php
 namespace tpext\myadmin\common\behavior;
 
-use think\Db;
 use tpext\myadmin\admin\model\AdminOperationLog;
+use tpext\myadmin\common\Module;
 
 class Log
 {
     public function run($data = [])
     {
+        if (!Module::isInstalled()) {
+            return;
+        }
+
         $module = request()->module();
 
         $controller = strtolower(request()->controller());
@@ -25,13 +29,6 @@ class Log
             return;
         }
 
-        $tableName = config('database.prefix') . 'admin_operation_log';
-
-        $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
-
-        if (empty($isTable)) {
-            return;
-        }
         $param = request()->param();
 
         if ($controller == 'admin' && in_array($action, ['add', 'edit'])) {
