@@ -28,15 +28,17 @@ class Module extends baseModule
     public function install()
     {
         if (parent::install()) {
-            $user = AdminUser::where('id', 1)->find();
-            if ($user) {
+            $dataModel = new AdminUser;
+            $user = $dataModel->where(['id' => 1])->find();
+
+            if ($user && $dataModel->passValidate($user['password'], $user['salt'], 'tpextadmin')) {
                 session('admin_id', 1);
                 unset($user['password'], $user['salt']);
                 session('admin_user', $user);
                 session('admin_last_time', $_SERVER['REQUEST_TIME']);
-
-                return true;
             }
+
+            return true;
         }
 
         return false;
