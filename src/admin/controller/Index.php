@@ -267,7 +267,7 @@ class Index extends Controller
 
             $form = $builder->form();
 
-            $form->password('password_old', '原密码')->required()->help('输入您现在使用代密码');
+            $form->password('password_old', '原密码')->required()->help('输入您现在使用的密码');
             $form->password('password_new', '新密码')->required()->help('输入新密码（6～20位）');
             $form->password('password_confirm', '确认新密码')->required()->help('再次输入新密码');
 
