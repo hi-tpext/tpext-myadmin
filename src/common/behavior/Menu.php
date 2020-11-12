@@ -17,40 +17,40 @@ class Menu
         }
 
         $action = $data[0];
-        $menus = $data[1];
-        $parent_id = isset($data[2]) ? $data[2] : 0;
+        $module = $data[1];
+        $menus = $data[2];
 
         Db::startTrans();
 
         if ($action == 'create') {
 
             foreach ($menus as $menu) {
-                $this->createMenu($menu, $parent_id);
+                $this->createMenu($menu, $module);
             }
 
         } else if ($action == 'delete') {
 
             foreach ($menus as $menu) {
-                $this->deleteMenu($menu);
+                $this->deleteMenu($module);
             }
 
         } else if ($action == 'enable') {
 
             foreach ($menus as $menu) {
-                $this->enableMenu($menu, 1);
+                $this->enableMenu($module, 1);
             }
 
         } else if ($action == 'disable') {
 
             foreach ($menus as $menu) {
-                $this->enableMenu($menu, 0);
+                $this->enableMenu($module, 0);
             }
         }
 
         Db::commit();
     }
 
-    private function createMenu($menu, $parent_id = 0)
+    private function createMenu($menu, $module = '', $parent_id = 0)
     {
         if ($parent_id == 0) {
             $menu['sort'] = AdminMenu::where(['parent_id' => 0])->max('sort') + 5;
@@ -62,7 +62,7 @@ class Menu
             'title' => $menu['title'],
             'url' => isset($menu['children']) && count($menu['children']) ? '#' : $menu['url'],
             'icon' => $menu['icon'],
-            'module' => isset($menu['module']) ? $menu['module'] : '',
+            'module' => $module,
             'create_time' => date('Y-m-d H:i:s'),
             'update_time' => date('Y-m-d H:i:s'),
         ];
@@ -72,43 +72,26 @@ class Menu
         if ($id && isset($menu['children'])) {
 
             foreach ($menu['children'] as $sub_menu) {
-                $sub_menu['module'] = isset($menu['module']) ? $menu['module'] : '';
-                $this->createMenu($sub_menu, $id);
+                $this->createMenu($sub_menu, $module, $id);
             }
         }
     }
 
-    private function deleteMenu($menu)
+    private function deleteMenu($module = '')
     {
-        if ($menu['url'] != '#') {
-
-            AdminMenu::where(['url' => $menu['url']])->delete();
-        } else if (isset($menu['module']) && !empty($menu['module'])) {
-
-            AdminMenu::where(['url' => '#', 'module' => $menu['module']])->delete();
+        if (empty($module)) {
+            return;
         }
 
-        if (isset($menu['children'])) {
-
-            foreach ($menu['children'] as $sub_menu) {
-                $this->deleteMenu($sub_menu);
-            }
-        }
+        AdminMenu::where(['module' => $module])->delete();
     }
 
-    private function enableMenu($menu, $enable)
+    private function enableMenu($module = '', $enable)
     {
-        $m = AdminMenu::where(['url' => $menu['url']])->find();
-
-        if ($m && $m['parent_id']) {
-            AdminMenu::where(['id' => $m['parent_id']])->update(['enable' => $enable]);
+        if (empty($module)) {
+            return;
         }
 
-        if (isset($menu['children'])) {
-
-            foreach ($menu['children'] as $sub_menu) {
-                $this->enableMenu($sub_menu, $enable);
-            }
-        }
+        AdminMenu::where(['module' => $module])->update(['enable' => $enable]);
     }
 }
