@@ -111,7 +111,7 @@ class Menu
 
     private function enableMenu($menu, $enable)
     {
-        $m = AdminMenu::where(['url' => $menu['url']])->find();
+        $m = AdminMenu::where(['url' => $menu['url'], 'module' => $menu['module']])->find();
 
         if ($m && $m['parent_id']) {
             AdminMenu::where(['id' => $m['parent_id']])->update(['enable' => $enable]);
