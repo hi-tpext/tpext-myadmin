@@ -256,7 +256,7 @@ class Index extends Controller
 
                 unset($user['password'], $user['salt']);
 
-                session('admin_user', $user);
+                session('admin_user', $user->toArray());
 
                 $this->success('修改成功');
             } else {
@@ -375,7 +375,7 @@ class Index extends Controller
 
             unset($user['password'], $user['salt']);
 
-            session('admin_user', $user);
+            session('admin_user', $user->toArray());
 
             $this->success('修改成功');
         } else {
@@ -504,7 +504,7 @@ class Index extends Controller
 
             cache('admin_try_login_' . $user['id'], null);
             unset($user['password'], $user['salt']);
-            session('admin_user', $user);
+            session('admin_user', $user->toArray());
             session('admin_id', $user['id']);
             session('login_session_key', null);
 

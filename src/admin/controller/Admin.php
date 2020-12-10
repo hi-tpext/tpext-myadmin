@@ -49,6 +49,8 @@ class Admin extends Controller
         $this->selectTextField = '{id}#{name}({username})';
         $this->selectFields = 'id,name,username';
         $this->selectSearch = 'username|name|phone';
+
+        $this->indexWith = 'group,role'; //列表页关联模型
     }
 
     protected function filterWhere()
@@ -116,8 +118,8 @@ class Admin extends Controller
         $table->show('id', 'ID');
         $table->show('username', '登录帐号');
         $table->text('name', '姓名')->autoPost()->getWrapper()->addStyle('max-width:80px');
-        $table->show('role_name', '角色');
-        $table->show('group_name', $this->dataModel->getAdminGroupTitle());
+        $table->show('role.name', '角色');
+        $table->show('group.name', $this->dataModel->getAdminGroupTitle());
         $table->match('enable', '启用')->options([0 => '<label class="label label-danger">禁用</label>', 1 => '<label class="label label-success">正常</label>']);
         $table->show('email', '电子邮箱')->default('无');
         $table->show('phone', '手机号')->default('无');
