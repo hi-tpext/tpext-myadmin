@@ -50,7 +50,7 @@ class Admin extends Controller
         $this->selectFields = 'id,name,username';
         $this->selectSearch = 'username|name|phone';
 
-        $this->indexWith = 'group,role'; //列表页关联模型
+        $this->indexWith = ['group', 'role']; //列表页关联模型
     }
 
     protected function filterWhere()

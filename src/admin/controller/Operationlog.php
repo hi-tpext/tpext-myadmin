@@ -38,7 +38,7 @@ class Operationlog extends Controller
         $this->userModel = new AdminUser;
         $this->pageTitle = '操作记录';
 
-        $this->indexWith = 'admin'; //列表页关联模型
+        $this->indexWith = ['admin']; //列表页关联模型
     }
 
     protected function filterWhere()

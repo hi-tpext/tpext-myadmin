@@ -17,7 +17,7 @@ class AdminUser extends Model implements Auth
 
     protected $hidden = ['group', 'role', 'password', 'salt'];
 
-    protected function init()
+    protected static function init()
     {
         $instance = Module::getInstance();
 
