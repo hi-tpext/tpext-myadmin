@@ -8,17 +8,8 @@ class AdminOperationLog extends Model
 {
     protected $autoWriteTimestamp = 'dateTime';
 
-    public function getNameAttr($value, $data)
+    public function admin()
     {
-        $user = AdminUser::get($data['user_id']);
-
-        return $user ? $user['name'] : '';
-    }
-
-    public function getUsernameAttr($value, $data)
-    {
-        $user = AdminUser::get($data['user_id']);
-
-        return $user ? $user['username'] : '';
+        return $this->hasOne('AdminUser', 'id', 'user_id');
     }
 }

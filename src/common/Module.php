@@ -25,6 +25,11 @@ class Module extends baseModule
 
     protected static $tpextmyadmin_installed = false;
 
+    /**
+     * Undocumented function
+     *
+     * @return boolean
+     */
     public function install()
     {
         if (parent::install()) {
@@ -34,7 +39,7 @@ class Module extends baseModule
             if ($user && $dataModel->passValidate($user['password'], $user['salt'], 'tpextadmin')) {
                 session('admin_id', 1);
                 unset($user['password'], $user['salt']);
-                session('admin_user', $user);
+                session('admin_user', $user->toArray());
                 session('admin_last_time', $_SERVER['REQUEST_TIME']);
             }
 
@@ -44,6 +49,12 @@ class Module extends baseModule
         return false;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param boolean $runSql
+     * @return boolean
+     */
     public function uninstall($runSql = true)
     {
         if (parent::uninstall($runSql)) {
@@ -56,6 +67,11 @@ class Module extends baseModule
         return false;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return boolean
+     */
     public static function isInstalled()
     {
         if (static::$tpextmyadmin_installed) {

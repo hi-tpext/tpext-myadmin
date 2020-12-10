@@ -15,6 +15,8 @@ class AdminUser extends Model implements Auth
 
     protected $adminGroupTitle = '分组';
 
+    protected $hidden = ['group', 'role', 'password', 'salt'];
+
     protected function initialize()
     {
         parent::initialize();
@@ -44,16 +46,14 @@ class AdminUser extends Model implements Auth
         return $this->adminGroupTitle;
     }
 
-    public function getRoleNameAttr($value, $data)
+    public function group()
     {
-        $role = AdminRole::get($data['role_id']);
-        return $role ? $role['name'] : '--';
+        return $this->hasOne('Admingroup', 'id', 'group_id');
     }
 
-    public function getGroupNameAttr($value, $data)
+    public function role()
     {
-        $group = $this->adminGroupModel->get($data['group_id']);
-        return $group ? $group['name'] : '--';
+        return $this->hasOne('AdminRole', 'id', 'role_id');
     }
 
     /**

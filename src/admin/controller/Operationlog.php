@@ -37,6 +37,8 @@ class Operationlog extends Controller
         $this->dataModel = new AdminOperationLog;
         $this->userModel = new AdminUser;
         $this->pageTitle = '操作记录';
+
+        $this->indexWith = 'admin'; //列表页关联模型
     }
 
     protected function filterWhere()
@@ -100,8 +102,8 @@ class Operationlog extends Controller
         $form = $this->form;
         $form->show('id', 'ID');
         $form->show('user_id', '管理员id');
-        $form->show('username', '登录帐号');
-        $form->show('name', '姓名');
+        $form->show('admin.username', '登录帐号');
+        $form->show('admin.name', '姓名');
         $form->show('path', '路径');
         $form->show('method', '提交方式');
         $form->show('ip', 'IP');
@@ -119,8 +121,8 @@ class Operationlog extends Controller
         $table = $this->table;
 
         $table->show('id', 'ID');
-        $table->show('username', '登录帐号');
-        $table->show('name', '姓名');
+        $table->show('admin.username', '登录帐号');
+        $table->show('admin.name', '姓名');
         $table->show('path', '路径');
         $table->show('method', '提交方式');
         $table->show('ip', 'IP');
@@ -130,7 +132,7 @@ class Operationlog extends Controller
         foreach ($data as &$d) {
             if ($d['method'] == 'POST' && mb_strlen($d['data']) > 50) {
 
-                $d['data'] = mb_substr($d['data'], 0, 50) . '...}';
+                $d['data'] = mb_substr($d['data'], 0, 50) . '...';
             }
         }
 
