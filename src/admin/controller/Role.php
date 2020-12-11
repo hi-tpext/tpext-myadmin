@@ -219,6 +219,8 @@ class Role extends Controller
             $this->error($result);
         }
 
+        $res = 0;
+
         if ($id) {
             $exists = $this->dataModel->where([$this->getPk() => $id])->find();
             if ($exists) {

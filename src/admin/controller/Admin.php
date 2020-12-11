@@ -257,8 +257,13 @@ class Admin extends Controller
             $this->error('手机号码格式错误');
         }
 
+        $res = 0;
+
         if ($id) {
-            $res = $this->dataModel->save($data, [$this->getPk() => $id]);
+            $exists = $this->dataModel->where([$this->getPk() => $id])->find();
+            if ($exists) {
+                $res = $exists->force()->save($data);
+            }
         } else {
             if (!isset($data['password']) || empty($data['password'])) {
                 $this->error('请输入密码');
