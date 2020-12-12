@@ -29,6 +29,16 @@ class Log
             return;
         }
 
+        $config = Module::getInstance()->getConfig();
+
+        $method = request()->method();
+
+        $types = $config['operation_log_catch'];
+
+        if (!in_array($method, $types)) {
+            return;
+        }
+
         $param = request()->param();
 
         if ($controller == 'admin' && in_array($action, ['add', 'edit'])) {
@@ -39,14 +49,18 @@ class Log
             $param = [];
         }
 
-        unset($param['password'], $param['__table__'], $param['__search__']);
+        unset($param['password'], $param['__table__'], $param['__search__'], $param['__token__']);
+
+        if (!in_array($method, ['GET', 'POST'])) {
+            unset($param[strtolower($method)]);
+        }
 
         AdminOperationLog::create([
             'user_id' => $admin_id,
             'path' => implode('/', [$module, $controller, $action]),
             'method' => request()->method(),
             'ip' => request()->ip(),
-            'data' => json_encode($param),
+            'data' => json_encode($param, JSON_UNESCAPED_UNICODE),
         ]);
     }
 }

@@ -85,7 +85,7 @@ class Operationlog extends Controller
         $search->select('user_id', '管理员', 3)->optionsData($this->userModel->all(), 'username');
         $search->text('path', '路径', 3);
         $search->text('ip', 'IP', 3);
-        $search->select('method', '提交方式', 3)->options(['GET' => 'GET', 'POST' => 'POST']);
+        $search->select('method', '提交方式', 3)->options(['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']);
         $search->datetime('start ', '操作时间', 3)->placeholder('起始');
         $search->datetime('end ', '~', 3)->placeholder('截止');
 
