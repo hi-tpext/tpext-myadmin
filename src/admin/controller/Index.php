@@ -337,7 +337,7 @@ class Index extends Controller
 
             $table->data($data);
             $table->paginator($count, $pagesize);
-            $table->hasExport(false);
+            $table->useExport(false);
 
             if (request()->isAjax()) {
                 return $table->partial()->render();
