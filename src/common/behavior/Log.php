@@ -51,7 +51,7 @@ class Log
 
         unset($param['password'], $param['__table__'], $param['__search__'], $param['__token__']);
 
-        if (!in_array($method, ['GET', 'POST'])) {
+        if (in_array($method, ['PATCH', 'DELETE'])) {
             unset($param[strtolower($method)]);
         }
 
