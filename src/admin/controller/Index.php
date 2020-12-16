@@ -228,6 +228,8 @@ class Index extends Controller
                 $this->error($result);
             }
 
+            $this->checkToken();
+
             $user = $this->dataModel->get(session('admin_id'));
 
             if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password_old'])) {
@@ -367,6 +369,8 @@ class Index extends Controller
             $this->error($result);
         }
 
+        $this->checkToken();
+
         $res = $this->dataModel->allowField(true)->save($data, ['id' => session('admin_id')]);
 
         if ($res) {
@@ -392,6 +396,9 @@ class Index extends Controller
     public function clearCache()
     {
         if (request()->isPost()) {
+
+            $this->checkToken();
+
             $types = input('post.types');
 
             if (empty($types)) {
@@ -550,5 +557,14 @@ class Index extends Controller
         }
         $captcha = new Captcha($conf);
         return $captcha->entry('admin');
+    }
+
+    protected function checkToken()
+    {
+        $token = session('_csrf_token_');
+
+        if (empty($token) || $token != input('__token__')) {
+            $this->error('token错误');
+        }
     }
 }
