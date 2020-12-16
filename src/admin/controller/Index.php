@@ -228,6 +228,8 @@ class Index extends Controller
                 $this->error($result);
             }
 
+            $this->checkToken();
+
             $user = $this->dataModel->find(session('admin_id'));
 
             if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password_old'])) {
@@ -247,7 +249,7 @@ class Index extends Controller
             $editData['password'] = $password[0];
             $editData['salt'] = $password[1];
 
-            $res = $this->dataModel->save($data, ['id' => $user['id']]);
+            $res = $this->dataModel->where(['id' => $user['id']])->save($data);
 
             if ($res) {
                 ExtLoader::trigger('admin_change_pwd', $user);
@@ -367,6 +369,8 @@ class Index extends Controller
             $this->error($result);
         }
 
+        $this->checkToken();
+
         $res = $this->dataModel->where(['id' => session('admin_id')])->save($data);
 
         if ($res) {
@@ -392,6 +396,9 @@ class Index extends Controller
     public function clearCache()
     {
         if (request()->isPost()) {
+
+            $this->checkToken();
+
             $types = input('post.types');
 
             if (empty($types)) {
@@ -552,5 +559,14 @@ class Index extends Controller
         }
 
         return Captcha::create();
+    }
+
+    protected function checkToken()
+    {
+        $token = session('_csrf_token_');
+
+        if (empty($token) || $token != input('__token__')) {
+            $this->error('token错误');
+        }
     }
 }
