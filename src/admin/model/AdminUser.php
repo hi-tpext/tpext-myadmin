@@ -139,7 +139,7 @@ class AdminUser extends Model implements Auth
      */
     public static function checkUrl($url, $user = null)
     {
-        $url = str_replace('.html', '', $url);
+        $url = preg_replace('/\.html\?.*$/i', '', $url);
         $url = str_replace('.', '/', $url);
 
         if (!Module::isInstalled()) {

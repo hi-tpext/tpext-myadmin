@@ -133,15 +133,13 @@ class AdminPermission extends Model
 
         $sonDir = null;
 
-        $controller_auto_search = config('controller_auto_search');
-
         while (false !== ($file = readdir($dir))) {
 
             if (($file != '.') && ($file != '..')) {
 
                 $sonDir = $path . DIRECTORY_SEPARATOR . $file;
 
-                if ($controller_auto_search && is_dir($sonDir)) {
+                if (is_dir($sonDir)) {
                     $controllers = array_merge($controllers, $this->scanControllers($sonDir));
                 } else {
                     $sonDir = str_replace('/', '\\', $sonDir);

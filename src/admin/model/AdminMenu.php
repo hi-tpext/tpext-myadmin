@@ -74,7 +74,21 @@ class AdminMenu extends Model
     public function buildMenus($admin_user)
     {
         $roleMenus = AdminRoleMenu::where(['role_id' => $admin_user['role_id']])->column('menu_id');
-        $roots = static::where(['parent_id' => 0, 'enable' => 1])->order('sort')->select();
+        $roots = [];
+
+        $allData = AdminMenu::where(['enable' => 1])->select();
+        $allPermissions = AdminPermission::select();
+        $allRolePermissions = AdminRolePermission::where(['role_id' => $admin_user['role_id']])->select();
+
+        foreach ($allData as $d) {
+
+            if ($d['parent_id'] != 0 || $d['url'] == '#' && !in_array($d['id'], $roleMenus)) {
+                continue;
+            }
+
+            $roots[] = $d;
+        }
+
         $list = [];
 
         foreach ($roots as $root) {
@@ -82,7 +96,7 @@ class AdminMenu extends Model
                 continue;
             }
 
-            $list = array_merge($list, $this->getChildren($root, $admin_user['role_id']));
+            $list = array_merge($list, $this->getChildren($allData, $allPermissions, $allRolePermissions, $root, $admin_user['role_id']));
         }
         $menus = [];
         foreach ($list as $li) {
@@ -100,16 +114,20 @@ class AdminMenu extends Model
         return $menus;
     }
 
-    private function getChildren($root, $role_id)
+    private function getChildren($allData, $allPermissions, $allRolePermissions, $menu, $role_id)
     {
-        if ($root['url'] == '#') {
+        if ($menu['url'] == '#') {
             $data = [];
 
-            $data[] = $root;
-            $children = static::where(['parent_id' => $root['id'], 'enable' => 1])->order('sort')->select();
-            foreach ($children as $child) {
-                $data = array_merge($data, $this->getChildren($child, $role_id));
+            $data[] = $menu;
+
+            foreach ($allData as $d) {
+
+                if ($d['parent_id'] == $menu['id']) {
+                    $data = array_merge($data, $this->getChildren($allData, $allPermissions, $allRolePermissions, $d, $role_id));
+                }
             }
+
             if (count($data) > 1) {
                 return $data;
             }
@@ -117,19 +135,33 @@ class AdminMenu extends Model
             return [];
         } else {
 
-            $prmission = AdminPermission::where(['url' => $root['url']])->find();
+            $prmission = null;
+
+            foreach ($allPermissions as $pm) {
+                if ($pm['url'] == $menu['url']) {
+                    $prmission = $pm;
+                    break;
+                }
+            }
 
             if (!$prmission) {
                 return [];
             }
 
-            $rolePrmission = AdminRolePermission::where(['role_id' => $role_id, 'permission_id' => $prmission['id']])->find();
+            $rolePrmission = null;
+
+            foreach ($allRolePermissions as $rpm) {
+                if ($rpm['permission_id'] == $prmission['id']) {
+                    $rolePrmission = $rpm;
+                    break;
+                }
+            }
 
             if (!$rolePrmission) {
                 return [];
             }
 
-            return [$root];
+            return [$menu];
         }
     }
 }
