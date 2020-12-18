@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,
+        maximum-scale=1, user-scalable=no">
+    <title>登录 - {$admin_page_title|default=''}</title>
+    <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
+    <meta name="description" content="{$admin_page_description|default=''}">
+    <link href="/assets/lightyearadmin/css/bootstrap.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
+    <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
+    <link href="/assets/lightyearadmin/css/style.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
+    {notempty name="$login_css_file"}
+    <link href="{$login_css_file}" rel="stylesheet">
+    {/notempty}
+    <script>
+    if ('{$login_in_top}' == '1' && window != top) {
+        top.location.replace("{:url('/admin/index/login')}");
+
+        document.querySelector('body').innerHTML =
+
+            '<div style="background:#fff;z-index:999;padding-top:88px;position:fixed;top:0px;height:10000px;width:100%;text-align:center;font-size:18px;"><p>跳转中...</p></div>';
+
+        if (!!(window.attachEvent && !window.opera)) {
+            document.execCommand("stop");
+        } else {
+            window.stop();
+        }
+    }
+    </script>
+    <style>
+        body {
+            background-color: #fff;
+        }
+        .lyear-login-box {
+            position: relative;
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            -webkit-transition: 0.5s;
+            -o-transition: 0.5s;
+            transition: 0.5s;
+        }
+        .lyear-login-left {
+            width: 50%;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            position: fixed;
+            height: 100%;
+            z-index: 555;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        .lyear-overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .lyear-logo {
+            margin-bottom: 50px;
+        }
+        .lyear-featured {
+            z-index: 12;
+            position: absolute;
+            bottom: 0;
+            padding: 30px;
+            width: 100%;
+        }
+        .lyear-featured h4 {
+            color: #fff;
+            line-height: 32px;
+        }
+        .lyear-featured h4 small {
+            color: #fff;
+            display: block;
+            text-align: right;
+            margin-top: 15px;
+        }
+        .lyear-login-right {
+            margin-left: 50%;
+            position: relative;
+            z-index: 999;
+            padding: 100px;
+            background-color: #fff;
+        }
+        @media screen and (max-width: 1024px) {
+            .lyear-login-right {
+                padding: 50px;
+            }
+        }
+        @media screen and (max-width: 820px) {
+            .lyear-login-left {
+                width: 100%;
+                position: relative;
+                z-index: 999;
+                height: 300px;
+            }
+            .lyear-login-right {
+                margin-left: 0;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .lyear-login-right {
+                padding: 50px;
+            }
+        }
+        @media screen and (max-width: 320px) {
+            .lyear-login-right {
+                padding: 30px;
+            }
+        }
+        #captcha {
+            width: 120px;
+            height: 38px;
+        }
+    </style>
+</head>
+<body>
+    <div class="lyear-login-box">
+        <div class="lyear-login-left" {if condition="$admin_login_background_img"}style="background: url({$admin_login_background_img}) no-repeat;background-size: 100% 100%;" {/if}>
+            <div class="lyear-overlay"></div>
+            <div class="lyear-featured">
+                <h4>
+                    {$admin_page_title|default=''}
+                </h4>
+            </div>
+        </div>
+        <div class="lyear-login-right">
+            <div class="lyear-logo text-center">
+                <a> <img alt="{$admin_page_title|default=''}"
+                    src="{$admin_login_logo|default='/assets/lightyearadmin/images/logo-ico.png'}">
+                </a>
+            </div>
+            <form action="" method="post" id="login-form">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username" />
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" placeholder="请输入密码" class="form-control" id="password"
+                            autocomplete="new-password" name="password" />
+                </div>
+                <div class="form-group">
+                    <label for="captcha">验证码</label>
+                    <div class="row">
+                        <div class="col-xs-7">
+                            <input type="text" name="captcha" class="form-control" placeholder="验证码">
+                        </div>
+                        <div class="col-xs-5">
+                            <img src="{:url('/admin/index/captcha')}?d=1" class="pull-right" id="captcha"
+                                style="cursor: pointer;" onclick="this.src=this.src+'1';"
+                                title="点击刷新" alt="captcha">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-block btn-primary" type="submit">立即登录</button>
+                </div>
+                {notempty name="$admin_copyright"}
+                <footer class="col-sm-12 text-center text-white">
+                    {$admin_copyright|raw}
+                </footer>
+                {/notempty}
+                {:\\tpext\\common\\ExtLoader::trigger('admin_login_box_footer')}
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}">
+    </script>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/bootstrap.min.js?v={$admin_assets_ver|default='1.0'}">
+    </script>
+    <script type="text/javascript"
+        src="/assets/tpextbuilder/js/jquery-validate/jquery.validate.min.js?v={$admin_assets_ver|default='1.0'}">
+        </script>
+    <script type="text/javascript"
+        src="/assets/tpextbuilder/js/jquery-validate/messages_zh.min.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="text/javascript"
+        src="/assets/lightyearadmin/js/bootstrap-notify.min.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="text/javascript" src="/assets/lightyearadmin/js/lightyear.js?v={$admin_assets_ver|default='1.0'}">
+    </script>
+
+    <script type="text/javascript">
+        $('#login-form').validate({
+            ignore: ".ignore", // 插件默认不验证隐藏元素,这里可以自定义一个不验证的class,即验证隐藏元素,不验证class为.ignore的元素
+            focusInvalid: false, // 禁用无效元素的聚焦
+            rules: {
+                username: {
+                    required: true
+                },
+                password: {
+                    required: true
+                },
+                captcha: {
+                    required: true
+                },
+            },
+            errorPlacement: function errorPlacement(error, element) {
+                var parent = $(element).parents('.form-group');
+                if (parent.find('.error-label').length) {
+                    return;
+                }
+                parent.addClass('has-error');
+
+                lightyear.notify('输入有误，请检查', 'warning');
+            },
+            highlight: function (element) {
+
+            },
+            unhighlight: function (element) {
+                $(element).next('.tagsinput').removeClass('is-invalid');
+                $(element).parents('.form-group').removeClass('has-error');
+            },
+            submitHandler: function (form) {
+                formSubmit();
+            }
+        });
+
+        function formSubmit() {
+            lightyear.loading('hide');
+
+            lightyear.loading('show');
+
+            var data = $('#login-form').serialize();
+
+            $.ajax({
+                url: location.href,
+                data: data,
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    setTimeout(function () {
+                        lightyear.loading('hide');
+                    }, 500);
+
+                    if (data.code) {
+                        lightyear.notify(data.msg || data.message || '登录成功', 'success');
+                        if (window == top || '{$login_in_top}' == '1' || !data.url) {
+                            location.href = "{:url('/admin/index/index')}";
+                        }
+                        else {
+                            location.href = data.url;
+                        }
+                    } else {
+                        lightyear.notify(data.msg || data.message || '登录失败', 'warning');
+                        $('#captcha').attr('src', "{:url('/admin/index/captcha')}?d=" + Math.random());
+                    }
+                },
+                error: function () {
+                    lightyear.loading('hide');
+                    lightyear.notify('网络错误', 'danger');
+                }
+            });
+
+            return false;
+        }
+    </script>
+    {:\\tpext\\common\\ExtLoader::trigger('admin_login_script')}
+</body>
+</html>

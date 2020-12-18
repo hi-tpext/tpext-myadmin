@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,
@@ -85,13 +84,12 @@
             height: 38px;
         }
     </style>
-    {:\\tpext\\common\\ExtLoader::trigger('admin_login_style')}
+
 </head>
 
 <body>
     {:\\tpext\\common\\ExtLoader::trigger('admin_login_page')}
-    <div class="row lyear-wrapper" {if condition="$admin_login_background_img"
-        }style="background: url({$admin_login_background_img}) no-repeat;background-size: 100% 100%;" {/if}>
+    <div class="row lyear-wrapper" {if condition="$admin_login_background_img"}style="background: url({$admin_login_background_img}) no-repeat;background-size: 100% 100%;" {/if}>
         <div class="lyear-login">
             <div class="login-center">
                 <div class="login-header text-center">
