@@ -23,7 +23,7 @@ return [
     'admin_group_title' => '分组',
     'admin_group_model' => '',
     'operation_log_catch' => ['POST', 'PUT', 'PATCH', 'DELETE'],
-    'login_page_style' => '',
+    'login_page_style' => '1',
     //配置描述
     '__config__' => [
         'name' => ['type' => 'text', 'label' => '名称'],
