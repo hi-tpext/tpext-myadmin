@@ -20,9 +20,10 @@ return [
     'assets_ver' => '1.0',
     'minify' => 0,
     '__br__5' => '',
-    'admin_group_model' => '',
     'admin_group_title' => '分组',
+    'admin_group_model' => '',
     'operation_log_catch' => ['POST', 'PUT', 'PATCH', 'DELETE'],
+    'login_page_style' => '',
     //配置描述
     '__config__' => [
         'name' => ['type' => 'text', 'label' => '名称'],
@@ -38,8 +39,9 @@ return [
         'login_css_file' => ['type' => 'text', 'label' => '登录页面css', 'help' => '可以填写一个css文件路径。如`/static/admin/login.css`', 'col_size' => 6, 'size' => [4, 8]],
         'assets_ver' => ['type' => 'text', 'label' => '静态资源版本号', 'col_size' => 6, 'size' => [4, 8]],
         'minify' => ['type' => 'radio', 'label' => '资源压缩', 'options' => [0 => '否', 1 => '是'], 'help' => '压缩css、js资源', 'col_size' => 6, 'size' => [4, 8]],
-        'admin_group_model' => ['type' => 'text', 'label' => '管理员分组模型', 'help' => '如:`\tpext\myadmin\admin\model\AdminGroup`，你可以自己实现分组。树形结构需要实现buildTree()方法', 'col_size' => 6, 'size' => [4, 8]],
         'admin_group_title' => ['type' => 'text', 'label' => '管理员分组名称', 'help' => '如:`部门，分店`', 'col_size' => 6, 'size' => [4, 8]],
-        'operation_log_catch' => ['type' => 'checkbox', 'label' => '操作日志记录类型', 'options' => ['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']],
+        'admin_group_model' => ['type' => 'text', 'label' => '管理员分组模型', 'help' => '如:`\tpext\myadmin\admin\model\AdminGroup`，你可以自己实现分组。树形结构需要实现buildTree()方法', 'col_size' => 6, 'size' => [4, 8]],
+        'operation_log_catch' => ['type' => 'checkbox', 'label' => '操作日志记录类型', 'col_size' => 6, 'size' => [4, 8], 'options' => ['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']],
+        'login_page_style' => ['type' => 'radio', 'label' => '登录页面风格', 'col_size' => 6, 'size' => [4, 8], 'options' => ['1' => '默认', '2' => '风格2', '3' => '风格3', '4' => '风格4']],
     ],
 ];
