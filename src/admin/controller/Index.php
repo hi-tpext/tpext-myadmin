@@ -536,7 +536,7 @@ class Index extends Controller
 
             $this->assign(['login_in_top' => $config['login_in_top'], 'login_css_file' => $config['login_css_file']]);
 
-            $template = 'login' . empty($config['login_page_style']) ? '1' : $config['login_page_style'];
+            $template = 'login' . (empty($config['login_page_style']) ? '1' : $config['login_page_style']);
 
             return $this->fetch($template);
         }
