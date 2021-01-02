@@ -57,8 +57,7 @@ class Menu extends Controller
         $form = $this->form;
 
         $tree = [0 => '根菜单'];
-
-        $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
+        $tree += $this->dataModel->getOptionsData($isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
         $modControllers = $this->permModel->getControllers();
 
@@ -131,38 +130,6 @@ class Menu extends Controller
     }
 
     /**
-     * Undocumented function
-     *
-     * @param Table $table
-     * @return void
-     */
-    protected function buildDataList()
-    {
-        $table = $this->table;
-
-        $table->sortable([]);
-
-        $data = $this->dataModel->buildList(0, 0);
-
-        if ($this->isExporting) {
-            $__ids__ = input('post.__ids__');
-            if (!empty($__ids__)) {
-                $ids = explode(',', $__ids__);
-                $newd = [];
-                foreach ($data as $d) {
-                    if (in_array($d['id'], $ids)) {
-                        $newd[] = $d;
-                    }
-                }
-                $data = $newd;
-            }
-        }
-
-        $this->buildTable($data);
-        $table->fill($data);
-    }
-
-    /**
      * 构建表格
      *
      * @return void
@@ -171,7 +138,7 @@ class Menu extends Controller
     {
         $table = $this->table;
         $table->show('id', 'ID');
-        $table->raw('title_show', '结构')->getWrapper()->addStyle('text-align:left;');
+        $table->raw('__text__', '结构')->getWrapper()->addStyle('text-align:left;');
         $table->show('url', 'url');
         $table->raw('icon', '图标')->to('<i class="{val}"></i>');
         $table->text('title', '名称')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
