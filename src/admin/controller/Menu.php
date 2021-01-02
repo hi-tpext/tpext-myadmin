@@ -72,9 +72,11 @@ class Menu extends Controller
         ];
 
         $contrl = null;
-        $permission = null;
-        $perm = null;
+        $contrlPerm = null;
+        $actionPerm = null;
         $arr = null;
+
+        $permissionList = $this->permModel->select();
 
         foreach ($modControllers as $key => $modController) {
 
@@ -83,7 +85,7 @@ class Menu extends Controller
 
             foreach ($modController['controllers'] as $controller => $info) {
 
-                $contrl = preg_replace('/.+?\\\controller\\\(\w+)$/', '$1', $controller);
+                $contrlPerm = null;
 
                 $contrl = preg_replace('/.+?\\\controller\\\(.+)$/', '$1', $controller);
                 if (strpos($contrl, '\\') !== false) {
@@ -93,19 +95,30 @@ class Menu extends Controller
                     $contrl = Str::snake($contrl);
                 }
 
-                $permission = $this->permModel->where(['controller' => $controller . '::class', 'action' => '#'])->find();
+                foreach ($permissionList as $prow) {
+                    if ($prow['controller'] == $controller . '::class' && $prow['action'] == '#') {
+                        $contrlPerm = $prow;
+                        break;
+                    }
+                }
 
-                $urls[$key . '_' . $contrl]['label'] = ($permission ? $permission['action_name'] : $contrl);
+                $urls[$key . '_' . $contrl]['label'] = ($contrlPerm ? $contrlPerm['action_name'] : $contrl);
 
                 $options = [];
 
                 foreach ($info['methods'] as $method) {
 
+                    $actionPerm = null;
                     $url = url('/admin/' . $contrl . '/' . strtolower($method->name), [], false)->__toString();
 
-                    $perm = $this->permModel->where(['url' => $url])->find();
+                    foreach ($permissionList as $prow) {
+                        if ($prow['controller'] == $controller . '::class' && $prow['url'] == $url) {
+                            $actionPerm = $prow;
+                            break;
+                        }
+                    }
 
-                    if ($perm && $perm['action_type'] != 1) {
+                    if ($actionPerm && $actionPerm['action_type'] != 1) {
                         continue;
                     }
                     $options[$url] = $url;
