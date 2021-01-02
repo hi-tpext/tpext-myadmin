@@ -3,9 +3,12 @@
 namespace tpext\myadmin\admin\model;
 
 use think\Model;
+use tpext\builder\traits\TreeModel;
 
 class AdminMenu extends Model
 {
+    use TreeModel;
+
     protected $autoWriteTimestamp = 'dateTime';
 
     protected static function init()
@@ -15,60 +18,10 @@ class AdminMenu extends Model
         });
     }
 
-    public function buildList($parent = 0, $deep = 0)
+    protected function treeInit()
     {
-        $roots = static::where(['parent_id' => $parent])->order('sort')->select();
-        $data = [];
-
-        $deep += 1;
-
-        foreach ($roots as $root) {
-
-            if ($parent == 0) {
-                if ($root['url'] != '#') {
-                    $root['title_show'] = str_repeat('&nbsp;', 1 * 6) . '├─' . $root['title'];
-                } else {
-                    $root['title_show'] = $root['title'];
-                }
-            } else {
-                $root['title_show'] = str_repeat('&nbsp;', ($deep - 1) * 6) . '├─' . $root['title'];
-            }
-
-            $data[] = $root;
-
-            $data = array_merge($data, $this->buildList($root['id'], $deep));
-        }
-
-        return $data;
-    }
-
-    public function buildTree($parent = 0, $deep = 0, $except = 0)
-    {
-        $roots = static::where(['parent_id' => $parent])->order('sort')->field('id,title,parent_id,url')->select();
-        $data = [];
-
-        $deep += 1;
-
-        foreach ($roots as $root) {
-
-            $root['title_show'] = '|' . str_repeat('──', $deep) . $root['title'];
-
-            if ($root['id'] == $except) {
-                continue;
-            }
-
-            if ($root['url'] != '#') {
-                continue;
-            }
-
-            $root['title_show'];
-
-            $data[$root['id']] = $root['title_show'];
-
-            $data += $this->buildTree($root['id'], $deep, $except);
-        }
-
-        return $data;
+        $this->treeTextField = 'title';
+        $this->treeSortField = 'sort';
     }
 
     public function buildMenus($admin_user)

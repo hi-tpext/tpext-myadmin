@@ -58,8 +58,7 @@ class Group extends Controller
         $form = $this->form;
 
         $tree = [0 => '顶级' . $this->adminGroupTitle];
-
-        $tree += $this->dataModel->buildTree(0, 0, $isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
+        $tree += $this->dataModel->getOptionsData($isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
         $form->text('name', '名称')->required();
 
@@ -75,23 +74,6 @@ class Group extends Controller
     }
 
     /**
-     * Undocumented function
-     *
-     * @param Table $table
-     * @return void
-     */
-    protected function buildDataList()
-    {
-        $table = $this->table;
-
-        $table->sortable([]);
-
-        $data = $this->dataModel->buildList(0, 0);
-        $this->buildTable($data);
-        $table->fill($data);
-    }
-
-    /**
      * 构建表格
      *
      * @return void
@@ -100,7 +82,7 @@ class Group extends Controller
     {
         $table = $this->table;
         $table->show('id', 'ID');
-        $table->raw('title_show', '名称')->getWrapper()->addStyle('text-align:left;');
+        $table->raw('__text__', '名称')->getWrapper()->addStyle('text-align:left;');
         $table->show('users', '用户数');
         $table->show('description', '描述')->default('无描述');
         $table->text('name', '名称')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
