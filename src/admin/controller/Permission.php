@@ -154,19 +154,35 @@ class Permission extends Controller
 
         unset($reflectionClass);
 
-        $allIds = $this->dataModel->column('id');
+        $allIds = [];
         $activeIds = [];
         $perm = null;
+
+        $permissionList = $this->dataModel->select();
+
+        foreach ($permissionList as $prow) {
+            $allIds[] = $prow['id'];
+        }
+
         foreach ($data as &$row) {
+            $perm = null;
             if ($row['action'] != '') {
-                $perm = $this->dataModel->where(['controller' => $row['controller'], 'action' => $row['action']])->find();
+
+                foreach ($permissionList as $prow) {
+                    if ($prow['controller'] == $row['controller'] && $prow['action'] == $row['action']) {
+                        $perm = $prow;
+                        break;
+                    }
+                }
+
                 if ($perm) {
                     $row['action_type'] = $perm['action_type'];
                     $row['action_name'] = $perm['action_name'] ? $perm['action_name'] : $row['action_name'];
                     $row['id'] = $perm['id'];
                     $activeIds[] = $perm['id'];
                 } else {
-                    $res = $this->dataModel->create([
+                    $perm = new AdminPermission;
+                    $res = $perm->save([
                         'module_name' => $modController['title'],
                         'controller' => $row['controller'],
                         'action' => $row['action'],
@@ -175,8 +191,7 @@ class Permission extends Controller
                         'action_name' => $row['action_name'],
                     ]);
                     if ($res) {
-                        $perm = $this->dataModel->where(['controller' => $row['controller'], 'action' => $row['action']])->find();
-                        $row['id'] = $perm ? $perm['id'] : $row['id'];
+                        $row['id'] = $perm['id'];
                     }
                 }
             }
@@ -193,7 +208,7 @@ class Permission extends Controller
         }
 
         if ($this->isExporting) {
-            $__ids__ = input('post.__ids__');
+            $__ids__ = input('__ids__');
             if (!empty($__ids__)) {
                 $ids = explode(',', $__ids__);
                 $newd = [];
