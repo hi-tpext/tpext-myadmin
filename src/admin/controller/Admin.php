@@ -170,8 +170,8 @@ class Admin extends Controller
         $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
         $form->select('role_id', '角色')->required()->optionsData($this->roleModel->all(), 'name')->disabled($isEdit && $data['id'] == 1);
 
-        if (method_exists($this->groupModel, 'buildTree')) {
-            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
+        if (method_exists($this->groupModel, 'asTreeList')) {
+            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->getOptionsData());
         } else {
             $form->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
         }
