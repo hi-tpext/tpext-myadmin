@@ -155,6 +155,9 @@ class Role extends Controller
         } else {
 
             $menuIds = [];
+            $permissions = [];
+            $controllerPermList = $this->permModel->order('controller,action')->select();
+
             if ($isEdit) {
                 $menuIds = $this->roleMenuModel->where(['role_id' => $data['id']])->column('menu_id');
             } else {
@@ -165,7 +168,7 @@ class Role extends Controller
 
             $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
 
-            $tree = $this->menuModel->buildList();
+            $tree = $this->menuModel->getLineData();
 
             $perIds = [];
             if ($isEdit) {
@@ -176,21 +179,31 @@ class Role extends Controller
                 if ($tr['parent_id'] == '0') {
                     $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $tr['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
                 } else if ($tr['url'] == '#') {
-                    $form->raw('title', $tr['title_show'])
+                    $form->raw('title', $tr['__text__'])
                         ->labelClass('permission-item');
                 }
 
-                $controllerPerm = $this->permModel->where(['url' => $tr['url']])->find();
+                $controllerPerm = null;
+                $permissions = [];
+
+                foreach ($controllerPermList as $cprow) {
+                    if ($cprow['url'] == $tr['url']) {
+                        $controllerPerm = $cprow;
+                        break;
+                    }
+                }
+
                 if (!$controllerPerm) {
                     continue;
                 }
 
-                $permissions = $this->permModel->where([
-                    ['controller', '=', $controllerPerm['controller']],
-                    ['action', '<>', '#'],
-                ])->order('action desc')->field('id,action_name,url')->select();
+                foreach ($controllerPermList as $cprow) {
+                    if ($cprow['controller'] == $controllerPerm['controller'] && $cprow['action'] != '#') {
+                        $permissions[] = $cprow;
+                    }
+                }
 
-                $form->checkbox("permissions" . $controllerPerm['id'], $tr['title_show'])
+                $form->checkbox("permissions" . $controllerPerm['id'], $tr['__text__'])
                     ->default($perIds)
                     ->labelClass('permission-item')
                     ->optionsData($permissions, 'action_name')
@@ -250,19 +263,35 @@ class Role extends Controller
             $menuIds = [];
         }
 
-        $allIds = $this->roleMenuModel->where(['role_id' => $roleId])->column('id');
+        $allIds = [];
+
+        $roleMenuList = $this->roleMenuModel->where(['role_id' => $roleId])->select();
+
+        foreach ($roleMenuList as $rmenu) {
+            $allIds[] = $rmenu['id'];
+        }
+
         $existIds = [];
 
         Db::startTrans();
 
-        foreach ($menuIds as $id) {
-            $exist = $this->roleMenuModel->where(['menu_id' => $id, 'role_id' => $roleId])->find();
+        $roleMenu = null;
 
-            if ($exist) {
-                $existIds[] = $exist['id'];
-                continue;
+        foreach ($menuIds as $id) {
+            $roleMenu = null;
+
+            foreach ($roleMenuList as $rmenu) {
+                if ($rmenu['menu_id'] == $id) {
+                    $roleMenu = $rmenu;
+                    break;
+                }
+            }
+
+            if ($roleMenu) {
+                $existIds[] = $roleMenu['id'];
             } else {
-                $this->roleMenuModel->create([
+                $roleMenu = new AdminRoleMenu;
+                $roleMenu->save([
                     'menu_id' => $id,
                     'role_id' => $roleId,
                 ]);
@@ -282,16 +311,35 @@ class Role extends Controller
     {
         $data = request()->post();
 
-        $allIds = $this->rolePermModel->where(['role_id' => $roleId])->column('id');
+        $rolePermList = $this->rolePermModel->where(['role_id' => $roleId])->select();
+        $controllerPermList = $this->permModel->select();
+
+        $allIds = [];
+        foreach ($rolePermList as $rprow) {
+            $allIds[] = $rprow['id'];
+        }
+
         $existIds = [];
 
         Db::startTrans();
 
-        $tree = $this->menuModel->buildList();
+        $tree = $this->menuModel->getLineData();
+
+        $controllerPerm = null;
+        $rolePerm = null;
+        $saveIds = null;
 
         foreach ($tree as $tr) {
 
-            $controllerPerm = $this->permModel->where(['url' => $tr['url']])->find();
+            $controllerPerm = null;
+
+            foreach ($controllerPermList as $cprow) {
+                if ($cprow['url'] == $tr['url']) {
+                    $controllerPerm = $cprow;
+                    break;
+                }
+            }
+
             if (!$controllerPerm) {
                 continue;
             }
@@ -301,13 +349,19 @@ class Role extends Controller
                 $saveIds = array_filter($data['permissions' . $controllerPerm['id']], 'strlen');
 
                 foreach ($saveIds as $id) {
-                    $exist = $this->rolePermModel->where(['permission_id' => $id, 'role_id' => $roleId])->find();
+                    $rolePerm = null;
+                    foreach ($rolePermList as $rprow) {
+                        if ($rprow['permission_id'] == $id) {
+                            $rolePerm = $rprow;
+                            break;
+                        }
+                    }
 
-                    if ($exist) {
-                        $existIds[] = $exist['id'];
-                        continue;
+                    if ($rolePerm) {
+                        $existIds[] = $rolePerm['id'];
                     } else {
-                        $this->rolePermModel->create([
+                        $rolePerm = new AdminRolePermission;
+                        $rolePerm->save([
                             'permission_id' => $id,
                             'role_id' => $roleId,
                             'controller_id' => $controllerPerm['id'],
