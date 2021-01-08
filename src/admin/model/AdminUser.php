@@ -11,49 +11,47 @@ class AdminUser extends Model implements Auth
 {
     protected $autoWriteTimestamp = 'dateTime';
 
-    protected $adminGroupModel;
+    protected static $adminGroupModel;
 
-    protected $adminGroupTitle = '分组';
+    protected static $adminGroupTitle = '分组';
 
     protected $hidden = ['group', 'role', 'password', 'salt'];
 
-    protected function initialize()
+    protected static function init()
     {
-        parent::initialize();
-
         $instance = Module::getInstance();
 
         $config = $instance->getConfig();
 
         if (!empty($config['admin_group_model']) && class_exists($config['admin_group_model'])) {
-            $this->adminGroupModel = new $config['admin_group_model'];
+            self::$adminGroupModel = new $config['admin_group_model'];
         } else {
-            $this->adminGroupModel = new AdminGroup;
+            self::$adminGroupModel = new AdminGroup;
         }
 
         if (!empty($config['admin_group_title'])) {
-            $this->adminGroupTitle = $config['admin_group_title'];
+            self::$adminGroupTitle = $config['admin_group_title'];
         }
     }
 
     public function getAdminGroupModel()
     {
-        return $this->adminGroupModel;
+        return self::$adminGroupModel;
     }
 
     public function getAdminGroupTitle()
     {
-        return $this->adminGroupTitle;
+        return self::$adminGroupTitle;
     }
 
     public function group()
     {
-        return $this->hasOne('Admingroup', 'id', 'group_id');
+        return $this->belongsTo(get_class(self::$adminGroupModel), 'group_id', 'id');
     }
 
     public function role()
     {
-        return $this->hasOne('AdminRole', 'id', 'role_id');
+        return $this->belongsTo(AdminRole::class, 'role_id', 'id');
     }
 
     /**
