@@ -46,12 +46,12 @@ class AdminUser extends Model implements Auth
 
     public function group()
     {
-        return $this->hasOne('Admingroup', 'id', 'group_id');
+        return $this->belongsTo(get_class(self::$adminGroupModel), 'group_id', 'id');
     }
 
     public function role()
     {
-        return $this->hasOne('AdminRole', 'id', 'role_id');
+        return $this->belongsTo(AdminRole::class, 'role_id', 'id');
     }
 
     /**

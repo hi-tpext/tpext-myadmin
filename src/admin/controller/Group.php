@@ -5,6 +5,7 @@ namespace tpext\myadmin\admin\controller;
 use think\Controller;
 use tpext\builder\traits\actions;
 use tpext\myadmin\admin\model\AdminGroup;
+use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\common\Module;
 
 /**
@@ -23,6 +24,13 @@ class Group extends Controller
      */
     protected $dataModel;
 
+    /**
+     * Undocumented variable
+     *
+     * @var AdminUser
+     */
+    protected $userModel;
+
     protected $adminGroupTitle = '分组';
 
     protected function initialize()
@@ -35,7 +43,9 @@ class Group extends Controller
             $this->adminGroupTitle = $config['admin_group_title'];
         }
 
-        $this->dataModel = new AdminGroup;
+        $this->userModel = new AdminUser;
+
+        $this->dataModel = $this->userModel->getAdminGroupModel();
 
         $this->pageTitle = $this->adminGroupTitle . '管理';
         $this->sortOrder = 'id desc';
