@@ -249,7 +249,7 @@ class Index extends Controller
             $editData['password'] = $password[0];
             $editData['salt'] = $password[1];
 
-            $res = $this->dataModel->where(['id' => $user['id']])->save($data);
+            $res = $user->force()->save($editData);
 
             if ($res) {
                 ExtLoader::trigger('admin_change_pwd', $user);
