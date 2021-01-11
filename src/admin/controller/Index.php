@@ -536,7 +536,13 @@ class Index extends Controller
 
             $this->assign(['login_in_top' => $config['login_in_top'], 'login_css_file' => $config['login_css_file']]);
 
-            $template = 'login' . (empty($config['login_page_style']) ? '1' : $config['login_page_style']);
+            $rootPath = app()->getRootPath();
+
+            if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) {
+                $template = $rootPath . $config['login_page_view_path'];
+            } else {
+                $template = 'login' . (empty($config['login_page_style']) ? '1' : $config['login_page_style']);
+            }
 
             return $this->fetch($template);
         }
