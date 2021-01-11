@@ -432,10 +432,10 @@
      * @param children 子级名称
      */
     var treeData = function (source, id, parentId, children) {
-      let cloneData = (typeof source == 'object') ? source : JSON.parse(source);
-      return cloneData.filter(father => {
-        let branchArr = cloneData.filter(child => father[id] == child[parentId]);
-        branchArr.length > 0 ? father[children] = branchArr : ''
+      var cloneData = (typeof source == 'object') ? source : JSON.parse(source);
+      return cloneData.filter(function(father){
+        var branchArr = cloneData.filter( function(child){ return father[id] == child[parentId]});
+        branchArr.length > 0 ? father[children] = branchArr : '';
         return father[parentId] == 0
       })
     }
