@@ -27,7 +27,7 @@ class AdminMenu extends Model
         $roleMenus = AdminRoleMenu::where(['role_id' => $admin_user['role_id']])->column('menu_id');
         $roots = [];
 
-        $allData = AdminMenu::where(['enable' => 1])->select();
+        $allData = AdminMenu::where(['enable' => 1])->order('parent_id,sort')->select();
         $allPermissions = AdminPermission::select();
         $allRolePermissions = AdminRolePermission::where(['role_id' => $admin_user['role_id']])->select();
 
