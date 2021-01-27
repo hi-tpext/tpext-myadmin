@@ -47,7 +47,7 @@ class Auth
 
             if (!$this->isInstalled()) {
                 if ($controller != 'extension') {
-                    $this->error('请安装扩展！', url('/admin/extension/index'));
+                    $this->error('请安装扩展！', url('/admin/extension/prepare'));
                 } else {
                     return;
                 }
