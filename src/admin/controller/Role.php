@@ -203,7 +203,8 @@ class Role extends Controller
                 $urlBase = preg_replace('/^(.+?\/)\w+$/', '$1', $controllerPerm['url']);
 
                 foreach ($controllerPermList as $cprow) {
-                    if ($cprow['controller'] == $controllerPerm['controller'] || ($cprow['url'] && strstr($urlBase, $cprow['url']))) {
+
+                    if ($cprow['controller'] == $controllerPerm['controller'] || ($cprow['url'] && strstr($cprow['url'], $urlBase))) {
                         $ids[] = $cprow['id'];
                         if ($cprow['action'] == '#') {
                             continue;
@@ -228,25 +229,28 @@ class Role extends Controller
 
                 foreach ($otherPermList as $cprow) {
                     if ($cprow['action'] == '#') {
-                        $urlBase = preg_replace('/^(.+?\/)\w+$/', '$1', $cprow['url']);
                         $permissions = [];
-
                         foreach ($otherPermList as $cprow_) {
                             if ($cprow_['action'] == '#') {
                                 continue;
                             }
-                            if ($cprow_['controller'] == $cprow['controller'] || ($cprow_['url'] && strstr($urlBase, $cprow_['url']))) {
+                            if ($cprow_['controller'] == $cprow['controller'] || ($urlBase && $cprow_['url'] && strstr($cprow_['url'], $urlBase))) {
                                 $permissions[] = $cprow_;
+                                if (!$urlBase) {
+                                    $urlBase = preg_replace('/^(.+?\/)\w+$/', '$1', $cprow_['url']);
+                                }
                             }
                         }
 
-                        $form->checkbox("permissions" . $cprow['id'], str_repeat('&nbsp;', 5) . '├─' . $cprow['action_name'])
-                            ->default($perIds)
-                            ->labelClass('permission-item')
-                            ->optionsData($permissions, 'action_name')
-                            ->inline()
-                            ->size(2, 10)
-                            ->checkallBtn();
+                        if (count($permissions)) {
+                            $form->checkbox("permissions" . $cprow['id'], str_repeat('&nbsp;', 5) . '├─' . $cprow['action_name'])
+                                ->default($perIds)
+                                ->labelClass('permission-item')
+                                ->optionsData($permissions, 'action_name')
+                                ->inline()
+                                ->size(2, 10)
+                                ->checkallBtn();
+                        }
                     }
                 }
             }
