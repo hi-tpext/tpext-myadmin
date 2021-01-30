@@ -156,6 +156,8 @@ class Role extends Controller
 
             $menuIds = [];
             $permissions = [];
+            $urlBase = '';
+            $ids = [];
             $controllerPermList = $this->permModel->order('controller,action')->select();
 
             if ($isEdit) {
@@ -179,7 +181,7 @@ class Role extends Controller
                 if ($tr['parent_id'] == '0') {
                     $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . $tr['title'] . '</label></h4>')->size(0, 12)->showLabel(false);
                 } else if ($tr['url'] == '#') {
-                    $form->raw('title', $tr['__text__'])
+                    $form->raw('title' . $tr['id'], $tr['__text__'])
                         ->labelClass('permission-item');
                 }
 
@@ -188,6 +190,7 @@ class Role extends Controller
 
                 foreach ($controllerPermList as $cprow) {
                     if ($cprow['url'] == $tr['url']) {
+                        $ids[] = $cprow['id'];
                         $controllerPerm = $cprow;
                         break;
                     }
@@ -197,19 +200,55 @@ class Role extends Controller
                     continue;
                 }
 
+                $urlBase = preg_replace('/^(.+?\/)\w+$/', '$1', $controllerPerm['url']);
+
                 foreach ($controllerPermList as $cprow) {
-                    if ($cprow['controller'] == $controllerPerm['controller'] && $cprow['action'] != '#') {
+                    if ($cprow['controller'] == $controllerPerm['controller'] || ($cprow['url'] && strstr($urlBase, $cprow['url']))) {
+                        $ids[] = $cprow['id'];
+                        if ($cprow['action'] == '#') {
+                            continue;
+                        }
                         $permissions[] = $cprow;
                     }
                 }
 
-                $form->checkbox("permissions" . $controllerPerm['id'], $tr['__text__'])
+                $form->checkbox("permissions" . $controllerPerm['id'], $tr['parent_id'] ? $tr['__text__'] : str_repeat('&nbsp;', 5) . '├─' . $tr['title'])
                     ->default($perIds)
                     ->labelClass('permission-item')
                     ->optionsData($permissions, 'action_name')
                     ->inline()
                     ->size(2, 10)
                     ->checkallBtn();
+            }
+
+            $otherPermList = $this->permModel->where('id', 'not in', $ids)->order('controller,action')->select();
+
+            if (count($otherPermList)) {
+                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . '其他' . '</label></h4>')->size(0, 12)->showLabel(false);
+
+                foreach ($otherPermList as $cprow) {
+                    if ($cprow['action'] == '#') {
+                        $urlBase = preg_replace('/^(.+?\/)\w+$/', '$1', $cprow['url']);
+                        $permissions = [];
+
+                        foreach ($otherPermList as $cprow_) {
+                            if ($cprow_['action'] == '#') {
+                                continue;
+                            }
+                            if ($cprow_['controller'] == $cprow['controller'] || ($cprow_['url'] && strstr($urlBase, $cprow_['url']))) {
+                                $permissions[] = $cprow_;
+                            }
+                        }
+
+                        $form->checkbox("permissions" . $cprow['id'], str_repeat('&nbsp;', 5) . '├─' . $cprow['action_name'])
+                            ->default($perIds)
+                            ->labelClass('permission-item')
+                            ->optionsData($permissions, 'action_name')
+                            ->inline()
+                            ->size(2, 10)
+                            ->checkallBtn();
+                    }
+                }
             }
         }
     }
@@ -322,27 +361,10 @@ class Role extends Controller
 
         Db::startTrans();
 
-        $tree = $this->menuModel->getLineData();
-
-        $controllerPerm = null;
         $rolePerm = null;
         $saveIds = null;
 
-        foreach ($tree as $tr) {
-
-            $controllerPerm = null;
-
-            foreach ($controllerPermList as $cprow) {
-                if ($cprow['url'] == $tr['url']) {
-                    $controllerPerm = $cprow;
-                    break;
-                }
-            }
-
-            if (!$controllerPerm) {
-                continue;
-            }
-
+        foreach ($controllerPermList as $controllerPerm) {
             if (isset($data['permissions' . $controllerPerm['id']])) {
 
                 $saveIds = array_filter($data['permissions' . $controllerPerm['id']], 'strlen');
