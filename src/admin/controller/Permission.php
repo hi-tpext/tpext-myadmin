@@ -72,6 +72,7 @@ class Permission extends Controller
             'export' => '导出',
             'welcom' => '欢迎',
             'selectpage' => '下拉选择',
+            'upgrade' => '升级',
         ];
 
         $modControllers = $this->dataModel->getControllers();

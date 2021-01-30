@@ -57,7 +57,18 @@ class Menu extends Controller
         $form = $this->form;
 
         $tree = [0 => '根菜单'];
-        $tree += $this->dataModel->getOptionsData($isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
+
+        $list = $this->dataModel->getLineData($isEdit ? $data['id'] : 0);
+
+        $options = [];
+
+        foreach ($list as $li) {
+            if ($li['url'] == '#') {
+                $options[$li['id']] = str_replace('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', '──', $li['__text__']);
+            }
+        }
+
+        $tree += $options; //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
         $modControllers = $this->permModel->getControllers();
 
