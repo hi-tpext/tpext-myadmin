@@ -340,6 +340,7 @@ class Index extends Controller
             $table->data($data);
             $table->paginator($count, $pagesize);
             $table->useExport(false);
+            $table->sortOrder($sortOrder);
 
             if (request()->isAjax()) {
                 return $table->partial()->render();
