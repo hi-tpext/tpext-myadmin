@@ -88,7 +88,6 @@ class Operationlog extends Controller
         $search->select('method', '提交方式', 3)->options(['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']);
         $search->datetime('start ', '操作时间', 3)->placeholder('起始');
         $search->datetime('end ', '~', 3)->placeholder('截止');
-
     }
 
     /**
@@ -107,8 +106,11 @@ class Operationlog extends Controller
         $form->show('path', '路径');
         $form->show('method', '提交方式');
         $form->show('ip', 'IP');
-        $form->show('data', '数据');
         $form->show('create_time', '时间');
+        $form->html('data', '数据')->display(
+            '<pre style="white-space:pre-wrap;word-break:break-all;">{$data}</pre>',
+            ['data' => json_encode(json_decode($data['data']), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)]
+        )->size(2, 10);
     }
 
     /**
@@ -126,15 +128,8 @@ class Operationlog extends Controller
         $table->show('path', '路径');
         $table->show('method', '提交方式');
         $table->show('ip', 'IP');
-        $table->show('data', '数据')->getWrapper()->style('width:25%;');
+        $table->show('data', '数据')->cut(100)->getWrapper()->style('max-width:40%;');
         $table->show('create_time', '时间')->getWrapper()->addStyle('width:160px');
-
-        foreach ($data as &$d) {
-            if ($d['method'] == 'POST' && mb_strlen($d['data']) > 50) {
-
-                $d['data'] = mb_substr($d['data'], 0, 50) . '...';
-            }
-        }
 
         $table->getToolbar()
             ->btnDelete()
