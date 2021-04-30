@@ -69,9 +69,11 @@
       width: 210px;
     }
 
-    .sidebar-header a img {
+    [data-logobg*='color_'] .sidebar-header img,
+    [data-theme='translucent'] .sidebar-header img {
       margin: 0;
       min-height: 50px;
+      left: 0;
     }
 
     .mt-close-tab {
@@ -102,6 +104,10 @@
         .lyear-layout-sidebar-close .lyear-layout-header,
         .lyear-layout-sidebar-close .lyear-layout-content {
             padding-left: 0px;
+        }
+        .sidebar-header img 
+        {
+          left: -220px;
         }
     }
   </style>
