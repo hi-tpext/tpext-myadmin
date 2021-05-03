@@ -165,6 +165,8 @@ class Admin extends Controller
     {
         $form = $this->form;
 
+        $admin = AdminUser::current();
+
         $form->tab('基本信息');
 
         $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
@@ -177,7 +179,7 @@ class Admin extends Controller
         } else {
             $form->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->all(), 'name');
         }
-        $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->default(1)->help('禁用后无法登录后台');
+        $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->disabled($isEdit && $admin['id'] == $data['id'])->default(1)->help('禁用后无法登录后台');
 
         $form->tab('其他信息');
         $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
@@ -208,6 +210,7 @@ class Admin extends Controller
             'name',
             'role_id',
             'group_id',
+            'enable',
             'avatar',
             'username',
             'password',
