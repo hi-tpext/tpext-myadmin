@@ -14,7 +14,8 @@
   <link href="/assets/lightyearadmin/js/bootstrap-multitabs/multitabs.min.css?v={$admin_assets_ver|default='1.0'}"
     rel="stylesheet">
   <link href="/assets/lightyearadmin/css/style.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
-  <link href="/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
+  <link href="/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css?v={$admin_assets_ver|default='1.0'}"
+    rel="stylesheet">
   <style>
     .lyear-layout-header .navbar {
       min-height: 50px;
@@ -93,22 +94,73 @@
       text-align: center;
       padding: 0 5px;
     }
+
     /** ----------------------------------
     * 响应式处理
     -------------------------------------- */
     @media (max-width: 1024px) {
+
       .lyear-layout-header,
-        .lyear-layout-content {
-            padding-left: 0;
-        }
-        .lyear-layout-sidebar-close .lyear-layout-header,
-        .lyear-layout-sidebar-close .lyear-layout-content {
-            padding-left: 0px;
-        }
-        .sidebar-header img 
-        {
-          left: -220px;
-        }
+      .lyear-layout-content {
+        padding-left: 0;
+      }
+
+      .lyear-layout-sidebar-close .lyear-layout-header,
+      .lyear-layout-sidebar-close .lyear-layout-content {
+        padding-left: 0px;
+      }
+
+      .sidebar-header img {
+        left: -220px;
+      }
+    }
+
+    /* 标签页 */
+    .mt-nav-bar .nav-tabs {
+      border-bottom-color: #ebebeb;
+      margin-bottom: 1rem;
+    }
+
+    .mt-nav-bar .nav-tabs>li>a {
+      margin-right: 0px;
+      border: none;
+      border-bottom: 1px solid transparent;
+      border-radius: 0;
+      color: #8b95a5;
+      -webkit-transition: 0.5s;
+      transition: 0.5s;
+    }
+
+    .mt-nav-bar .nav-tabs>li.active>a,
+    .mt-nav-bar .nav-tabs>li.active>a:focus,
+    .mt-nav-bar .nav-tabs>li.active>a:hover {
+      color: #4d5259;
+      border: none;
+      background-color: transparent;
+      border-bottom: 1px solid #33cabb;
+    }
+
+    .mt-nav-bar .nav-tabs.nav>li>a:hover,
+    .mt-nav-bar .nav-tabs.nav>li>a:focus {
+      text-decoration: none;
+      background-color: transparent;
+      border-bottom-color: #33cabb;
+    }
+
+    .mt-nav-bar .nav-tabs.nav-justified>.active>a,
+    .mt-nav-bar .nav-tabs.nav-justified>.active>a:focus,
+    .mt-nav-bar .nav-tabs.nav-justified>.active>a:hover {
+      color: #4d5259;
+      border: none;
+      border-bottom: 1px solid #33cabb;
+    }
+
+    @media (min-width: 768px) {
+      .mt-nav-bar .nav-tabs.nav-justified>li>a {
+        border-bottom-color: #ebebeb;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+      }
     }
   </style>
 </head>
@@ -350,7 +402,8 @@
     src="/assets/lightyearadmin/js/bootstrap-notify.min.js?v={$admin_assets_ver|default='1.0'}"
     charset="utf-8"></script>
   <script type="text/javascript"
-    src="/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js?v={$admin_assets_ver|default='1.0'}" charset="utf-8"></script>
+    src="/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js?v={$admin_assets_ver|default='1.0'}"
+    charset="utf-8"></script>
   <script type="text/javascript"
     src="/assets/lightyearadmin/js/jquery.lyear.loading.js?v={$admin_assets_ver|default='1.0'}"
     charset="utf-8"></script>
@@ -439,8 +492,8 @@
      */
     var treeData = function (source, id, parentId, children) {
       var cloneData = (typeof source == 'object') ? source : JSON.parse(source);
-      return cloneData.filter(function(father){
-        var branchArr = cloneData.filter( function(child){ return father[id] == child[parentId]});
+      return cloneData.filter(function (father) {
+        var branchArr = cloneData.filter(function (child) { return father[id] == child[parentId] });
         branchArr.length > 0 ? father[children] = branchArr : '';
         return father[parentId] == 0
       })
