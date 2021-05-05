@@ -23,7 +23,11 @@ class Module extends baseModule
         'admin' => ['index', 'permission', 'role', 'admin', 'group', 'menu', 'operationlog'],
     ];
 
-    protected static $tpextmyadmin_installed = false;
+    protected static $tpextmyadminInstalled = false;
+
+    protected $indexView = '';
+
+    protected $loginViews = ['1' => '风格1', '2' => '风格2', '3' => '风格3', '4' => '风格4'];
 
     /**
      * Undocumented function
@@ -74,7 +78,7 @@ class Module extends baseModule
      */
     public static function isInstalled()
     {
-        if (static::$tpextmyadmin_installed) {
+        if (static::$tpextmyadminInstalled) {
             return true;
         }
 
@@ -92,7 +96,7 @@ class Module extends baseModule
         }
 
         if (cache('tpextmyadmin_installed')) {
-            static::$tpextmyadmin_installed = true;
+            static::$tpextmyadminInstalled = true;
             return true;
         }
 
@@ -114,5 +118,50 @@ class Module extends baseModule
         cache('tpextmyadmin_installed', $is ? 1 : 0);
 
         return $is;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $path
+     * @return $this
+     */
+    public function setIndexView($path)
+    {
+        $this->indexView = $path;
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return string
+     */
+    public function getIndexView()
+    {
+        return $this->indexView;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $path 模板路径
+     * @param string $title 模板名称
+     * @return $this
+     */
+    public function addLoginView($path, $title)
+    {
+        $this->loginViews[$path] = $title;
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return array
+     */
+    public function getLoginViews()
+    {
+        return $this->loginViews;
     }
 }

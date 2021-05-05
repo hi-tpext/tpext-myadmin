@@ -41,7 +41,7 @@ class MinifyTool
     /**
      * Undocumented function
      *
-     * @param array $val
+     * @param array|string $val
      */
     public static function addJs($val)
     {
@@ -54,7 +54,7 @@ class MinifyTool
     /**
      * Undocumented function
      *
-     * @param array $val
+     * @param array|string $val
      * @return $this
      */
     public static function addCss($val)
@@ -64,6 +64,44 @@ class MinifyTool
         }
 
         static::$css = array_merge(static::$css, $val);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param array|string $val
+     * @return $this
+     */
+    public static function removeJs($val)
+    {
+        if (!is_array($val)) {
+            $val = [$val];
+        }
+
+        foreach (static::$js as $k => $j) {
+            if (in_array($j, $val)) {
+                unset(static::$js[$k]);
+            }
+        }
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param array|string $val
+     * @return $this
+     */
+    public static function removeCss($val)
+    {
+        if (!is_array($val)) {
+            $val = [$val];
+        }
+
+        foreach (static::$css as $k => $c) {
+            if (in_array($c, $val)) {
+                unset(static::$css[$k]);
+            }
+        }
     }
 
     /**
@@ -131,7 +169,6 @@ class MinifyTool
         }
 
         $minifier->minify($this->path . 'min.css');
-
     }
 
     private function createBuilder()
