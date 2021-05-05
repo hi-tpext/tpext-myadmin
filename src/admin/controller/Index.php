@@ -144,7 +144,7 @@ class Index extends Controller
         $this->assign('menus', json_encode($menus));
         $this->assign('dashbord', count($menus) ? $menus[0] : ['url' => url('welcome'), 'name' => '首页']);
 
-        return $this->fetch();
+        return $this->fetch(Module::getInstance()->getIndexView());
     }
 
     public function denied()
@@ -539,10 +539,18 @@ class Index extends Controller
 
             $rootPath = app()->getRootPath();
 
+            $template = '';
             if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) {
                 $template = $rootPath . $config['login_page_view_path'];
             } else {
-                $template = 'login' . (empty($config['login_page_style']) ? '1' : $config['login_page_style']);
+                $template = 'login1';
+                if (!empty($config['login_page_style'])) {
+                    if (is_numeric($config['login_page_style'])) { // 1,2,3,4 默认样式
+                        $template = 'login' . $config['login_page_style'];
+                    } else { //其他
+                        $template = $config['login_page_style'];
+                    }
+                }
             }
 
             return $this->fetch($template);
