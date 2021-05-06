@@ -42,6 +42,7 @@ class MinifyTool
      * Undocumented function
      *
      * @param array|string $val
+     * @return void
      */
     public static function addJs($val)
     {
@@ -55,7 +56,7 @@ class MinifyTool
      * Undocumented function
      *
      * @param array|string $val
-     * @return $this
+     * @return void
      */
     public static function addCss($val)
     {
@@ -70,7 +71,7 @@ class MinifyTool
      * Undocumented function
      *
      * @param array|string $val
-     * @return $this
+     * @return void
      */
     public static function removeJs($val)
     {
@@ -89,7 +90,7 @@ class MinifyTool
      * Undocumented function
      *
      * @param array|string $val
-     * @return $this
+     * @return void
      */
     public static function removeCss($val)
     {
@@ -100,6 +101,38 @@ class MinifyTool
         foreach (static::$css as $k => $c) {
             if (in_array($c, $val)) {
                 unset(static::$css[$k]);
+            }
+        }
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $val
+     * @param string $newVal
+     * @return void
+     */
+    public static function replaceJs($val, $newVal)
+    {
+        foreach (static::$js as $k => $j) {
+            if ($val == $j) {
+                static::$js[$k] = $newVal;
+            }
+        }
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $val
+     * @param string $newVal
+     * @return void
+     */
+    public static function replaceCss($val, $newVal)
+    {
+        foreach (static::$css as $k => $c) {
+            if ($val == $c) {
+                static::$css[$k] = $newVal;
             }
         }
     }
