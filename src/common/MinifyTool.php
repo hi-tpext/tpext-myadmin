@@ -117,6 +117,7 @@ class MinifyTool
         foreach (static::$js as $k => $j) {
             if ($val == $j) {
                 static::$js[$k] = $newVal;
+                break;
             }
         }
     }
@@ -133,6 +134,7 @@ class MinifyTool
         foreach (static::$css as $k => $c) {
             if ($val == $c) {
                 static::$css[$k] = $newVal;
+                break;
             }
         }
     }
