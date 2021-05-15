@@ -12,6 +12,7 @@ use tpext\common\ExtLoader;
 use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\common\event\Log;
 use tpext\myadmin\common\event\Menu;
+use tpext\myadmin\common\event\Assets;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\common\Module;
 
@@ -45,6 +46,7 @@ class Auth
         }
 
         ExtLoader::watch('tpext_menus', Menu::class, false, '接收菜单创建/删除事件');
+        ExtLoader::watch('tpext_copy_assets', Assets::class, false, '监视资源刷新，修改版本号');
         ExtLoader::watch(HttpEnd::class, Log::class, false, '记录日志');
 
         return $next($request);

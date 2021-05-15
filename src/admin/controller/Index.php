@@ -144,7 +144,16 @@ class Index extends Controller
         $this->assign('menus', json_encode($menus));
         $this->assign('dashbord', count($menus) ? $menus[0] : ['url' => url('welcome'), 'name' => '首页']);
 
-        return $this->fetch(Module::getInstance()->getIndexView());
+        $config = Module::getInstance()->getConfig();
+        $template = 'index';
+        if (!empty($config['index_page_style']) && $config['index_page_style'] != 1) { //下拉选择的其他模板
+            $template = $config['index_page_style'];
+            if (!is_file($template)) { //其他模板不存在，回到默认
+                $template = 'index2';
+            }
+        }
+
+        return $this->fetch($template);
     }
 
     public function denied()
@@ -540,15 +549,18 @@ class Index extends Controller
             $rootPath = app()->getRootPath();
 
             $template = '';
-            if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) {
+            if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) { //直接填写的模板路径
                 $template = $rootPath . $config['login_page_view_path'];
-            } else {
+            } else { //下拉选择模板路径
                 $template = 'login1';
                 if (!empty($config['login_page_style'])) {
                     if (is_numeric($config['login_page_style'])) { // 1,2,3,4 默认样式
                         $template = 'login' . $config['login_page_style'];
                     } else { //其他
                         $template = $config['login_page_style'];
+                        if (!is_file($template)) { //其他模板不存在，回到默认3
+                            $template = 'login3';
+                        }
                     }
                 }
             }
