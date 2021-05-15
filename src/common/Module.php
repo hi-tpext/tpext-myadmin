@@ -25,9 +25,8 @@ class Module extends baseModule
 
     protected static $tpextmyadminInstalled = false;
 
-    protected $indexView = '';
-
     protected $loginViews = ['1' => '风格1', '2' => '风格2', '3' => '风格3', '4' => '风格4'];
+    protected $indexViews = ['1' => '默认lightYearAdmin'];
 
     /**
      * Undocumented function
@@ -121,29 +120,30 @@ class Module extends baseModule
     }
 
     /**
-     * Undocumented function
+     * 添加index框架模板到列表
      *
-     * @param string $path
+     * @param string $path 模板路径
+     * @param string $title 模板名称
      * @return $this
      */
-    public function setIndexView($path)
+    public function addIndexView($path, $title)
     {
-        $this->indexView = $path;
+        $this->indexViews[$path] = $title;
         return $this;
     }
 
     /**
-     * Undocumented function
+     * 获取index框架模板到列表
      *
-     * @return string
+     * @return array
      */
-    public function getIndexView()
+    public function getIndexViews()
     {
-        return $this->indexView;
+        return $this->indexViews;
     }
 
     /**
-     * Undocumented function
+     * 添加登录模板到列表
      *
      * @param string $path 模板路径
      * @param string $title 模板名称
@@ -156,7 +156,7 @@ class Module extends baseModule
     }
 
     /**
-     * Undocumented function
+     * 获取登录框架模板到列表
      *
      * @return array
      */

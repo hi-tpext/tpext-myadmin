@@ -25,6 +25,7 @@ return [
     'admin_group_title' => '分组',
     'admin_group_model' => '',
     'operation_log_catch' => ['POST', 'PUT', 'PATCH', 'DELETE'],
+    'index_page_style' => '',
     'login_page_style' => '1',
     'login_page_view_path' => '',
     //配置描述
@@ -45,6 +46,7 @@ return [
         'admin_group_title' => ['type' => 'text', 'label' => '管理员分组名称', 'help' => '如:`部门，分店`', 'col_size' => 6, 'size' => [4, 8]],
         'admin_group_model' => ['type' => 'text', 'label' => '管理员分组模型', 'help' => '如:`\tpext\myadmin\admin\model\AdminGroup`，你可以自己实现分组。树形结构需要配合\tpext\builder\traits\TreeModel', 'col_size' => 6, 'size' => [4, 8]],
         'operation_log_catch' => ['type' => 'checkbox', 'label' => '操作日志记录类型', 'col_size' => 6, 'size' => [4, 8], 'options' => ['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']],
+        'index_page_style' => ['type' => 'select', 'label' => 'index主体页面风格', 'col_size' => 6, 'size' => [4, 8], 'options' => Module::getInstance()->getIndexViews()],
         'login_page_style' => ['type' => 'select', 'label' => '登录页面风格', 'col_size' => 6, 'size' => [4, 8], 'options' => Module::getInstance()->getLoginViews()],
         'login_page_view_path' => ['type' => 'text', 'label' => '自定义登录页面', 'col_size' => 6, 'size' => [4, 8],'help' => '设置后不再使用以上４种风格。自定登录模板路径，如`application/admin/view/login.html`。仍然发送`post`请求到`/admin/index/login`'],
     ],
