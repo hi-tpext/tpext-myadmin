@@ -5,6 +5,7 @@ namespace tpext\myadmin\admin\controller;
 use think\captcha\facade\Captcha;
 use think\Controller;
 use think\facade\Config;
+use think\facade\Cache;
 use think\facade\Db;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
@@ -416,7 +417,7 @@ class Index extends Controller
             }
 
             if (in_array(1, $types)) {
-                Tool::deleteDir(app()->getRuntimePath() . 'cache');
+                Cache::clear();
             }
             if (in_array(2, $types)) {
                 Tool::deleteDir(app()->getRuntimePath() . 'temp');
