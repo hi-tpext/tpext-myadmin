@@ -107,7 +107,7 @@ class Permission extends Controller
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
                     $controllerName = $arr[1];
-                    $contrl = $arr[0] . '/' . Str::snake($arr[1]);
+                    $contrl = $arr[0] . '.' . Str::snake($arr[1]);
                 } else {
                     $controllerName = $contrl = Str::snake($contrl);
                 }
