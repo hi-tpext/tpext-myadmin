@@ -541,7 +541,7 @@ class Index extends Controller
         } else {
 
             if (!Module::isInstalled()) {
-                Tool::deleteDir(app()->getRuntimePath() . 'cache');
+                Cache::clear();
             }
 
             $this->assign(['login_in_top' => $config['login_in_top'], 'login_css_file' => $config['login_css_file']]);
