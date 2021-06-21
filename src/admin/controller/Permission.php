@@ -30,12 +30,11 @@ class Permission extends Controller
     {
         $this->dataModel = new AdminPermission;
         $this->pageTitle = '权限设置';
+        $this->pagesize = 9999; //不产生分页
     }
 
-    protected function buildDataList()
+    protected function buildDataList($where = [], $sortOrder = '', $page = 1, &$total = -1)
     {
-        $table = $this->table;
-
         $data = [];
 
         $reflectionClass = null;
@@ -208,22 +207,7 @@ class Permission extends Controller
             $this->dataModel->destroy(array_values($delIds));
         }
 
-        if ($this->isExporting) {
-            $__ids__ = input('__ids__');
-            if (!empty($__ids__)) {
-                $ids = explode(',', $__ids__);
-                $newd = [];
-                foreach ($data as $d) {
-                    if (in_array($d['id'], $ids)) {
-                        $newd[] = $d;
-                    }
-                }
-                $data = $newd;
-            }
-        }
-
-        $this->buildTable($data);
-        $table->data($data);
+        $total = count($data);
 
         return $data;
     }
@@ -240,10 +224,9 @@ class Permission extends Controller
         $table->field('controller', '控制器');
         $table->field('action', '动作');
         $table->field('url', 'url链接')->to('<a target="_blank" href="{val}">{val}</a>');
-        $table->text('action_name', '动作名称')->mapClassWhen([''], 'hidden')->autoPost('', false)->getWrapper()->addStyle('max-width:100px');
-        $table->switchBtn('action_type', '是权限')->autoPost('', false)->mapClassWhen(['-1'], 'hidden')->getWrapper()->addStyle('max-width:80px');
+        $table->text('action_name', '动作名称')->mapClass([''], 'hidden')->autoPost('', false)->getWrapper()->addStyle('max-width:100px');
+        $table->switchBtn('action_type', '是权限')->autoPost('', false)->mapClass(['-1'], 'hidden')->getWrapper()->addStyle('max-width:80px');
 
-        $table->data($data);
         $table->getToolbar()->btnRefresh();
         $table->useActionbar(false);
         $table->useCheckbox(false);
