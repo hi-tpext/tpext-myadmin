@@ -208,7 +208,7 @@ class MinifyTool
 
     private function createBuilder()
     {
-        $displayerMap = Wrapper::getDisplayerMap();
+        $displayerMap = Wrapper::getDisplayersMap();
 
         foreach ($displayerMap as $name => $class) {
 
