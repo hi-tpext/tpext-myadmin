@@ -8,10 +8,6 @@ class Log
 {
     public function run($data = [])
     {
-        if (!Module::isInstalled()) {
-            return;
-        }
-
         $module = request()->module();
 
         $controller = strtolower(request()->controller());
