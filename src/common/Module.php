@@ -87,6 +87,10 @@ class Module extends baseModule
 
         $config = $connections[$type] ?? [];
 
+        if ($config['database'] == '' && $config['username'] == 'root' && $config['password'] == '') {
+            return false;
+        }
+
         if ($config['database'] == 'test' && $config['username'] == 'username' && $config['password'] == 'password') {
             return false;
         }

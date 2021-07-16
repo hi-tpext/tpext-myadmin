@@ -17,10 +17,6 @@ class Log
 
     public function handle($data)
     {
-        if (!Module::isInstalled()) {
-            return true;
-        }
-
         $controller = strtolower($this->app->request->controller());
         $action = strtolower($this->app->request->action());
 
