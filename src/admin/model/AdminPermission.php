@@ -158,6 +158,8 @@ class AdminPermission extends Model
             }
         }
 
+        closedir($dir);
+
         unset($reflectionClass, $sonDir);
 
         return $controllers;
