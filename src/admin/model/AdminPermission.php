@@ -8,7 +8,7 @@ use tpext\common\Tool;
 
 class AdminPermission extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
     /**
      * Undocumented function

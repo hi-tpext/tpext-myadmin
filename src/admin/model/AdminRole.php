@@ -6,7 +6,7 @@ use think\Model;
 
 class AdminRole extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
     public function getUsersAttr($value, $data)
     {

@@ -8,7 +8,7 @@ use tpext\builder\traits\TreeModel;
 class AdminGroup extends Model
 {
     use TreeModel;
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
     protected static function init()
     {

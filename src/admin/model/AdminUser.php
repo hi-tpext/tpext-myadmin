@@ -9,7 +9,7 @@ use tpext\myadmin\common\Module;
 
 class AdminUser extends Model implements Auth
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
     protected static $adminGroupModel;
 

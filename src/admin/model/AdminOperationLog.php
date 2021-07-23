@@ -6,7 +6,7 @@ use think\Model;
 
 class AdminOperationLog extends Model
 {
-    protected $autoWriteTimestamp = 'dateTime';
+    protected $autoWriteTimestamp = 'datetime';
 
     public function admin()
     {
