@@ -84,10 +84,12 @@ class Auth
 
         $tplPath = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'tpl', '']);
 
-        config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
-        config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
-
+        $config = [];
+        
         if (Module::isInstalled()) {
+            config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
+            config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
+
             $config = $instance->getConfig();
         } else {
             $config = $instance->defaultConfig();
