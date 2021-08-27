@@ -150,7 +150,7 @@ class Index extends Controller
         if (!empty($config['index_page_style']) && $config['index_page_style'] != 1) { //下拉选择的其他模板
             $template = $config['index_page_style'];
 
-            $template = str_replace('__WWWW__', app()->getRootPath(), $template);
+            $template = str_replace('__WWW__', app()->getRootPath(), $template);
 
             if (!is_file($template)) { //其他模板不存在，回到默认
                 $template = 'index';
@@ -563,7 +563,7 @@ class Index extends Controller
                     } else { //其他
                         $template = $config['login_page_style'];
 
-                        $template = str_replace('__WWWW__', app()->getRootPath(), $template);
+                        $template = str_replace('__WWW__', app()->getRootPath(), $template);
                         
                         if (!is_file($template)) { //其他模板不存在，回到默认3
                             $template = 'login3';
