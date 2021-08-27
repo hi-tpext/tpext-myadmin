@@ -128,7 +128,7 @@ class Module extends baseModule
      */
     public function addIndexView($path, $title)
     {
-        $path = str_replace(app()->getRootPath(), '__WWWW__', $path);
+        $path = str_replace(app()->getRootPath(), '__WWW__', $path);
 
         $this->indexViews[$path] = $title;
         return $this;
@@ -153,7 +153,7 @@ class Module extends baseModule
      */
     public function addLoginView($path, $title)
     {
-        $path = str_replace(app()->getRootPath(), '__WWWW__', $path);
+        $path = str_replace(app()->getRootPath(), '__WWW__', $path);
 
         $this->loginViews[$path] = $title;
         return $this;
