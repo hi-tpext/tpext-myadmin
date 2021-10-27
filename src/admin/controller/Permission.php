@@ -84,6 +84,7 @@ class Permission extends Controller
                 'url' => '',
                 'action_name' => '',
                 'action_type' => '',
+                'module_name' => $modController['title'],
             ];
 
             $data[] = $row;
@@ -96,6 +97,7 @@ class Permission extends Controller
                     'url' => '--',
                     'action_name' => '',
                     'action_type' => '',
+                    'module_name' => $modController['title'],
                 ];
                 continue;
             }
@@ -182,7 +184,7 @@ class Permission extends Controller
                 } else {
                     $perm = new AdminPermission;
                     $res = $perm->save([
-                        'module_name' => $modController['title'],
+                        'module_name' => $row['module_name'],
                         'controller' => $row['controller'],
                         'action' => $row['action'],
                         'url' => $row['url'],
