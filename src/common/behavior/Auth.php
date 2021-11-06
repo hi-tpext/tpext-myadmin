@@ -15,10 +15,10 @@ class Auth
     {
         $config = Module::getInstance()->getConfig();
 
-        if (isset($config['login_timeout'])) {
+        $login_timeout = 10;
+
+        if (isset($config['login_timeout']) && is_numeric($config['login_timeout'])) {
             $login_timeout = $config['login_timeout'];
-        } else {
-            $login_timeout = 10;
         }
 
         return $login_timeout;
