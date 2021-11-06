@@ -13,11 +13,6 @@ class Auth
 
     private function getLoginTimeout()
     {
-        $login_timeout = cache('admin_login_timeout');
-        if ($login_timeout) {
-            return $login_timeout;
-        }
-
         $config = Module::getInstance()->getConfig();
 
         if (isset($config['login_timeout'])) {
@@ -25,8 +20,6 @@ class Auth
         } else {
             $login_timeout = 10;
         }
-
-        cache('admin_login_timeout', $login_timeout);
 
         return $login_timeout;
     }
