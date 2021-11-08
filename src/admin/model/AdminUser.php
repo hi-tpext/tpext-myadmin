@@ -110,6 +110,8 @@ class AdminUser extends Model implements Auth
         $user = static::find($admin_id);
 
         if (!$user) {
+            session('admin_user', null);
+            session('admin_id', null);
             return false;
         }
 
