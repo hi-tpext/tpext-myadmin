@@ -95,6 +95,56 @@
       padding: 0 5px;
     }
 
+    .nav {
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+    }
+
+    .navbar-top-links li {
+      display: inline-block;
+    }
+
+    #top-menu-out li>a {
+      padding: 15px 10px;
+      color: #fff;
+    }
+
+    #top-menu-out li.current a,
+    #top-menu-out li.current a:hover,
+    #top-menu-out li.current a:focus {
+      text-decoration: none;
+      background-color: #728291;
+      color: #fff;
+    }
+
+    #top-menu-out li a:hover,
+    #top-menu-out li a:focus {
+      background-color: #dae0e6;
+      color: #728291;
+    }
+
+    .navbar-header {
+      width: 100%;
+    }
+
+    /* 
+    .navbar-header.has-top-meun {
+        background: #fff;
+    } */
+
+    .navbar-top-links li.navbar-right {
+      margin-right: -15px;
+    }
+
+    .navbar-right a {
+      color: #999c9e;
+    }
+
+    .sub-nav-item.preview li>a {
+      color: #5d636f;
+    }
+
     /** ----------------------------------
     * 响应式处理
     -------------------------------------- */
@@ -179,10 +229,11 @@
         </div>
         <div class="lyear-layout-sidebar-scroll">
 
-          <nav class="sidebar-main"></nav>
+          <nav id="side-menu-out">
+
+          </nav>
 
           <div class="sidebar-footer">
-
           </div>
         </div>
 
@@ -201,9 +252,10 @@
                 <span class="lyear-toggler-bar"></span>
                 <span class="lyear-toggler-bar"></span>
               </div>
-              <span class="navbar-page-title">{$admin_page_title|default='admin'}</span>
-              <!--扩展左侧链接-->
-              {:\\tpext\\common\\ExtLoader::trigger('topbar_left_links')}
+              <!--扩展左侧链接(不再支持topbar_left_links)-->
+              <ul class="nav navbar-top-links" id="top-menu-out">
+
+              </ul>
             </div>
 
             <ul class="topbar-right">
@@ -437,36 +489,84 @@
      *        is_out 是否外链0否|1是,外链a标签没有class='multitabs'
      *        is_home 是否首页
      */
+
+    var hasTopMenu = '{$index_top_menu}' == '1';
+
     var setSidebar = function (data) {
       if (data.length == 0) {
         return false;
       }
       var treeObj = treeData(data, 'id', 'pid', 'children');
-      html = createMenu(treeObj, true);
-      $('.sidebar-main').append(html);
+      if (hasTopMenu) {
+        $('.navbar-header').addClass('has-top-meun');
+
+        for (var i = 0; i < treeObj.length; i++) {
+          var children = treeObj[i].children;
+          if (!children || !children.length) {
+            if (treeObj[i].url && treeObj[i].url != '#') {
+              children = [treeObj[i]];
+            }
+          }
+          var html = createMenu(children, 0, treeObj[i].id);
+          if (!treeObj[i].is_home) {
+            $('#top-menu-out').append('<li data-nav="' + treeObj[i].id + '" class="nav-item ' + (i == 0 ? 'current' : '') + '"><a class="link" href="#"><i class="' + treeObj[i].icon + '"></i>' + treeObj[i].name + '</a></li>');
+          }
+          $('#side-menu-out').append('<ul id="sub-nav-' + treeObj[i].id + '" class="nav nav-drawer sub-nav-item sidebar-main ' + (i == 0 ? '' : ' hidden') + '">' + html + '</ul>');
+        }
+
+        $('body').on('click', '#top-menu-out li.nav-item', function () {
+          if ($(this).hasClass('current')) {
+            return false;
+          }
+          $('#top-menu-out li.current').removeClass('current');
+          $(this).addClass('current');
+          //
+          $('#side-menu-out ul.sub-nav-item').addClass('hidden').removeClass('preview');
+          $('#sub-nav-' + $(this).data('nav')).removeClass('hidden').removeClass('preview');
+        });
+
+        $("#top-menu-out li.nav-item").hover(function () {
+          if ($(this).hasClass('current')) {
+            return false;
+          }
+          $('#sub-nav-' + $(this).data('nav')).removeClass('hidden').addClass('preview');
+        }, function () {
+          if ($(this).hasClass('current')) {
+            return false;
+          }
+          $('#sub-nav-' + $(this).data('nav')).addClass('hidden').removeClass('preview');
+        });
+      }
+      else {
+        var html = createMenu(treeObj, 0, 0);
+        $('#side-menu-out').append('<ul class="nav nav-drawer">' + html + '</ul>');
+      }
     }
 
-    var createMenu = function (data, is_frist) {
-      var menu_body = is_frist ? '<ul class="nav nav-drawer">' : '<ul class="nav nav-subnav">';
+    var createMenu = function (data, deep) {
+
+      deep += 1;
+      var menu_body = deep > 1 ? '<ul class="nav nav-subnav">' : '';
 
       for (var i = 0; i < data.length; i++) {
-        iframe_class = data[i].is_out == 1 ? '' : 'class="multitabs"';
+        var iframe_class = data[i].is_out == 1 ? '' : 'class="multitabs"';
+
         //icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '';
-        icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '<i class="' + data[i].icon +
+        var icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '<i class="' + data[i].icon +
           '"></i>&nbsp;';
-        selected = (data[i].pid == 0) && (data[i].is_home == 1) ? 'active' : '';
-        menuName = data[i].pid == 0 ? '<span>' + data[i].name + '</span>' : '<span>' + data[i].name + '</span>';
+        var selected = (data[i].pid == 0) && (data[i].is_home == 1) ? 'active' : '';
+        var menuName = data[i].pid == 0 ? '<span>' + data[i].name + '</span>' : '<span>' + data[i].name + '</span>';
         if (data[i].children && data[i].children.length > 0) {
           menu_body += '<li class="nav-item' + (data[i].is_hidden == 1 ? ' hidden' : '') +
             ' nav-item-has-subnav"><a href="javascript:void(0)">' + icon_div +
             menuName + '</a>';
-          menu_body += createMenu(data[i].children);
+          menu_body += createMenu(data[i].children, deep, data[i].id);
         } else {
           menu_body += '<li class="nav-item ' + selected + (data[i].is_hidden == 1 ? ' hidden' : '') + '"><a href="' +
             data[i].url + '" ' + iframe_class + '>' +
             icon_div + '<span>' + data[i].name + '</span>' + '</a>';
         }
-        menu_body += '</li>';
+        menu_body += deep > 1 ? '</li>' : '';
       }
 
       menu_body += '</ul>';

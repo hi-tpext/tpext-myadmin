@@ -28,6 +28,7 @@ return [
     'index_page_style' => '',
     'login_page_style' => '1',
     'login_page_view_path' => '',
+    'index_top_menu' => 1,
     //配置描述
     '__config__' => [
         'name' => ['type' => 'text', 'label' => '名称'],
@@ -49,5 +50,6 @@ return [
         'index_page_style' => ['type' => 'select', 'label' => 'index主体页面风格', 'col_size' => 6, 'size' => [4, 8], 'options' => Module::getInstance()->getIndexViews()],
         'login_page_style' => ['type' => 'select', 'label' => '登录页面风格', 'col_size' => 6, 'size' => [4, 8], 'options' => Module::getInstance()->getLoginViews()],
         'login_page_view_path' => ['type' => 'text', 'label' => '自定义登录页面', 'col_size' => 6, 'size' => [4, 8],'help' => '设置后不再使用以上４种风格。自定登录模板路径，如`app/admin/view/login.html`。仍然发送`post`请求到`/admin/index/login`'],
+        'index_top_menu' => ['type' => 'radio', 'label' => '顶部菜单', 'options' => [0 => '否', 1 => '是'], 'col_size' => 6, 'size' => [4, 8], 'help' => '菜单第一层放在页面顶部，点击切换左侧菜单'],
     ],
 ];
