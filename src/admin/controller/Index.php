@@ -82,42 +82,51 @@ class Index extends Controller
                     ],
                     [
                         'id' => 2,
-                        'name' => '菜单管理',
-                        'url' => url('menu/index'),
+                        'name' => '系统管理',
+                        'url' => '#',
                         'pid' => 0,
-                        'icon' => 'mdi mdi-arrange-send-to-back',
+                        'icon' => 'mdi mdi-settings',
                         'is_out' => 0,
                         'is_home' => 0,
                     ],
                     [
                         'id' => 3,
+                        'name' => '菜单管理',
+                        'url' => url('menu/index'),
+                        'pid' => 2,
+                        'icon' => 'mdi mdi-arrange-send-to-back',
+                        'is_out' => 0,
+                        'is_home' => 0,
+                    ],
+                    [
+                        'id' => 4,
                         'name' => '权限设置',
                         'url' => url('permission/index'),
-                        'pid' => 0,
+                        'pid' => 2,
                         'icon' => 'mdi mdi-account-key',
                         'is_out' => 0,
                         'is_home' => 0,
                     ], [
-                        'id' => 4,
+                        'id' => 5,
                         'name' => '管理员',
                         'url' => url('admin/index'),
-                        'pid' => 0,
+                        'pid' => 2,
                         'icon' => 'mdi mdi-account-card-details',
                         'is_out' => 0,
                         'is_home' => 0,
                     ], [
-                        'id' => 5,
+                        'id' => 6,
                         'name' => '角色管理',
                         'url' => url('role/index'),
-                        'pid' => 0,
+                        'pid' => 2,
                         'icon' => 'mdi mdi-account-multiple',
                         'is_out' => 0,
                         'is_home' => 0,
                     ], [
-                        'id' => 6,
+                        'id' => 7,
                         'name' => '扩展管理',
                         'url' => url('extension/index'),
-                        'pid' => 0,
+                        'pid' => 2,
                         'icon' => 'mdi mdi-blur',
                         'is_out' => 0,
                         'is_home' => 0,
@@ -140,11 +149,13 @@ class Index extends Controller
             $menus = $this->menuModel->buildMenus($admin_user);
         }
 
+        $config = Module::getInstance()->getConfig();
+
         $this->assign('admin_user', $admin_user);
         $this->assign('menus', json_encode($menus));
         $this->assign('dashbord', count($menus) ? $menus[0] : ['url' => url('welcome'), 'name' => '首页']);
+        $this->assign('index_top_menu', $config['index_top_menu'] ?? 1);
 
-        $config = Module::getInstance()->getConfig();
         $template = 'index';
         if (!empty($config['index_page_style']) && $config['index_page_style'] != 1) { //下拉选择的其他模板
             $template = $config['index_page_style'];
@@ -563,7 +574,7 @@ class Index extends Controller
                         $template = $config['login_page_style'];
 
                         $template = str_replace('__WWW__', app()->getRootPath(), $template);
-                        
+
                         if (!is_file($template)) { //其他模板不存在，回到默认3
                             $template = 'login3';
                         }
