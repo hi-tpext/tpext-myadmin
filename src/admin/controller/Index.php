@@ -316,7 +316,7 @@ class Index extends Controller
             $form = $builder->form(6);
             $form->show('username', '登录帐号')->size(3, 9);
             $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
-            $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9);
+            $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9)->imageResize(200, 200);
             $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>')->size(3, 9);
             $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>')->size(3, 9);
             $form->show('login_time', '登录时间')->size(3, 9);
