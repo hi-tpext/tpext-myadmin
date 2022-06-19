@@ -182,7 +182,7 @@ class Admin extends Controller
         $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->disabled($isEdit && $admin['id'] == $data['id'])->default(1)->help('禁用后无法登录后台');
 
         $form->tab('其他信息');
-        $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg');
+        $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->imageResize(200, 200);
         $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
         $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
         $form->tags('tags', '标签');

@@ -3,8 +3,9 @@
 namespace tpext\myadmin\admin\model;
 
 use think\Model;
-use tpext\common\ExtLoader;
+use tpext\think\App;
 use tpext\common\Tool;
+use tpext\common\ExtLoader;
 
 class AdminPermission extends Model
 {
@@ -30,7 +31,7 @@ class AdminPermission extends Model
 
     public function getControllers()
     {
-        $appPath = app()->getRootPath() . 'app' . DIRECTORY_SEPARATOR . 'admin/controller';
+        $appPath = App::getRootPath() . 'app' . DIRECTORY_SEPARATOR . 'admin/controller';
 
         $modControllers = [];
         $baseControllers = $this->scanControllers($appPath);

@@ -2,21 +2,21 @@
 
 namespace tpext\myadmin\admin\controller;
 
-use think\captcha\facade\Captcha;
-use think\Controller;
-use think\facade\Config;
-use think\facade\Cache;
 use think\facade\Db;
-use tpext\builder\common\Builder;
-use tpext\common\ExtLoader;
+use tpext\think\App;
+use think\Controller;
 use tpext\common\Tool;
-use tpext\myadmin\admin\model\AdminMenu;
-use tpext\myadmin\admin\model\AdminOperationLog;
-use tpext\myadmin\admin\model\AdminPermission;
-use tpext\myadmin\admin\model\AdminRoleMenu;
-use tpext\myadmin\admin\model\AdminRolePermission;
-use tpext\myadmin\admin\model\AdminUser;
+use think\facade\Cache;
+use tpext\common\ExtLoader;
 use tpext\myadmin\common\Module;
+use think\captcha\facade\Captcha;
+use tpext\builder\common\Builder;
+use tpext\myadmin\admin\model\AdminMenu;
+use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\admin\model\AdminRoleMenu;
+use tpext\myadmin\admin\model\AdminPermission;
+use tpext\myadmin\admin\model\AdminOperationLog;
+use tpext\myadmin\admin\model\AdminRolePermission;
 
 /**
  * Undocumented class
@@ -161,7 +161,7 @@ class Index extends Controller
         if (!empty($config['index_page_style']) && $config['index_page_style'] != 1) { //下拉选择的其他模板
             $template = $config['index_page_style'];
 
-            $template = str_replace('__WWW__', app()->getRootPath(), $template);
+            $template = str_replace('__WWW__', App::getRootPath(), $template);
 
             if (!is_file($template)) { //其他模板不存在，回到默认
                 $template = 'index';
@@ -317,7 +317,7 @@ class Index extends Controller
             $form = $builder->form(6);
             $form->show('username', '登录帐号')->size(3, 9);
             $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
-            $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9);
+            $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9)->imageResize(200, 200);
             $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>')->size(3, 9);
             $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>')->size(3, 9);
             $form->show('login_time', '登录时间')->size(3, 9);
@@ -434,13 +434,13 @@ class Index extends Controller
                 Cache::clear();
             }
             if (in_array(2, $types)) {
-                Tool::deleteDir(app()->getRuntimePath() . 'temp');
+                Tool::deleteDir(App::getRuntimePath() . 'temp');
             }
             if (in_array(3, $types)) {
 
                 $dirs = ['', 'assets', 'minify', ''];
-                $scriptName = $_SERVER['SCRIPT_FILENAME'];
-                $minifyDir = realpath(dirname($scriptName)) . implode(DIRECTORY_SEPARATOR, $dirs);
+                
+                $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
             }
@@ -510,7 +510,7 @@ class Index extends Controller
 
                 $errors = $user['errors'] > 300 ? 300 : $user['errors'];
 
-                $try_login = cache('admin_try_login_' . $user['id']);
+                $try_login = Cache::get('admin_try_login_' . $user['id']);
 
                 if ($try_login) {
 
@@ -526,7 +526,7 @@ class Index extends Controller
 
                 $this->dataModel->where(['id' => $user['id']])->inc('errors');
 
-                cache('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
+                Cache::set('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
 
                 sleep(2);
                 $this->error('密码错误');
@@ -534,7 +534,7 @@ class Index extends Controller
 
             $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
 
-            cache('admin_try_login_' . $user['id'], null);
+            Cache::set('admin_try_login_' . $user['id'], null);
             unset($user['password'], $user['salt']);
             session('admin_user', $user->toArray());
             session('admin_id', $user['id']);
@@ -561,7 +561,7 @@ class Index extends Controller
 
             $this->assign(['login_in_top' => $config['login_in_top'], 'login_css_file' => $config['login_css_file']]);
 
-            $rootPath = app()->getRootPath();
+            $rootPath = App::getRootPath();
 
             $template = '';
             if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) { //直接填写的模板路径
@@ -574,7 +574,7 @@ class Index extends Controller
                     } else { //其他
                         $template = $config['login_page_style'];
 
-                        $template = str_replace('__WWW__', app()->getRootPath(), $template);
+                        $template = str_replace('__WWW__', $rootPath, $template);
 
                         if (!is_file($template)) { //其他模板不存在，回到默认3
                             $template = 'login3';
@@ -596,13 +596,6 @@ class Index extends Controller
                 header("HTTP/1.1 404 Not Found");
                 exit;
             }
-        }
-
-        $conf = Config::get('captcha');
-
-        if (empty($conf)) {
-            $conf = ['length' => 4];
-            Config::set($conf, 'captcha');
         }
 
         return Captcha::create();
