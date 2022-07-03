@@ -184,7 +184,7 @@ class Menu extends Controller
         ]);
     }
 
-    private function save($id = 0)
+    protected function save($id = 0)
     {
         $data = request()->only([
             'title',

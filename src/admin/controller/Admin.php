@@ -3,6 +3,7 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
+use think\facade\Session;
 use tpext\builder\traits\HasBuilder;
 use tpext\myadmin\admin\model\AdminRole;
 use tpext\myadmin\admin\model\AdminUser;
@@ -44,7 +45,7 @@ class Admin extends Controller
 
         $this->pageTitle = '用户管理';
         $this->postAllowFields = ['phone', 'name', 'email'];
-        $this->delNotAllowed = [1, session('admin_id')];
+        $this->delNotAllowed = [1, Session::get('admin_id')];
 
         $this->selectTextField = '{id}#{name}({username})';
         $this->selectFields = 'id,name,username';
@@ -200,9 +201,9 @@ class Admin extends Controller
      * @param integer $id
      * @return void
      */
-    private function save($id = 0)
+    protected function save($id = 0)
     {
-        if ($id == 1 && session('admin_id') != 1) {
+        if ($id == 1 && Session::get('admin_id') != 1) {
             $this->error('超级管理员[id为1]，其他人不允许修改');
         }
 
