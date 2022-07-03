@@ -7,3 +7,10 @@ $classMap = [
 ];
 
 ExtLoader::addClassMap($classMap);
+
+if (!function_exists('checkUrl')) {
+    function checkUrl($url)
+    {
+        return \tpext\myadmin\admin\model\AdminUser::checkUrl($url);
+    }
+}

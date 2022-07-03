@@ -15,6 +15,7 @@ use tpext\myadmin\common\event\Menu;
 use tpext\myadmin\common\event\Assets;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\common\Module;
+use tpext\think\View;
 
 /**
  * for tp6
@@ -87,7 +88,7 @@ class Auth
         } else {
             $config = $instance->defaultConfig();
         }
-
+        
         $admin_layout = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'layout.html']);
 
         if ($config['minify']) {
@@ -116,7 +117,7 @@ class Auth
 
         Builder::aver($config['assets_ver']);
         Builder::auth(AdminUser::class);
-        $this->app->view->assign(
+        View::share(
             [
                 'admin_page_position' => '',
                 'admin_page_title' => isset($config['name']) ? $config['name'] : '',
