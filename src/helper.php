@@ -12,3 +12,10 @@ ExtLoader::addClassMap($classMap);
 
 ExtLoader::watch('module_init', Setup::class, true, '替换错误及跳转模板');
 ExtLoader::watch('module_init', Auth::class, false, '权限验证');
+
+if (!function_exists('checkUrl')) {
+    function checkUrl($url)
+    {
+        return \tpext\myadmin\admin\model\AdminUser::checkUrl($url);
+    }
+}

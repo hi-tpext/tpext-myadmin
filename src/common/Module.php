@@ -3,6 +3,8 @@
 namespace tpext\myadmin\common;
 
 use think\Db;
+use tpext\think\App;
+use think\facade\Cache;
 use tpext\common\ExtLoader;
 use tpext\common\Module as baseModule;
 use tpext\myadmin\admin\model\AdminUser;
@@ -63,7 +65,7 @@ class Module extends baseModule
         if (parent::uninstall($runSql)) {
             session('admin_user', null);
             session('admin_id', null);
-            cache('tpextmyadmin_installed', null);
+            Cache::set('tpextmyadmin_installed', null);
             return true;
         }
 
@@ -81,7 +83,7 @@ class Module extends baseModule
             return true;
         }
 
-        if (empty(config('database.database'))) {
+        if (empty(config('database.database')) || empty(config('database.username')) || empty(config('database.password'))) {
             return false;
         }
 
@@ -90,11 +92,11 @@ class Module extends baseModule
         $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
 
         if (empty($isTable)) {
-            cache('tpextmyadmin_installed', 0);
+            Cache::set('tpextmyadmin_installed', 0);
             return false;
         }
 
-        if (cache('tpextmyadmin_installed')) {
+        if (Cache::get('tpextmyadmin_installed')) {
             static::$tpextmyadminInstalled = true;
             return true;
         }
@@ -102,7 +104,7 @@ class Module extends baseModule
         $installed = ExtLoader::getInstalled();
 
         if (empty($installed)) {
-            cache('tpextmyadmin_installed', 0);
+            Cache::set('tpextmyadmin_installed', 0);
             return false;
         }
 
@@ -114,7 +116,7 @@ class Module extends baseModule
             }
         }
 
-        cache('tpextmyadmin_installed', $is ? 1 : 0);
+        Cache::set('tpextmyadmin_installed', $is ? 1 : 0);
 
         return $is;
     }
@@ -128,7 +130,7 @@ class Module extends baseModule
      */
     public function addIndexView($path, $title)
     {
-        $path = str_replace(app()->getRootPath(), '__WWW__', $path);
+        $path = str_replace(App::getRootPath(), '__WWW__', $path);
 
         $this->indexViews[$path] = $title;
         return $this;
@@ -153,7 +155,7 @@ class Module extends baseModule
      */
     public function addLoginView($path, $title)
     {
-        $path = str_replace(app()->getRootPath(), '__WWW__', $path);
+        $path = str_replace(App::getRootPath(), '__WWW__', $path);
 
         $this->loginViews[$path] = $title;
         return $this;

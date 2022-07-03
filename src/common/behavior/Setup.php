@@ -6,6 +6,7 @@ use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
 use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\common\MinifyTool;
+use tpext\think\View;
 use tpext\myadmin\common\Module;
 
 class Setup
@@ -69,7 +70,7 @@ class Setup
 
             Builder::aver($config['assets_ver']);
             Builder::auth(AdminUser::class);
-            app('view')->share([
+            View::share([
                 'admin_page_position' => '',
                 'admin_page_title' => isset($config['name']) ? $config['name'] : '',
                 'admin_page_description' => isset($config['description']) ? $config['description'] : '',

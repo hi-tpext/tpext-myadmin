@@ -53,7 +53,7 @@ class Auth
 
             if ($isAdmin) {
                 $login_timeout = $this->getLoginTimeout();
-                $now = $_SERVER['REQUEST_TIME'];
+                $now = time();
 
                 if (!session('?admin_last_time') || $now - session('admin_last_time') > $login_timeout * 60) {
                     $isAdmin = 0;
@@ -143,8 +143,8 @@ class Auth
      */
     protected function success($msg = '', $url = null, $data = '', $wait = 2, array $header = [])
     {
-        if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
-            $url = $_SERVER["HTTP_REFERER"];
+        if (is_null($url) && request()->server('HTTP_REFERER')) {
+            $url = request()->server('HTTP_REFERER');
         } elseif ('' !== $url) {
             $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : Container::get('url')->build($url);
         }
