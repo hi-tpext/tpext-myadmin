@@ -18,8 +18,7 @@
         "ichynul/tpext": "^4.0.1",
         "ichynul/tpextbuilder": "^3.0.1",
         "ichynul/tpextmanager": "^3.0.1",
-        "ichynul/lightyearadmin": "^1.0.1",
-        "webman/event": "^1.0.2"
+        "ichynul/lightyearadmin": "^1.0.1"
     },
     "autoload": {
         "psr-4": {
