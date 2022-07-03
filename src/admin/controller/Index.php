@@ -5,8 +5,11 @@ namespace tpext\myadmin\admin\controller;
 use think\facade\Db;
 use tpext\think\App;
 use think\Controller;
+use Workerman\Worker;
 use tpext\common\Tool;
 use think\facade\Cache;
+use think\facade\Session;
+use Webman\Http\Response;
 use tpext\common\ExtLoader;
 use tpext\myadmin\common\Module;
 use think\captcha\facade\Captcha;
@@ -66,7 +69,8 @@ class Index extends Controller
 
     public function index()
     {
-        $admin_user = session('admin_user');
+        $admin_user = Session::get('admin_user');
+
         $menus = [];
         if ($admin_user['role_id'] == 1) {
             $list = $this->menuModel->where(['enable' => 1])->order('parent_id,sort')->select();
@@ -189,15 +193,15 @@ class Index extends Controller
 
         $sysInfo['timezone'] = function_exists("date_default_timezone_get") ? date_default_timezone_get() : "no_timezone";
         $sysInfo['curl'] = function_exists('curl_init') ? '是' : '否';
-        $sysInfo['web_server'] = $_SERVER['SERVER_SOFTWARE'];
-        $sysInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+        $sysInfo['web_server'] = 'Workerman/' . Worker::VERSION;
+        $sysInfo['user_agent'] = request()->header('User-Agent');
         $sysInfo['php_version'] = phpversion();
         $sysInfo['ip'] = request()->ip();
         $sysInfo['fileupload'] = @ini_get('upload_max_filesize') ?: '未知';
-        $sysInfo['sys_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $sysInfo['sys_time'] = date('Y-m-d H:i:s', time());
         $sysInfo['max_ex_time'] = @ini_get("max_execution_time") . 's';
         $sysInfo['set_time_limit'] = function_exists("set_time_limit") ? true : false;
-        $sysInfo['domain'] = $_SERVER['HTTP_HOST'];
+        $sysInfo['domain'] = request()->host();
         $sysInfo['memory_limit'] = ini_get('memory_limit');
         $mysqlinfo = Db::query('select VERSION() as version');
         $sysInfo['mysql_version'] = json_encode($mysqlinfo);
@@ -212,12 +216,12 @@ class Index extends Controller
 
     public function logout()
     {
-        session('admin_user', null);
-        session('admin_id', null);
+        Session::delete('admin_user');
+        Session::delete('admin_id');
 
         $config = Module::getInstance()->getConfig();
 
-        session('admin_last_time', null);
+        Session::delete('admin_last_time');
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
             $this->success('注销成功！', '/');
@@ -254,7 +258,7 @@ class Index extends Controller
 
             $this->checkToken();
 
-            $user = $this->dataModel->find(session('admin_id'));
+            $user = $this->dataModel->find(Session::get('admin_id'));
 
             if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password_old'])) {
                 $this->error('原密码不正确');
@@ -282,7 +286,7 @@ class Index extends Controller
 
                 unset($user['password'], $user['salt']);
 
-                session('admin_user', $user->toArray());
+                Session::set('admin_user', $user->toArray());
 
                 $this->success('修改成功');
             } else {
@@ -326,7 +330,7 @@ class Index extends Controller
 
             $form->butonsSizeClass('btn-xs');
 
-            $user = $this->dataModel->find(session('admin_id'));
+            $user = $this->dataModel->find(Session::get('admin_id'));
 
             $form->fill($user);
 
@@ -353,7 +357,7 @@ class Index extends Controller
 
             $count = 0;
 
-            $where['user_id'] = ['=', session('admin_id')];
+            $where['user_id'] = ['=', Session::get('admin_id')];
             $where['path'] = ['like', 'admin/index/login'];
 
             $sortOrder = input('__sort__', 'id desc');
@@ -396,15 +400,15 @@ class Index extends Controller
 
         $this->checkToken();
 
-        $res = $this->dataModel->where(['id' => session('admin_id')])->save($data);
+        $res = $this->dataModel->where(['id' => Session::get('admin_id')])->save($data);
 
         if ($res) {
 
-            $user = $this->dataModel->find(session('admin_id'));
+            $user = $this->dataModel->find(Session::get('admin_id'));
 
             unset($user['password'], $user['salt']);
 
-            session('admin_user', $user->toArray());
+            Session::set('admin_user', $user->toArray());
 
             $this->success('修改成功');
         } else {
@@ -439,7 +443,7 @@ class Index extends Controller
             if (in_array(3, $types)) {
 
                 $dirs = ['', 'assets', 'minify', ''];
-                
+
                 $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
@@ -466,9 +470,8 @@ class Index extends Controller
         $config = Module::getInstance()->getConfig();
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
-            if (!session('?login_session_key')) {
-                header("HTTP/1.1 404 Not Found");
-                exit;
+            if (!Session::has('login_session_key')) {
+                return new Response(404, [], '404 Not found');
             }
         }
 
@@ -514,7 +517,7 @@ class Index extends Controller
 
                 if ($try_login) {
 
-                    $time_gone = $_SERVER['REQUEST_TIME'] - $try_login;
+                    $time_gone = time() - $try_login;
 
                     if ($time_gone < $errors) {
                         $this->error('错误次数过多，请' . ($errors - $time_gone) . '秒后再试');
@@ -526,7 +529,7 @@ class Index extends Controller
 
                 $this->dataModel->where(['id' => $user['id']])->inc('errors');
 
-                Cache::set('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
+                Cache::set('admin_try_login_' . $user['id'], time());
 
                 sleep(2);
                 $this->error('密码错误');
@@ -534,13 +537,12 @@ class Index extends Controller
 
             $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
 
-            Cache::set('admin_try_login_' . $user['id'], null);
+            Cache::delete('admin_try_login_' . $user['id']);
             unset($user['password'], $user['salt']);
-            session('admin_user', $user->toArray());
-            session('admin_id', $user['id']);
-            session('login_session_key', null);
-
-            session('admin_last_time', $_SERVER['REQUEST_TIME']);
+            Session::set('admin_user', $user->toArray());
+            Session::set('admin_id', $user['id']);
+            Session::delete('login_session_key');
+            Session::set('admin_last_time', time());
 
             AdminOperationLog::create([
                 'user_id' => $user['id'],
@@ -552,7 +554,11 @@ class Index extends Controller
 
             ExtLoader::trigger('admin_login', $user);
 
-            $this->success('登录成功', cookie('after_login_url'));
+            $after_login_url = Session::get('after_login_url', '/admin');
+
+            Session::delete($after_login_url);
+
+            $this->success('登录成功', $after_login_url);
         } else {
 
             if (!Module::isInstalled()) {
@@ -582,7 +588,6 @@ class Index extends Controller
                     }
                 }
             }
-
             return $this->fetch($template);
         }
     }
@@ -592,9 +597,8 @@ class Index extends Controller
         $config = Module::getInstance()->getConfig();
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
-            if (!session('?login_session_key')) {
-                header("HTTP/1.1 404 Not Found");
-                exit;
+            if (!Session::has('login_session_key')) {
+                return new Response(404, [], '404 Not found');
             }
         }
 
@@ -603,7 +607,7 @@ class Index extends Controller
 
     protected function checkToken()
     {
-        $token = session('_csrf_token_');
+        $token = Session::get('_csrf_token_');
 
         if (empty($token) || $token != input('__token__')) {
             $this->error('token错误');

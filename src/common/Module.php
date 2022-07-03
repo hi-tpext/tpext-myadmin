@@ -5,6 +5,7 @@ namespace tpext\myadmin\common;
 use think\facade\Db;
 use tpext\think\App;
 use think\facade\Cache;
+use think\facade\Session;
 use tpext\common\ExtLoader;
 use tpext\common\Module as baseModule;
 use tpext\myadmin\admin\model\AdminUser;
@@ -42,10 +43,17 @@ class Module extends baseModule
             $user = $dataModel->where(['id' => 1])->find();
 
             if ($user && $dataModel->passValidate($user['password'], $user['salt'], 'tpextadmin')) {
-                session('admin_id', 1);
+
+                Session::set('admin_id', 1);
                 unset($user['password'], $user['salt']);
-                session('admin_user', $user->toArray());
-                session('admin_last_time', $_SERVER['REQUEST_TIME']);
+                Session::set('admin_user', $user->toArray());
+                Session::set('admin_last_time', time());
+
+                $route = base_path() . "/config/plugin/tpext/myadmin/route.php";;
+
+                if (is_file($route)) {
+                    unlink($route);
+                }
             }
 
             return true;
@@ -63,9 +71,18 @@ class Module extends baseModule
     public function uninstall($runSql = true)
     {
         if (parent::uninstall($runSql)) {
-            session('admin_user', null);
-            session('admin_id', null);
+
+            Session::delete('admin_user');
+            Session::delete('admin_id');
+
             Cache::set('tpextmyadmin_installed', null);
+
+            $route = base_path() . "/config/plugin/tpext/myadmin/route.php";;
+
+            if (!is_file($route)) {
+                copy($this->getRoot() . "/src/webman/route.php", $route);
+            }
+
             return true;
         }
 
@@ -88,6 +105,10 @@ class Module extends baseModule
         $connections = Db::getConfig('connections');
 
         $config = $connections[$type] ?? [];
+
+        if (empty($config['database']) || empty($config['username']) || empty($config['password'])) {
+            return false;
+        }
 
         if ($config['database'] == '' && $config['username'] == 'root' && $config['password'] == '') {
             return false;

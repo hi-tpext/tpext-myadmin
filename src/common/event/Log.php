@@ -1,4 +1,5 @@
 <?php
+
 namespace tpext\myadmin\common\event;
 
 use think\App;
@@ -7,18 +8,28 @@ use tpext\myadmin\common\Module;
 
 class Log
 {
-    /** @var App */
-    protected $app;
-
-    public function __construct(App $app)
-    {
-        $this->app = $app;
-    }
+    protected $module = '';
+    protected $controller = '';
+    protected $action = '';
 
     public function handle($data)
     {
-        $controller = strtolower($this->app->request->controller());
-        $action = strtolower($this->app->request->action());
+        $request = request();
+
+        $controller = '';
+        $action = '';
+
+        if ($request->route) {
+            $path = strtolower($request->route->getPath());
+            $explode = explode('/', ltrim($path, '/'));
+            $controller  = !empty($explode[1]) ? $explode[1] : 'index';
+            $action  = !empty($explode[2]) ? $explode[2] : 'index';
+        } else {
+            $path = strtolower($request->path());
+            $explode = explode('/', ltrim($path, '/'));
+            $controller  = !empty($explode[1]) ? $explode[1] : 'index';
+            $action  = !empty($explode[2]) ? $explode[2] : 'index';
+        }
 
         $admin_id = session('admin_id');
 
@@ -42,7 +53,7 @@ class Log
             return;
         }
 
-        $param = $this->app->request->param();
+        $param = $request->param();
 
         if ($controller == 'admin' && in_array($action, ['add', 'edit'])) {
             $param = [];
