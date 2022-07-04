@@ -534,7 +534,7 @@ class Index extends Controller
 
             $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
 
-            Cache::rm('admin_try_login_' . $user['id'], null);
+            Cache::set('admin_try_login_' . $user['id'], null);
             unset($user['password'], $user['salt']);
             session('admin_user', $user->toArray());
             session('admin_id', $user['id']);
