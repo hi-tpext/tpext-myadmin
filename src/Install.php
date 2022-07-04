@@ -2,6 +2,8 @@
 
 namespace tpext\myadmin;
 
+use tpext\Install as CoreInstall;
+
 class Install
 {
     const WEBMAN_PLUGIN = true;
@@ -19,6 +21,7 @@ class Install
      */
     public static function install()
     {
+        CoreInstall::install();
         static::installByRelation();
     }
 
@@ -28,6 +31,7 @@ class Install
      */
     public static function uninstall()
     {
+        CoreInstall::uninstall();
         self::uninstallByRelation();
     }
 
