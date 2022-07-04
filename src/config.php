@@ -39,7 +39,7 @@ return [
         'login_logo' => ['type' => 'image', 'label' => '登录页面Logo', 'col_size' => 6, 'size' => [4, 8]],
         'login_background_img' => ['type' => 'image', 'label' => '登录页面背景图片', 'col_size' => 6, 'size' => [4, 8]],
         'login_in_top' => ['type' => 'radio', 'label' => '登录超时整体跳转', 'options' => [0 => '否', 1 => '是'], 'col_size' => 6, 'size' => [4, 8], 'help' => '若为是，登录超时后整体页面跳转到登录，反之则仅触发超时的页码跳转。'],
-        'login_timeout' => ['type' => 'number', 'label' => '登录超时(分钟)', 'help' => '后台用户在一段时间没有操作后自动注销(需要在config/session.php配置中[修改/添加]`expire`(秒)参数，使session超时长于本配置)', 'col_size' => 6, 'size' => [4, 8]],
+        'login_timeout' => ['type' => 'number', 'label' => '登录超时(分钟)', 'help' => '后台用户在一段时间没有操作后自动注销(需要在config/session.php配置中[修改/添加]`lifetime`参数，使session超时长于本配置)', 'col_size' => 6, 'size' => [4, 8]],
         'login_session_key' => ['type' => 'radio', 'label' => '隐藏登录页面', 'options' => [0 => '否', 1 => '是'], 'col_size' => 6, 'size' => [4, 8], 'help' => '若为是，登录页面将检查session("login_session_key")值，没有设置则拒绝登录。'],
         'login_css_file' => ['type' => 'text', 'label' => '登录页面css', 'help' => '可以填写一个css文件路径。如`/static/admin/login.css`', 'col_size' => 6, 'size' => [4, 8]],
         'assets_ver' => ['type' => 'text', 'label' => '静态资源版本号', 'col_size' => 6, 'size' => [4, 8]],

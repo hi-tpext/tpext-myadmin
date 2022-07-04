@@ -6,6 +6,7 @@ use think\helper\Str;
 use think\Model;
 use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
+use think\facade\Session;
 
 class AdminUser extends Model implements Auth
 {
@@ -61,7 +62,7 @@ class AdminUser extends Model implements Auth
      */
     public static function current()
     {
-        $admin_id = session('admin_id');
+        $admin_id = Session::get('admin_id');
 
         return static::find($admin_id);
     }
@@ -110,20 +111,20 @@ class AdminUser extends Model implements Auth
         $user = static::find($admin_id);
 
         if (!$user) {
-            session('admin_user', null);
-            session('admin_id', null);
+            Session::delete('admin_user');
+            Session::delete('admin_id');
             return false;
         }
 
         if ($user['enable'] == 0) {
-            session('admin_user', null);
-            session('admin_id', null);
+            Session::delete('admin_user');
+            Session::delete('admin_id');
             return false;
         }
 
         unset($user['password'], $user['salt']);
 
-        session('admin_user', $user);
+        Session::set('admin_user', $user);
 
         $url = "/admin/$controller/$action";
 
@@ -147,7 +148,7 @@ class AdminUser extends Model implements Auth
                 return true;
             }
         }
-        $user = $user ? $user : session('admin_user');
+        $user = $user ? $user : Session::get('admin_user');
 
         if (!$user) {
             return false;

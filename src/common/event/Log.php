@@ -2,9 +2,9 @@
 
 namespace tpext\myadmin\common\event;
 
-use think\App;
 use tpext\myadmin\admin\model\AdminOperationLog;
 use tpext\myadmin\common\Module;
+use think\facade\Session;
 
 class Log
 {
@@ -31,7 +31,7 @@ class Log
             $action  = !empty($explode[2]) ? $explode[2] : 'index';
         }
 
-        $admin_id = session('admin_id');
+        $admin_id = Session::get('admin_id');
 
         if ($controller == 'index' && (in_array($action, ['login', 'welcome', 'index', 'denied']))) {
 
