@@ -8,6 +8,7 @@ use tpext\builder\common\Module as BModule;
 use tpext\builder\common\Wrapper;
 use tpext\common\ExtLoader;
 use tpext\common\Tool;
+use tpext\think\App;
 
 class MinifyTool
 {
@@ -237,9 +238,7 @@ class MinifyTool
     {
         $dirs = ['', 'assets', $dirName, ''];
 
-        $scriptName = $_SERVER['SCRIPT_FILENAME'];
-
-        $minifyDir = realpath(dirname($scriptName)) . implode(DIRECTORY_SEPARATOR, $dirs);
+        $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
         if (is_dir($minifyDir)) {
 

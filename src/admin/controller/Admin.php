@@ -200,7 +200,7 @@ class Admin extends Controller
      * @param integer $id
      * @return void
      */
-    private function save($id = 0)
+    protected function save($id = 0)
     {
         if ($id == 1 && session('admin_id') != 1) {
             $this->error('超级管理员[id为1]，其他人不允许修改');

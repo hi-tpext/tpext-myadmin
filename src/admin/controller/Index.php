@@ -2,20 +2,21 @@
 
 namespace tpext\myadmin\admin\controller;
 
-use think\captcha\Captcha;
+use tpext\think\App;
 use think\Controller;
-use think\facade\Config;
-use think\facade\Cache;
-use tpext\builder\common\Builder;
-use tpext\common\ExtLoader;
 use tpext\common\Tool;
-use tpext\myadmin\admin\model\AdminMenu;
-use tpext\myadmin\admin\model\AdminOperationLog;
-use tpext\myadmin\admin\model\AdminPermission;
-use tpext\myadmin\admin\model\AdminRoleMenu;
-use tpext\myadmin\admin\model\AdminRolePermission;
-use tpext\myadmin\admin\model\AdminUser;
+use think\facade\Cache;
+use think\facade\Config;
+use think\captcha\Captcha;
+use tpext\common\ExtLoader;
 use tpext\myadmin\common\Module;
+use tpext\builder\common\Builder;
+use tpext\myadmin\admin\model\AdminMenu;
+use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\admin\model\AdminRoleMenu;
+use tpext\myadmin\admin\model\AdminPermission;
+use tpext\myadmin\admin\model\AdminOperationLog;
+use tpext\myadmin\admin\model\AdminRolePermission;
 
 /**
  * Undocumented class
@@ -160,7 +161,7 @@ class Index extends Controller
         if (!empty($config['index_page_style']) && $config['index_page_style'] != 1) { //下拉选择的其他模板
             $template = $config['index_page_style'];
 
-            $template = str_replace('__WWW__', app()->getRootPath(), $template);
+            $template = str_replace('__WWW__', App::getRootPath(), $template);
 
             if (!is_file($template)) { //其他模板不存在，回到默认
                 $template = 'index';
@@ -188,15 +189,15 @@ class Index extends Controller
 
         $sysInfo['timezone'] = function_exists("date_default_timezone_get") ? date_default_timezone_get() : "no_timezone";
         $sysInfo['curl'] = function_exists('curl_init') ? '是' : '否';
-        $sysInfo['web_server'] = $_SERVER['SERVER_SOFTWARE'];
-        $sysInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+        $sysInfo['web_server'] = request()->server('SERVER_SOFTWARE');
+        $sysInfo['user_agent'] = request()->server('HTTP_USER_AGENT');
         $sysInfo['php_version'] = phpversion();
         $sysInfo['ip'] = request()->ip();
         $sysInfo['fileupload'] = @ini_get('upload_max_filesize') ?: '未知';
-        $sysInfo['sys_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $sysInfo['sys_time'] = date('Y-m-d H:i:s', time());
         $sysInfo['max_ex_time'] = @ini_get("max_execution_time") . 's';
         $sysInfo['set_time_limit'] = function_exists("set_time_limit") ? true : false;
-        $sysInfo['domain'] = $_SERVER['HTTP_HOST'];
+        $sysInfo['domain'] = request()->host();
         $sysInfo['memory_limit'] = ini_get('memory_limit');
         $mysqlinfo = db()->query('select VERSION() as version');
         $sysInfo['mysql_version'] = json_encode($mysqlinfo);
@@ -433,13 +434,13 @@ class Index extends Controller
                 Cache::clear();
             }
             if (in_array(2, $types)) {
-                Tool::deleteDir(app()->getRuntimePath() . 'temp');
+                Tool::deleteDir(App::getRuntimePath() . 'temp');
             }
             if (in_array(3, $types)) {
 
                 $dirs = ['', 'assets', 'minify', ''];
-                $scriptName = $_SERVER['SCRIPT_FILENAME'];
-                $minifyDir = realpath(dirname($scriptName)) . implode(DIRECTORY_SEPARATOR, $dirs);
+                
+                $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
             }
@@ -509,11 +510,11 @@ class Index extends Controller
 
                 $errors = $user['errors'] > 300 ? 300 : $user['errors'];
 
-                $try_login = cache('admin_try_login_' . $user['id']);
+                $try_login = Cache::get('admin_try_login_' . $user['id']);
 
                 if ($try_login) {
 
-                    $time_gone = $_SERVER['REQUEST_TIME'] - $try_login;
+                    $time_gone = time() - $try_login;
 
                     if ($time_gone < $errors) {
                         $this->error('错误次数过多，请' . ($errors - $time_gone) . '秒后再试');
@@ -525,7 +526,7 @@ class Index extends Controller
 
                 $this->dataModel->where(['id' => $user['id']])->setInc('errors');
 
-                cache('admin_try_login_' . $user['id'], $_SERVER['REQUEST_TIME']);
+                Cache::set('admin_try_login_' . $user['id'], time());
 
                 sleep(2);
                 $this->error('密码错误');
@@ -533,13 +534,13 @@ class Index extends Controller
 
             $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
 
-            cache('admin_try_login_' . $user['id'], null);
+            Cache::set('admin_try_login_' . $user['id'], null);
             unset($user['password'], $user['salt']);
             session('admin_user', $user->toArray());
             session('admin_id', $user['id']);
             session('login_session_key', null);
 
-            session('admin_last_time', $_SERVER['REQUEST_TIME']);
+            session('admin_last_time', time());
 
             AdminOperationLog::create([
                 'user_id' => $user['id'],
@@ -560,7 +561,7 @@ class Index extends Controller
 
             $this->assign(['login_in_top' => $config['login_in_top'], 'login_css_file' => $config['login_css_file']]);
 
-            $rootPath = app()->getRootPath();
+            $rootPath = App::getRootPath();
 
             $template = '';
             if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) { //直接填写的模板路径
@@ -573,7 +574,7 @@ class Index extends Controller
                     } else { //其他
                         $template = $config['login_page_style'];
 
-                        $template = str_replace('__WWW__', app()->getRootPath(), $template);
+                        $template = str_replace('__WWW__', $rootPath, $template);
 
                         if (!is_file($template)) { //其他模板不存在，回到默认3
                             $template = 'login3';
