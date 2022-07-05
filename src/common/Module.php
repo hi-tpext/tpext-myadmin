@@ -92,21 +92,17 @@ class Module extends baseModule
             return true;
         }
 
-        $type = Db::getConfig('default', 'mysql');
-
-        $connections = Db::getConfig('connections');
-
-        $config = $connections[$type] ?? [];
+        $config = config('thinkorm.connections.mysql', []);
 
         if (empty($config['database']) || empty($config['username']) || empty($config['password'])) {
             return false;
         }
 
-        if ($config['database'] == '' && $config['username'] == 'root' && $config['password'] == '') {
+        if ($config['database'] == 'test' && $config['username'] == 'root' && $config['password'] == '123456') {
             return false;
         }
 
-        if ($config['database'] == 'test' && $config['username'] == 'username' && $config['password'] == 'password') {
+        if ($config['database'] == 'database' && $config['username'] == 'username' && $config['password'] == 'password') {
             return false;
         }
 
