@@ -56,6 +56,8 @@ class Module extends baseModule
                 }
             }
 
+            self::$tpextmyadminInstalled = true;
+
             return true;
         }
 
@@ -82,6 +84,8 @@ class Module extends baseModule
             if (!is_file($route)) {
                 copy($this->getRoot() . "/src/webman/route.php", $route);
             }
+
+            self::$tpextmyadminInstalled = false;
 
             return true;
         }
