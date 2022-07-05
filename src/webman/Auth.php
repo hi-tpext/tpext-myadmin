@@ -12,6 +12,7 @@ use tpext\myadmin\common\Module;
 use tpext\builder\common\Builder;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\admin\model\AdminUser;
+use think\Controller;
 
 /**
  * for webman
@@ -86,8 +87,8 @@ class Auth implements MiddlewareInterface
         $config = [];
 
         if (Module::isInstalled()) {
-            config('dispatch_success_tmpl', $tplPath . 'dispatch_jump.tpl');
-            config('dispatch_error_tmpl', $tplPath . 'dispatch_jump.tpl');
+
+            Controller::setDispatchJumpTemplate($tplPath . 'dispatch_jump.tpl');
 
             $config = $instance->getConfig();
         } else {
