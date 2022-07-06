@@ -48,6 +48,12 @@ class Module extends baseModule
                 unset($user['password'], $user['salt']);
                 Session::set('admin_user', $user->toArray());
                 Session::set('admin_last_time', time());
+
+                $route = base_path() . "/config/plugin/tpext/myadmin/route.php";;
+
+                if (is_file($route)) {
+                    unlink($route);
+                }
             }
 
             self::$tpextmyadminInstalled = true;
@@ -72,6 +78,12 @@ class Module extends baseModule
             Session::delete('admin_id');
 
             Cache::set('tpextmyadmin_installed', null);
+
+            $route = base_path() . "/config/plugin/tpext/myadmin/route.php";;
+
+            if (!is_file($route)) {
+                copy($this->getRoot() . "/src/webman/route.php", $route);
+            }
 
             self::$tpextmyadminInstalled = false;
 
