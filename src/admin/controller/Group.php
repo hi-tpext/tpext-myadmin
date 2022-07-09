@@ -45,7 +45,7 @@ class Group extends Controller
 
         $this->userModel = new AdminUser;
 
-        $this->dataModel = $this->userModel->getAdminGroupModel();
+        $this->dataModel = new AdminGroup;
 
         $this->pageTitle = $this->adminGroupTitle . '管理';
         $this->sortOrder = 'id desc';

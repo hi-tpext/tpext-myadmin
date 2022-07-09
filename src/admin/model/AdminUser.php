@@ -12,8 +12,6 @@ class AdminUser extends Model implements Auth
 {
     protected $autoWriteTimestamp = 'datetime';
 
-    protected static $adminGroupModel;
-
     protected static $adminGroupTitle = '分组';
 
     protected $hidden = ['group', 'role', 'password', 'salt'];
@@ -23,13 +21,7 @@ class AdminUser extends Model implements Auth
         $instance = Module::getInstance();
 
         $config = $instance->getConfig();
-
-        if (!empty($config['admin_group_model']) && class_exists($config['admin_group_model'])) {
-            self::$adminGroupModel = new $config['admin_group_model'];
-        } else {
-            self::$adminGroupModel = new AdminGroup;
-        }
-
+        
         if (!empty($config['admin_group_title'])) {
             self::$adminGroupTitle = $config['admin_group_title'];
         }
@@ -37,7 +29,7 @@ class AdminUser extends Model implements Auth
 
     public function getAdminGroupModel()
     {
-        return self::$adminGroupModel;
+        return new AdminGroup;
     }
 
     public function getAdminGroupTitle()
@@ -47,7 +39,7 @@ class AdminUser extends Model implements Auth
 
     public function group()
     {
-        return $this->belongsTo(get_class(self::$adminGroupModel), 'group_id', 'id');
+        return $this->belongsTo(AdminGroup::class, 'group_id', 'id');
     }
 
     public function role()
