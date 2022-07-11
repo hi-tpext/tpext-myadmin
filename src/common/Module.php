@@ -162,6 +162,8 @@ class Module extends baseModule
      */
     public function getIndexViews()
     {
+        //可以监听此事件，调用addIndexView($path, $title)添加视图
+        ExtLoader::trigger('tpext_admin_find_index_views');
         return $this->indexViews;
     }
 
@@ -187,6 +189,8 @@ class Module extends baseModule
      */
     public function getLoginViews()
     {
+        //可以监听此事件，调用addLoginView($path, $title)添加视图
+        ExtLoader::trigger('tpext_admin_find_index_views');
         return $this->loginViews;
     }
 }
