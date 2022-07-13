@@ -1,4 +1,5 @@
 <?php
+
 namespace tpext\myadmin\common\event;
 
 use think\facade\Db;
@@ -38,19 +39,16 @@ class Menu
             foreach ($menus as $menu) {
                 $this->createMenu($menu, $module);
             }
-
         } else if ($action == 'delete') {
 
             foreach ($menus as $menu) {
                 $this->deleteMenu($module);
             }
-
         } else if ($action == 'enable') {
 
             foreach ($menus as $menu) {
                 $this->enableMenu($module, 1);
             }
-
         } else if ($action == 'disable') {
 
             foreach ($menus as $menu) {
@@ -99,7 +97,7 @@ class Menu
         AdminMenu::where(['module' => $module])->delete();
     }
 
-    private function enableMenu($module = '', $enable)
+    private function enableMenu($module = '', $enable = 0)
     {
         if (empty($module)) {
             return;
