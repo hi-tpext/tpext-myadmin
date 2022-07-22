@@ -15,7 +15,7 @@
     ],
     "require": {
         "matthiasmullie/minify": "^1.3",
-        "ichynul/tpext": "^4.0.6",
+        "ichynul/tpext": "^4.0.9",
         "ichynul/tpextbuilder": "^3.7.2",
         "ichynul/tpextmanager": "^3.3.6",
         "ichynul/lightyearadmin": "^1.1.8",
