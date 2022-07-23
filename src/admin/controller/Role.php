@@ -280,9 +280,7 @@ class Role extends Controller
             $res = $this->dataModel->save($data, [$this->getPk() => $id]);
         } else {
             $res = $this->dataModel->save($data);
-            if ($res) {
-                $id = $this->dataModel->id;
-            }
+            $id = $this->dataModel['id'] ?? 0;
         }
 
         if (!$res) {
