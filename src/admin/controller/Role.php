@@ -284,6 +284,7 @@ class Role extends Controller
             }
         } else {
             $res = $this->dataModel->exists(false)->save($data);
+            $id = $this->dataModel['id'] ?? 0;
         }
 
         if (!$res) {
