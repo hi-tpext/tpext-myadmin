@@ -158,7 +158,7 @@ class Index extends Controller
 
         $this->assign('admin_user', $admin_user);
         $this->assign('menus', json_encode($menus));
-        $this->assign('dashbord', count($menus) ? $menus[0] : ['url' => url('welcome'), 'name' => '首页']);
+        $this->assign('dashbord', count($menus) ? $menus[0] : ['id' => 1, 'url' => url('welcome'), 'name' => '首页', 'pid' => 0, 'icon' => 'mdi mdi-home', 'is_out' => 0, 'is_home' => 1]);
         $this->assign('index_top_menu', $config['index_top_menu'] ?? 1);
 
         $template = 'index';
