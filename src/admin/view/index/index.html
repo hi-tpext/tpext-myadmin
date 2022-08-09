@@ -205,6 +205,23 @@
       border-bottom: 1px solid #33cabb;
     }
 
+    [data-theme="dark"] .mt-nav-bar .mt-nav
+    {
+      background-color: #303243;
+      color: #8c909a;
+    }
+    [data-theme="dark"] .mt-nav-bar .nav-tabs > li.active > a,
+    [data-theme="dark"] .mt-nav-bar .nav-tabs > li.active > a:focus, 
+    [data-theme="dark"] .mt-nav-bar .nav-tabs > li.active > a:hover
+    {
+      color: #ebebeb;
+    }
+
+    [data-theme="dark"] .mt-nav-bar .mt-nav .nav-tabs
+    {
+      border-color: #303243;
+    }
+
     @media (min-width: 768px) {
       .mt-nav-bar .nav-tabs.nav-justified>li>a {
         border-bottom-color: #ebebeb;
@@ -287,12 +304,23 @@
               <li class="dropdown dropdown-skin">
                 <span data-toggle="dropdown" class="icon-palette"><i class="mdi mdi-palette"></i></span>
                 <ul class="dropdown-menu dropdown-menu-right" data-stopPropagation="true">
+                  <li class="drop-title"><p>主题</p></li>
+                  <li class="drop-skin-li clearfix">
+                    <span class="inverse">
+                      <input type="radio" name="site_theme" value="default" id="site_theme_1" checked>
+                      <label for="site_theme_1"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="site_theme" value="dark" id="site_theme_2">
+                      <label for="site_theme_2"></label>
+                    </span>
+                  </li>  
                   <li class="drop-title">
                     <p>LOGO</p>
                   </li>
                   <li class="drop-skin-li clearfix">
                     <span class="inverse">
-                      <input type="radio" name="logo_bg" value="default" id="logo_bg_1">
+                      <input type="radio" name="logo_bg" value="color_1" id="logo_bg_1">
                       <label for="logo_bg_1"></label>
                     </span>
                     <span>
@@ -329,7 +357,7 @@
                   </li>
                   <li class="drop-skin-li clearfix">
                     <span class="inverse">
-                      <input type="radio" name="header_bg" value="default" id="header_bg_1">
+                      <input type="radio" name="header_bg" value="color_1" id="header_bg_1">
                       <label for="header_bg_1"></label>
                     </span>
                     <span>
@@ -366,7 +394,7 @@
                   </li>
                   <li class="drop-skin-li clearfix">
                     <span class="inverse">
-                      <input type="radio" name="sidebar_bg" value="default" id="sidebar_bg_1">
+                      <input type="radio" name="sidebar_bg" value="color_1" id="sidebar_bg_1">
                       <label for="sidebar_bg_1"></label>
                     </span>
                     <span>
@@ -469,7 +497,7 @@
     $('#iframe-content').multitabs({
       iframe: true,
       nav: {
-        backgroundColor: '#ffffff',
+        backgroundColor: localStorage.getItem('site_theme') == 'dark' ? '#222437' : '#ffffff',
         maxTabs: 35, // 选项卡最大值
       },
       init: [{
