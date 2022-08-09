@@ -507,7 +507,7 @@
               children = [treeObj[i]];
             }
           }
-          var html = createMenu(children, 0, treeObj[i].id);
+          var html = children ? createMenu(children, 0, treeObj[i].id) : '';
           if (!treeObj[i].is_home) {
             $('#top-menu-out').append('<li data-nav="' + treeObj[i].id + '" class="nav-item ' + (i == 0 ? 'current' : '') + '"><a class="link" href="#"><i class="' + treeObj[i].icon + '"></i>' + treeObj[i].name + '</a></li>');
           }
