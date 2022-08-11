@@ -4,6 +4,7 @@ namespace tpext\myadmin\common\event;
 
 use think\facade\Db;
 use tpext\myadmin\admin\model\AdminMenu;
+use think\facade\Cache;
 
 class Menu
 {
@@ -24,7 +25,7 @@ class Menu
         $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
 
         if (empty($isTable)) {
-            cache('tpextmyadmin_installed', 0);
+            Cache::set('tpextmyadmin_installed', 0);
             return false;
         }
 
