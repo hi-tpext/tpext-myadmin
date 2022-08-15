@@ -10,6 +10,7 @@ use tpext\common\ExtLoader;
 use Webman\MiddlewareInterface;
 use tpext\myadmin\common\Module;
 use tpext\builder\common\Builder;
+use tpext\builder\common\Module as BuilderModule;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\admin\model\AdminUser;
 use think\Controller;
@@ -28,24 +29,26 @@ class Auth implements MiddlewareInterface
     {
         if ($request->route) {
             $path = strtolower($request->route->getPath());
-            $explode = explode('/', trim($path, '/'));
-            $this->module = $explode[0] ?: 'index';
-            $this->controller  =  $explode[1] ?? 'index';
-            $this->action  =  $explode[2] ?? 'index';
+            $explode = explode('/', ltrim($path, '/'));
+            $this->module = !empty($explode[0]) ? $explode[0] : 'index';
+            $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
+            $this->action  = !empty($explode[2]) ? $explode[2] : 'index';
         } else {
             $path = strtolower($request->path());
-            $explode = explode('/', trim($path, '/'));
-            $this->module = $explode[0] ?: 'index';
-            $this->controller  =  $explode[1] ?? 'index';
-            $this->action  =  $explode[2] ?? 'index';
+            $explode = explode('/', ltrim($path, '/'));
+            $this->module = !empty($explode[0]) ? $explode[0] : 'index';
+            $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
+            $this->action  = !empty($explode[2]) ? $explode[2] : 'index';
         }
 
         $this->setup();
 
         if (strtolower($this->module) !== 'admin') {
-            return $next($request);
+            $response = $next($request);
+            $this->resetBuilder();
+            return $response;
         }
-
+        Builder::auth(AdminUser::class);
         $response = $this->check();
 
         if ($response) {
@@ -58,7 +61,18 @@ class Auth implements MiddlewareInterface
             ExtLoader::trigger('admin_log');
         }
 
+        $this->resetBuilder();
+
         return $response;
+    }
+
+    protected function resetBuilder()
+    {
+        BuilderModule::getInstance()->setUploadUrl('');
+        BuilderModule::getInstance()->setImportUrl('');
+        BuilderModule::getInstance()->setChooseUrl('');
+        BuilderModule::getInstance()->setViewsPath('');
+        Builder::destroyInstance();
     }
 
     protected function getLoginTimeout()
@@ -122,7 +136,7 @@ class Auth implements MiddlewareInterface
         unset($j);
 
         Builder::aver($config['assets_ver']);
-        Builder::auth(AdminUser::class);
+        
         View::share(
             [
                 'admin_page_position' => '',
