@@ -497,12 +497,10 @@ class Index extends Controller
             $user = $this->dataModel->where(['username' => $data['username']])->find();
 
             if (!$user) {
-                sleep(5);
                 $this->error('用户帐号不存');
             }
 
             if ($user['enable'] == 0) {
-                sleep(2);
                 $this->error('帐号已禁用');
             }
 
@@ -528,7 +526,6 @@ class Index extends Controller
 
                 Cache::set('admin_try_login_' . $user['id'], time());
 
-                sleep(2);
                 $this->error('密码错误');
             }
 
