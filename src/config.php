@@ -30,7 +30,7 @@ return [
 
         $form->left(4)->with(function () use ($form) {
             $form->radio('login_in_top', '登录超时整体跳转')->options([0 => '否', 1 => '是'])->help('若为是，登录超时后整体页面跳转到登录，反之则仅触发超时的页码跳转。');
-            $form->number('login_timeout', '登录超时整体跳转')->help('后台用户在一段时间没有操作后自动注销(需要在config/session.php配置中[修改/添加]`expire`(秒)参数，使session超时长于本配置)');
+            $form->number('login_timeout', '登录超时(分钟)')->help('后台用户在一段时间没有操作后自动注销(需要在config/session.php配置中[修改/添加]`expire`(秒)参数，使session超时长于本配置)');
             $form->radio('login_session_key', '隐藏登录页面')->options([0 => '否', 1 => '是'])->help('若为是，登录页面将检查session("login_session_key")值，没有设置则拒绝登录。');
             $form->text('assets_ver', '静态资源版本号');
             $form->radio('minify', '资源压缩')->options([0 => '否', 1 => '是'])->help('压缩css、js资源');
