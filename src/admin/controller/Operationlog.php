@@ -39,6 +39,8 @@ class Operationlog extends Controller
         $this->pageTitle = '操作记录';
 
         $this->indexWith = ['admin']; //列表页关联模型
+
+        $this->indexFieldsExcept = 'data';//排除某字段
     }
 
     protected function filterWhere()
@@ -128,7 +130,6 @@ class Operationlog extends Controller
         $table->show('path', '路径');
         $table->show('method', '提交方式');
         $table->show('ip', 'IP');
-        $table->show('data', '数据')->cut(100)->getWrapper()->style('max-width:40%;');
         $table->show('create_time', '时间')->getWrapper()->addStyle('width:160px');
 
         $table->getToolbar()
