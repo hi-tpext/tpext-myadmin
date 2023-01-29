@@ -166,7 +166,7 @@ class Menu extends Controller
         $table->show('url', 'url');
         $table->raw('icon', '图标')->to('<i class="{val}"></i>');
         $table->text('title', '名称')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
-        $table->switchBtn('enable', '启用')->default(1)->autoPost()->mapClassWhen('/admin/menu/index', 'hidden', 'url')->getWrapper()->addStyle('max-width:120px');
+        $table->switchBtn('enable', '启用')->default(1)->autoPost()->mapClass('/admin/menu/index', 'hidden', 'url')->getWrapper()->addStyle('max-width:120px');
         $table->text('sort', '排序')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
         $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
         $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
