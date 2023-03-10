@@ -31,13 +31,13 @@ class AdminPermission extends Model
 
     public function getControllers()
     {
-        $appPath = App::getRootPath() . 'application' . DIRECTORY_SEPARATOR . 'admin/controller';
+        $appPath = App::getAppPath() . 'admin/controller';
 
         $modControllers = [];
         $baseControllers = $this->scanControllers($appPath);
 
         if (!empty($baseControllers)) {
-            $modControllers['app']['controllers'] = $this->scanControllers($appPath);
+            $modControllers['app']['controllers'] = $baseControllers;
             $modControllers['app']['title'] = '基础';
         }
 
