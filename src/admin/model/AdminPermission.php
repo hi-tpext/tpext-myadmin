@@ -31,7 +31,7 @@ class AdminPermission extends Model
 
     public function getControllers()
     {
-        $appPath = App::getAppPath() . 'admin/controller';
+        $appPath = App::getRootPath() . 'application' . DIRECTORY_SEPARATOR . 'admin/controller';
 
         $modControllers = [];
         $baseControllers = $this->scanControllers($appPath);
