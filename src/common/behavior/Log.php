@@ -46,7 +46,7 @@ class Log
             $param = [];
         }
 
-        unset($param['password'], $param['__table__'], $param['__search__'], $param['__token__']);
+        unset($param['password'], $param['validate'], $param['token'], $param['secret'], $param['__table__'], $param['__search__'], $param['__token__']);
 
         $path = implode('/', [$module, $controller, $action]);
 
