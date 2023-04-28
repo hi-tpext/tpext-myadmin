@@ -45,7 +45,7 @@ class Auth implements MiddlewareInterface
 
         if (strtolower($this->module) !== 'admin') {
             $response = $next($request);
-            $this->resetBuilder();
+            Builder::destroyInstance();
             return $response;
         }
         Builder::auth(AdminUser::class);
