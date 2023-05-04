@@ -168,7 +168,7 @@ class Role extends Controller
 
             $form->checkbox('menus', '菜单')->required()->optionsData($this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select(), 'title')->default($menuIds)->checkallBtn('全部菜单');
 
-            $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新</small>');
+            $form->raw('permission', '权限')->required()->value('<label class="label label-info">请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新；<br>若权限过多无法保存，修改php.ini中`max_input_vars`的值(默认1000)。</small>');
 
             $tree = $this->menuModel->getLineData();
 
