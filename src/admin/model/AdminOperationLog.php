@@ -10,6 +10,11 @@ class AdminOperationLog extends Model
 
     public function admin()
     {
-        return $this->hasOne('AdminUser', 'id', 'user_id');
+        return $this->belongsTo(AdminUser::class, 'user_id', 'id');
+    }
+
+    public function action()
+    {
+        return $this->belongsTo(AdminPermission::class, 'path', 'url');
     }
 }

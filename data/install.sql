@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_permission` (
   `update_time` datetime NOT NULL DEFAULT '2020-01-01 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   INDEX (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='操作记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_menu` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `__PREFIX__admin_role_menu` (
   PRIMARY KEY (`id`),
   INDEX (`role_id`),
   INDEX(`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色菜单表';
 
 CREATE TABLE IF NOT EXISTS `__PREFIX__admin_group` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
