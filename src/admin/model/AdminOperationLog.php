@@ -17,4 +17,9 @@ class AdminOperationLog extends Model
     {
         return $this->belongsTo(AdminPermission::class, 'path', 'url');
     }
+
+    public function getPathAttr($value, $data)
+    {
+        return '/' . ltrim($value, '/'); //兼容旧的数据
+    }
 }
