@@ -107,7 +107,6 @@ class Operationlog extends Controller
         $form->show('admin.username', '登录帐号');
         $form->show('admin.name', '姓名');
         $form->show('path', '路径');
-        $form->show('permission', '操作')->to('{controller.controller_name}-{action.action_name}');
         $form->show('method', '提交方式');
         $form->show('ip', 'IP');
         $form->show('create_time', '时间');
