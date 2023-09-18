@@ -95,7 +95,7 @@ class Log
 
         AdminOperationLog::create([
             'user_id' => $admin_id,
-            'path' => $path,
+            'path' => '/' . $path,
             'method' => request()->method(),
             'ip' => request()->ip(),
             'data' => json_encode($param, JSON_UNESCAPED_UNICODE),
