@@ -168,7 +168,12 @@ class Index extends Controller
             }
         }
 
-        return $this->fetch($template);
+        $config = [];
+        if (preg_match('/(.+?[\/\\\]view[\/\\\]).+?/', $template, $mch)) {
+            $config['view_path'] = $mch[1];
+        }
+        
+        return $this->fetch($template, [], $config);
     }
 
     public function denied()
@@ -580,7 +585,12 @@ class Index extends Controller
                 }
             }
 
-            return $this->fetch($template);
+            $config = [];
+            if (preg_match('/(.+?[\/\\\]view[\/\\\]).+?/', $template, $mch)) {
+                $config['view_path'] = $mch[1];
+            }
+
+            return $this->fetch($template, [], $config);
         }
     }
 
