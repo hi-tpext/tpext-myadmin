@@ -14,11 +14,11 @@
 
 1、安装本扩展：
 
-`composer require ichynul/tpextmyadmin^5.0.1`
+`composer require ichynul/tpextmyadmin:^5.0.1`
 
 2、安装UI库：因为二者冲突，只能选择其中一个安装：
 
-`composer require ichynul/tpext-vexipui^5.0.1` 或 `composer require ichynul/tpext-tinyvue^5.0.1`
+`composer require ichynul/tpext-vexipui:^5.0.1` 或 `composer require ichynul/tpext-tinyvue:^5.0.1`
 
 对已有3.0(tp6)项目，可编辑网站根目录下的`composer.json`文件升级
 
@@ -37,4 +37,4 @@
 
 注意，Vue3版本的UI库与`tpextbuilder`(bootstrap)的有所差别，建议新项目采用。
 
-升级后页面样式乱，访问 `/admin/extension/prepare`刷新资源，直到正常。
+升级/切换UI库后页面样式乱或无法显示，访问 `/admin/extension/prepare`刷新资源，直到正常。
