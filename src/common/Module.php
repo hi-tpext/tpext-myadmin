@@ -92,7 +92,7 @@ class Module extends baseModule
             return true;
         }
 
-        $config = config('thinkorm.connections.mysql', []);
+        $config = config('think-orm.connections.mysql', []);
 
         if (empty($config['database']) || empty($config['username']) || empty($config['password'])) {
             return false;
