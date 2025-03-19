@@ -2,7 +2,7 @@
 
 namespace think\captcha\facade;
 
-use Gregwar\Captcha\CaptchaBuilder;
+use Webman\Captcha\CaptchaBuilder;
 use think\facade\Session;
 
 class Captcha
