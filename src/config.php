@@ -18,7 +18,6 @@ return [
     'login_css_file' => '',
     'assets_ver' => '1.0',
     'admin_group_title' => '分组',
-    'admin_group_model' => '',
     'operation_log_catch' => ['POST', 'PUT', 'PATCH', 'DELETE'],
     'operation_log_fields_except' => '*:content',
     'index_page_style' => '',
@@ -42,7 +41,6 @@ return [
             }
             $form->text('assets_ver', '静态资源版本号');
             $form->text('admin_group_title', '管理员分组名称')->help('如:`部门，分店');
-            $form->text('admin_group_model', '管理员分组模型')->help('如:`\tpext\myadmin\admin\model\AdminGroup`，你可以自己实现分组。树形结构需要配合\tpext\builder\traits\TreeModel');
             $form->checkbox('operation_log_catch', '操作日志记录类型')->options(['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']);
             $form->textarea('operation_log_fields_except', '记录日志排除字段')->help("避免记录一些内容很长但意义不大的字段到操作日志里面，如文章内容、产品详情等。规则`path:fields`,path可用`*`代表所有，多个规则用换行分割。例如:<pre>*:content\nadmin/shopgoods/edit:description</pre>");
             $form->select('index_page_style', 'index主体页面风格')->options(Module::getInstance()->getIndexViews());
