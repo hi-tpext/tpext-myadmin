@@ -12,20 +12,9 @@ class AdminUser extends Model implements Auth
 {
     protected $autoWriteTimestamp = 'datetime';
 
-    protected static $adminGroupTitle = '分组';
+    protected static $adminGroupTitle = null;
 
     protected $hidden = ['group', 'role', 'password', 'salt'];
-
-    protected static function init()
-    {
-        $instance = Module::getInstance();
-
-        $config = $instance->getConfig();
-        
-        if (!empty($config['admin_group_title'])) {
-            self::$adminGroupTitle = $config['admin_group_title'];
-        }
-    }
 
     public function getAdminGroupModel()
     {
@@ -34,6 +23,15 @@ class AdminUser extends Model implements Auth
 
     public function getAdminGroupTitle()
     {
+        if (is_null(self::$adminGroupTitle)) {
+            self::$adminGroupTitle = '分组';
+            $instance = Module::getInstance();
+            $config = $instance->getConfig();
+            if (!empty($config['admin_group_title'])) {
+                self::$adminGroupTitle = $config['admin_group_title'];
+            }
+        }
+
         return self::$adminGroupTitle;
     }
 
@@ -159,8 +157,14 @@ class AdminUser extends Model implements Auth
         $url = implode('/', ['', $path[0], Str::snake($path[1]), strtolower($path[2])]);
 
         $noNeed = [
-            '/admin/index/index', '/admin/index/captcha', '/admin/index/welcome', '/admin/index/denied',
-            '/admin/index/logout', '/admin/index/login', '/admin/index/profile', '/admin/index/changepwd',
+            '/admin/index/index',
+            '/admin/index/captcha',
+            '/admin/index/welcome',
+            '/admin/index/denied',
+            '/admin/index/logout',
+            '/admin/index/login',
+            '/admin/index/profile',
+            '/admin/index/changepwd',
         ];
 
         if (in_array($url, $noNeed)) {
