@@ -11,42 +11,45 @@ class AdminUser extends Model implements Auth
 {
     protected $autoWriteTimestamp = 'datetime';
 
-    protected static $adminGroupModel;
+    protected static $adminGroupModel = null;
 
-    protected static $adminGroupTitle = '分组';
+    protected static $adminGroupTitle = null;
 
     protected $hidden = ['group', 'role', 'password', 'salt'];
 
-    protected static function init()
-    {
-        $instance = Module::getInstance();
-
-        $config = $instance->getConfig();
-
-        if (!empty($config['admin_group_model']) && class_exists($config['admin_group_model'])) {
-            self::$adminGroupModel = new $config['admin_group_model'];
-        } else {
-            self::$adminGroupModel = new AdminGroup;
-        }
-
-        if (!empty($config['admin_group_title'])) {
-            self::$adminGroupTitle = $config['admin_group_title'];
-        }
-    }
-
     public function getAdminGroupModel()
     {
+        if (is_null(self::$adminGroupTitle)) {
+            $instance = Module::getInstance();
+            $config = $instance->getConfig();
+            if (!empty($config['admin_group_model']) && class_exists($config['admin_group_model'])) {
+                self::$adminGroupModel = new $config['admin_group_model'];
+            } else {
+                self::$adminGroupModel = new AdminGroup;
+            }
+        }
+
         return self::$adminGroupModel;
     }
 
     public function getAdminGroupTitle()
     {
+        if (is_null(self::$adminGroupTitle)) {
+            self::$adminGroupTitle = '分组';
+            $instance = Module::getInstance();
+            $config = $instance->getConfig();
+            if (!empty($config['admin_group_title'])) {
+                self::$adminGroupTitle = $config['admin_group_title'];
+            }
+        }
+
         return self::$adminGroupTitle;
     }
 
     public function group()
     {
-        return $this->belongsTo(get_class(self::$adminGroupModel), 'group_id', 'id');
+        $model = $this->getAdminGroupModel();
+        return $this->belongsTo(get_class($model), 'group_id', 'id');
     }
 
     public function role()
@@ -166,8 +169,14 @@ class AdminUser extends Model implements Auth
         $url = implode('/', ['', $path[0], Str::snake($path[1]), strtolower($path[2])]);
 
         $noNeed = [
-            '/admin/index/index', '/admin/index/captcha', '/admin/index/welcome', '/admin/index/denied',
-            '/admin/index/logout', '/admin/index/login', '/admin/index/profile', '/admin/index/changepwd',
+            '/admin/index/index',
+            '/admin/index/captcha',
+            '/admin/index/welcome',
+            '/admin/index/denied',
+            '/admin/index/logout',
+            '/admin/index/login',
+            '/admin/index/profile',
+            '/admin/index/changepwd',
         ];
 
         if (in_array($url, $noNeed)) {
