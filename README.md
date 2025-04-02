@@ -1,4 +1,4 @@
-# tpextmyadmin for ThinkPHP webman1.4 / 1.5 / 1.6
+# tpextmyadmin for webman v1.4 / 1.5 / 1.6
 
 ## 安装
 
