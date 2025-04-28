@@ -4,17 +4,18 @@ namespace tpext\myadmin\common\middleware;
 
 use Closure;
 use think\App;
-use think\event\HttpEnd;
 use think\Request;
 use think\Response;
-use tpext\builder\common\Builder;
+use tpext\think\View;
+use think\event\HttpEnd;
 use tpext\common\ExtLoader;
-use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\common\Module;
+use tpext\builder\common\Builder;
+use tpext\myadmin\common\UrlAuth;
 use tpext\myadmin\common\event\Log;
 use tpext\myadmin\common\event\Menu;
 use tpext\myadmin\common\event\Assets;
-use tpext\myadmin\common\Module;
-use tpext\think\View;
+use tpext\myadmin\admin\model\AdminUser;
 
 /**
  * for tp6
@@ -127,8 +128,10 @@ class Auth
 
         unset($j);
 
-        Builder::aver($config['assets_ver']);
-        Builder::auth(AdminUser::class);
+        if (class_exists(Builder::class)) {
+            Builder::aver($config['assets_ver']);
+            Builder::auth(UrlAuth::class);
+        }
         View::share(
             [
                 'admin_page_position' => '',
@@ -207,7 +210,7 @@ class Auth
 
             if (!$isLogin && !$isAdmin && $this->isInstalled()) {
                 $config = Module::getInstance()->getConfig();
-                
+
                 cookie('after_login_url', $this->app->request->url(), ['expire' => 0, 'httponly' => true]);
 
                 if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {

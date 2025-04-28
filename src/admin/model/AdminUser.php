@@ -4,10 +4,9 @@ namespace tpext\myadmin\admin\model;
 
 use think\helper\Str;
 use think\Model;
-use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
 
-class AdminUser extends Model implements Auth
+class AdminUser extends Model
 {
     protected $autoWriteTimestamp = 'datetime';
 
