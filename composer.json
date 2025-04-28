@@ -16,8 +16,7 @@
     "require": {
         "matthiasmullie/minify": "^1.3",
         "ichynul/tpext": "^4.5.0",
-        "ichynul/tpextbuilder": "^3.7.2",
-        "ichynul/tpextmanager": "^3.3.6",
+        "ichynul/tpextmanager": "^3.0",
         "ichynul/lightyearadmin": "^1.1.8",
         "webman/captcha": "^1.0.5"
     },

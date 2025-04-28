@@ -4,6 +4,8 @@ use tpext\common\ExtLoader;
 use tpext\myadmin\common\event\Log;
 use tpext\myadmin\common\event\Menu;
 use tpext\myadmin\common\event\Assets;
+use tpext\myadmin\common\UrlAuth;
+use tpext\builder\inface\Auth;
 
 $classMap = [
     'tpext\\myadmin\\common\\Module',
@@ -18,6 +20,8 @@ ExtLoader::watch('admin_log', Log::class, false, '记录日志');
 if (!function_exists('checkUrl')) {
     function checkUrl($url)
     {
-        return \tpext\myadmin\admin\model\AdminUser::checkUrl($url);
+        if (class_exists(Auth::class)) {
+            return UrlAuth::checkUrl($url);
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace tpext\myadmin\webman;
 
+use think\Controller;
 use tpext\think\View;
 use Webman\Http\Request;
 use think\facade\Session;
@@ -10,10 +11,10 @@ use tpext\common\ExtLoader;
 use Webman\MiddlewareInterface;
 use tpext\myadmin\common\Module;
 use tpext\builder\common\Builder;
-use tpext\builder\common\Module as BuilderModule;
+use tpext\myadmin\common\UrlAuth;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\admin\model\AdminUser;
-use think\Controller;
+use tpext\builder\common\Module as BuilderModule;
 
 /**
  * for webman
@@ -28,7 +29,7 @@ class Auth implements MiddlewareInterface
     public function process(Request $request, callable $next): Response
     {
         if ($request->route) {
-            $path = strtolower($request->route->getPath());
+            $path = strtolower(rtrim($request->path(), '[.html]'));
             $explode = explode('/', ltrim($path, '/'));
             $this->module = !empty($explode[0]) ? $explode[0] : 'index';
             $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
@@ -48,7 +49,9 @@ class Auth implements MiddlewareInterface
             Builder::destroyInstance();
             return $response;
         }
-        Builder::auth(AdminUser::class);
+        if (class_exists(Builder::class)) {
+            Builder::auth(UrlAuth::class);
+        }
         $response = $this->check();
 
         if ($response) {
