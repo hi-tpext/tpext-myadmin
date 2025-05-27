@@ -20,7 +20,7 @@ class Log
         $action = '';
 
         if ($request->route) {
-            $path = strtolower($request->route->getPath());
+            $path = strtolower(str_replace('[.html]', '', $request->route->getPath()));
             $explode = explode('/', ltrim($path, '/'));
             $controller  = !empty($explode[1]) ? $explode[1] : 'index';
             $action  = !empty($explode[2]) ? $explode[2] : 'index';

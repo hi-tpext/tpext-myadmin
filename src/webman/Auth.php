@@ -29,7 +29,7 @@ class Auth implements MiddlewareInterface
     public function process(Request $request, callable $next): Response
     {
         if ($request->route) {
-            $path = strtolower(rtrim($request->path(), '[.html]'));
+            $path = strtolower(str_replace('[.html]', '', $request->route->getPath()));
             $explode = explode('/', ltrim($path, '/'));
             $this->module = !empty($explode[0]) ? $explode[0] : 'index';
             $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
