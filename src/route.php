@@ -3,6 +3,9 @@
 use think\facade\Route;
 use tpext\myadmin\common\Entrance;
 use think\middleware\SessionInit;
+use think\facade\App;
+
+App::setRuntimePath(App::getRootPath() . 'runtime/admin' . DIRECTORY_SEPARATOR);//解决session驱动为file时存储路径不一致的问题
 
 // 后台隐藏登录页面的中转地址
 $entrance = '/__entrance__';
