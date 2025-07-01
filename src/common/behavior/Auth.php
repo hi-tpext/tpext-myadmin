@@ -83,7 +83,8 @@ class Auth
                 if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
                     if (!session('?login_session_key')) {
                         if (cookie('tpext_myadmin_entry')) {
-                            return $this->success('验证中...', cookie('tpext_myadmin_entry'), '', 1);
+                            $tpext_myadmin_entry = cookie('tpext_myadmin_entry');
+                            return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：' . request()->domain() . url($tpext_myadmin_entry, [], false) . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, '', 20);
                         }
                         header("HTTP/1.1 404 Not Found");
                         exit;

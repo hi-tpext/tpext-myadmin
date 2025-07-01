@@ -15,6 +15,6 @@ class Entrance
             return redirect(url('/admin/index/index'));
         }
 
-        return redirect(url('/admin', [], false));
+        return redirect(url('/admin/index/login', [], false));
     }
 }
