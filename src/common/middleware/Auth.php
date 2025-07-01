@@ -173,7 +173,7 @@ class Auth
 
             if (!$this->isInstalled()) {
                 if ($controller != 'extension') {
-                    return $this->error('请安装扩展！', url('/admin/extension/prepare')->__toString());
+                    return $this->error('请安装扩展！', url('/admin/extension/prepare'));
                 } else {
                     return false;
                 }
@@ -203,7 +203,7 @@ class Auth
                     $res = $userModel->checkPermission($admin_id, $controller, $action);
 
                     if (!$res) {
-                        return $this->error('无权限访问！', url('/admin/index/denied')->__toString(), '', 1);
+                        return $this->error('无权限访问！', url('/admin/index/denied'), 1);
                     }
                 }
             }
@@ -216,22 +216,24 @@ class Auth
                 if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
                     if (!session('?login_session_key')) {
                         if (cookie('tpext_myadmin_entry')) {
-                            return $this->success('验证中...', cookie('tpext_myadmin_entry'), '', 1);
+                            $tpext_myadmin_entry = cookie('tpext_myadmin_entry');
+                            return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：' . request()->domain() . url($tpext_myadmin_entry, [], false) . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
                         }
                         header("HTTP/1.1 404 Not Found");
                         exit;
                     }
                 }
 
-                return $this->error('登录超时，请重新登录！', url('/admin/index/login')->__toString());
+                return $this->error('登录超时，请重新登录！', url('/admin/index/login'));
             } else if ($isLogin && $isAdmin) {
-                return $this->success('您已经登录！', url('/admin/index/index')->__toString());
+                return $this->success('您已经登录！', url('/admin/index/index'));
             }
         }
     }
 
-    protected function success($msg = '', $url, $data = '', $wait = 2)
+    protected function success($msg = '', $url, $wait = 2)
     {
+        $url = (string)$url;
         if ($this->app->request->isAjax()) {
             return json([
                 'code' => 1,
@@ -247,8 +249,9 @@ class Auth
         return view($tplPath, ['msg' => $msg, 'url' => $url, 'code' => 1, 'wait' => $wait]);
     }
 
-    protected function error($msg = '', $url, $data = '', $wait = 2)
+    protected function error($msg = '', $url, $wait = 2)
     {
+        $url = (string)$url;
         if ($this->app->request->isAjax()) {
             return json([
                 'code' => 0,
