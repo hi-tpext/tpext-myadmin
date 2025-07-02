@@ -111,7 +111,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-key',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 5,
                         'name' => '管理员',
                         'url' => url('admin/index'),
@@ -119,7 +120,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-card-details',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 6,
                         'name' => '角色管理',
                         'url' => url('role/index'),
@@ -127,7 +129,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-multiple',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 7,
                         'name' => '扩展管理',
                         'url' => url('extension/index'),
@@ -176,7 +179,7 @@ class Index extends Controller
         if (preg_match('/(.+?[\/\\\]view[\/\\\]).+?/', $template, $mch)) {
             $config['view_path'] = $mch[1];
         }
-        
+
         return $this->fetch($template, [], $config);
     }
 
@@ -475,6 +478,10 @@ class Index extends Controller
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
             if (!Session::has('login_session_key')) {
+                if (request()->cookie('tpext_myadmin_entry')) {
+                    $tpext_myadmin_entry = rawurldecode(request()->cookie('tpext_myadmin_entry'));
+                    return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：http://' . request()->host() . $tpext_myadmin_entry . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
+                }
                 return new Response(404, [], '404 Not found');
             }
         }

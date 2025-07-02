@@ -2,6 +2,7 @@
 
 use tpext\myadmin\common\Module;
 use tpext\builder\common\Form;
+use tpext\myadmin\common\RouteMaker;
 
 return [
     'name' => 'Tpext后台管理系统',
@@ -25,14 +26,19 @@ return [
     'login_page_view_path' => '',
     'index_top_menu' => 1,
     //配置描述
-    '__config__' => function (Form $form) {
+    '__config__' => function (Form $form, $data) {
 
         $form->defaultDisplayerSize(12, 12);
 
-        $form->left(4)->with(function () use ($form) {
+        $form->left(4)->with(function () use ($form, $data) {
             $form->radio('login_in_top', '登录超时整体跳转')->options([0 => '否', 1 => '是'])->help('若为是，登录超时后整体页面跳转到登录，反之则仅触发超时的页码跳转。');
             $form->number('login_timeout', '登录超时整体跳转')->help('后台用户在一段时间没有操作后自动注销(需要在config/session.php配置中[修改/添加]`lifetime`(秒)参数，使session超时长于本配置)');
             $form->radio('login_session_key', '隐藏登录页面')->options([0 => '否', 1 => '是'])->help('若为是，登录页面将检查session("login_session_key")值，没有设置则拒绝登录。');
+            if ($data['login_session_key'] == 1) {
+                RouteMaker::make();
+                $url = RouteMaker::getEntrance();
+                $form->raw('route_tips', '后台入口地址')->value($url . '，请复制保存，若忘记可到`route/tpext-myadmin.php`中查看');
+            }
             $form->text('assets_ver', '静态资源版本号');
             $form->radio('minify', '资源压缩')->options([0 => '否', 1 => '是'])->help('压缩css、js资源');
             $form->text('admin_group_title', '管理员分组名称')->help('如:`部门，分店');
