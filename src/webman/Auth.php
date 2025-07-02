@@ -139,7 +139,7 @@ class Auth implements MiddlewareInterface
         unset($j);
 
         Builder::aver($config['assets_ver']);
-        
+
         View::share(
             [
                 'admin_page_position' => '',
@@ -175,7 +175,7 @@ class Auth implements MiddlewareInterface
 
         if (!$this->isInstalled()) {
             if ($controller != 'extension') {
-                return $this->error('请安装扩展！', url('/admin/extension/prepare')->__toString());
+                return $this->error('请安装扩展！', url('/admin/extension/prepare'));
             } else {
                 return false;
             }
@@ -205,7 +205,7 @@ class Auth implements MiddlewareInterface
                 $res = $userModel->checkPermission($admin_id, $controller, $action);
 
                 if (!$res) {
-                    return $this->error('无权限访问！', url('/admin/index/denied')->__toString(), '', 1);
+                    return $this->error('无权限访问！', url('/admin/index/denied'), 1);
                 }
             }
         }
@@ -213,18 +213,25 @@ class Auth implements MiddlewareInterface
         if (!$isLogin && !$isAdmin && $this->isInstalled()) {
             $config = Module::getInstance()->getConfig();
 
+            Session::set('after_login_url', request()->fullUrl());
+
             if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
+                if (request()->cookie('tpext_myadmin_entry')) {
+                    $tpext_myadmin_entry = rawurldecode(request()->cookie('tpext_myadmin_entry'));
+                    return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：http://' . request()->host() . $tpext_myadmin_entry . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
+                }
+
                 if (!Session::has('login_session_key')) {
                     return new Response(404, [], '404 Not Found');
                 }
             }
 
-            Session::set('after_login_url', request()->fullUrl());
-
-            return $this->error('登录超时，请重新登录！', url('/admin/index/login')->__toString());
+            return $this->error('登录超时，请重新登录！', url('/admin/index/login'));
         } else if ($isLogin && $isAdmin) {
-            return $this->success('您已经登录！', url('/admin/index/index')->__toString());
+            return $this->success('您已经登录！', url('/admin/index/index'));
         }
+
+        return false;
     }
 
     /**
@@ -232,25 +239,23 @@ class Auth implements MiddlewareInterface
      * @access protected
      * @param  mixed     $msg 提示信息
      * @param  string    $url 跳转的URL地址
-     * @param  mixed     $data 返回的数据
      * @param  integer   $wait 跳转等待时间
      * @param  array     $header 发送的Header信息
-     * @return void
+     * @return Response
      */
-    protected function success($msg = '', $url = null, $data = '', $wait = 3, $header = array())
+    protected function success($msg = '', $url = null, $wait = 3, $header = array())
     {
         if (is_null($url) && $referer = request()->header('HTTP_REFERER')) {
             $url = $referer;
         } elseif ('' !== $url) {
             $url = (string) $url;
-            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : url($url)->__toString();
+            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : url($url);
         }
 
         $result = [
             'code' => 1,
             'msg' => $msg,
-            'data' => $data,
-            'url' => $url,
+            'url' => (string)$url,
             'wait' => $wait,
         ];
 
@@ -269,25 +274,23 @@ class Auth implements MiddlewareInterface
      * @access protected
      * @param  mixed     $msg 提示信息
      * @param  string    $url 跳转的URL地址
-     * @param  mixed     $data 返回的数据
      * @param  integer   $wait 跳转等待时间
      * @param  array     $header 发送的Header信息
-     * @return void
+     * @return Response
      */
-    protected function error($msg = '', $url = null, $data = '', $wait = 3, $header = array())
+    protected function error($msg = '', $url = null, $wait = 3, $header = array())
     {
         if (is_null($url) && $referer = request()->header('HTTP_REFERER')) {
             $url = $referer;
         } elseif ('' !== $url) {
             $url = (string) $url;
-            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : url($url)->__toString();
+            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : url($url);
         }
 
         $result = [
             'code' => 0,
             'msg' => $msg,
-            'data' => $data,
-            'url' => $url,
+            'url' => (string)$url,
             'wait' => $wait,
         ];
 
