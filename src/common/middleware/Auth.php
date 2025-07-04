@@ -216,7 +216,7 @@ class Auth
         }
     }
 
-    protected function success($msg = '', $url, $wait = 2)
+    protected function success($msg = '', $url = '', $wait = 2)
     {
         $url = (string)$url;
         if ($this->app->request->isAjax()) {
@@ -234,7 +234,7 @@ class Auth
         return view($tplPath, ['msg' => $msg, 'url' => $url, 'code' => 1, 'wait' => $wait]);
     }
 
-    protected function error($msg = '', $url, $wait = 2)
+    protected function error($msg = '', $url = '', $wait = 2)
     {
         $url = (string)$url;
         if ($this->app->request->isAjax()) {
