@@ -20,7 +20,7 @@
 
 2、安装 UI 库：因为二者冲突，只能选择其中一个安装：
 
-`composer require ichynul/tpext-vexipui:^5.0.1` 或 `composer require ichynul/tpext-tinyvue:^5.0.1` 或 `composer require ichynul/tpext-builder:^3.9.1`
+`composer require ichynul/tpext-vexipui:^5.0.1` 或 `composer require ichynul/tpext-tinyvue:^5.1.1` 或 `composer require ichynul/tpext-builder:^3.9.1`
 
 升级/切换 UI 库后页面样式乱或无法显示，访问 `/admin/extension/prepare`刷新资源，直到正常。
 
