@@ -1,4 +1,4 @@
-# tpextmyadmin for ThinkPHP 6.0/6.1
+# tpextmyadmin for ThinkPHP 6.x/8.x
 
 ## 安装
 
