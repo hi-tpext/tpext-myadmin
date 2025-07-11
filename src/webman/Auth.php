@@ -27,19 +27,11 @@ class Auth implements MiddlewareInterface
 
     public function process(Request $request, callable $next): Response
     {
-        if ($request->route) {
-            $path = strtolower(str_replace('[.html]', '', $request->route->getPath()));
-            $explode = explode('/', ltrim($path, '/'));
-            $this->module = !empty($explode[0]) ? $explode[0] : 'index';
-            $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
-            $this->action  = !empty($explode[2]) ? $explode[2] : 'index';
-        } else {
-            $path = strtolower($request->path());
-            $explode = explode('/', ltrim($path, '/'));
-            $this->module = !empty($explode[0]) ? $explode[0] : 'index';
-            $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
-            $this->action  = !empty($explode[2]) ? $explode[2] : 'index';
-        }
+        $path = strtolower(str_replace('[.html]', '', $request->path()));
+        $explode = explode('/', ltrim($path, '/'));
+        $this->module = !empty($explode[0]) ? $explode[0] : 'index';
+        $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
+        $this->action  = !empty($explode[2]) ? $explode[2] : 'index';
 
         $this->setup();
 
