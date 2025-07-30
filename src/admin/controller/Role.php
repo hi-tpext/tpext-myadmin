@@ -159,6 +159,7 @@ class Role extends Controller
             $urlBase = '';
             $ids = [];
             $controllerPermList = $this->permModel->order('controller,action')->select();
+            $menuUlrs = [];
 
             if ($isEdit) {
                 $menuIds = $this->roleMenuModel->where(['role_id' => $data['id']])->column('menu_id');
@@ -175,6 +176,10 @@ class Role extends Controller
             $perIds = [];
             if ($isEdit) {
                 $perIds = $this->rolePermModel->where(['role_id' => $data['id']])->column('permission_id');
+            }
+
+            foreach ($tree as $tr) {
+                $menuUlrs[] = $tr['url'];
             }
 
             foreach ($tree as $tr) {
@@ -209,7 +214,14 @@ class Role extends Controller
                         if ($cprow['action'] == '#') {
                             continue;
                         }
+                        if (in_array($cprow['url'], $menuUlrs) && $cprow['url'] != $tr['url']) {
+                            continue;
+                        }
+                        if (isset($cprow['c']) && $cprow['url'] != $tr['url']) {
+                            continue;
+                        }
                         $permissions[] = $cprow;
+                        $cprow['c'] = 1;
                     }
                 }
 
@@ -219,7 +231,7 @@ class Role extends Controller
                     ->optionsData($permissions, 'action_name')
                     ->inline()
                     ->size(2, 10)
-                    ->checkallBtn();
+                    ->checkallBtn(count($permissions) > 1 ? '全选' : '');
             }
 
             $otherPermList = $this->permModel->where('id', 'not in', $ids)->order('controller,action')->select();

@@ -152,7 +152,7 @@ class AdminUser extends Model
             return false;
         }
 
-        $url = implode('/', ['', $path[0], Str::snake($path[1]), strtolower($path[2])]);
+        $url = implode('/', ['', $path[0], str_replace('._', '.', Str::snake($path[1])), strtolower($path[2])]);
 
         $noNeed = [
             '/admin/index/index',
