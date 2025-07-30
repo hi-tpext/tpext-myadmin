@@ -163,11 +163,17 @@ class AdminUser extends Model implements Auth
             return false;
         }
 
-        $url = implode('/', ['', $path[0], Loader::parseName($path[1]), strtolower($path[2])]);
+        $url = implode('/', ['', $path[0], str_replace('._', '.', Loader::parseName($path[1])), strtolower($path[2])]);
 
         $noNeed = [
-            '/admin/index/index', '/admin/index/captcha', '/admin/index/welcome', '/admin/index/denied',
-            '/admin/index/logout', '/admin/index/login', '/admin/index/profile', '/admin/index/changepwd',
+            '/admin/index/index',
+            '/admin/index/captcha',
+            '/admin/index/welcome',
+            '/admin/index/denied',
+            '/admin/index/logout',
+            '/admin/index/login',
+            '/admin/index/profile',
+            '/admin/index/changepwd',
         ];
 
         if (in_array($url, $noNeed)) {
