@@ -13,7 +13,7 @@ ExtLoader::addClassMap($classMap);
 if (!function_exists('checkUrl')) {
     function checkUrl($url)
     {
-        if (class_exists(Auth::class)) {
+        if (interface_exists(Auth::class)) {
             return UrlAuth::checkUrl($url);
         }
 
