@@ -20,7 +20,7 @@ ExtLoader::watch('admin_log', Log::class, false, '记录日志');
 if (!function_exists('checkUrl')) {
     function checkUrl($url)
     {
-        if (class_exists(Auth::class)) {
+        if (interface_exists(Auth::class)) {
             return UrlAuth::checkUrl($url);
         }
     }
