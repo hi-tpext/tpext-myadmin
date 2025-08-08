@@ -3,6 +3,7 @@
 namespace think\captcha\facade;
 
 use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 use think\facade\Session;
 
 class Captcha
@@ -14,7 +15,8 @@ class Captcha
      */
     public static function create()
     {
-        $builder = new CaptchaBuilder;
+        $phraseB = new PhraseBuilder(4);
+        $builder = new CaptchaBuilder(null, $phraseB);
         $builder->build();
         Session::set('captcha', strtolower($builder->getPhrase()));
         return response($builder->get(), 200, ['Content-Type' => 'image/jpeg']);
