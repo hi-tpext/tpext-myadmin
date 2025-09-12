@@ -3,7 +3,6 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use think\helper\Str;
 use tpext\builder\traits\actions\HasAutopost;
 use tpext\builder\traits\actions\HasBase;
 use tpext\builder\traits\actions\HasIndex;
@@ -108,9 +107,9 @@ class Permission extends Controller
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
                     $controllerName = $arr[1];
-                    $contrl = $arr[0] . '.' . Str::snake($arr[1]);
+                    $contrl = $arr[0] . '/' . $arr[1];
                 } else {
-                    $controllerName = $contrl = Str::snake($contrl);
+                    $controllerName = $contrl;
                 }
 
                 $reflectionClass = $info['reflection'];

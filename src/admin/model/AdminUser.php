@@ -2,7 +2,6 @@
 
 namespace tpext\myadmin\admin\model;
 
-use think\helper\Str;
 use think\Model;
 use tpext\builder\inface\Auth;
 use tpext\myadmin\common\Module;
@@ -97,7 +96,6 @@ class AdminUser extends Model implements Auth
      */
     public function checkPermission($admin_id, $controller, $action)
     {
-        $controller = Str::studly($controller);
         $user = static::find($admin_id);
 
         if (!$user) {
@@ -148,13 +146,7 @@ class AdminUser extends Model implements Auth
             return true;
         }
 
-        $path = explode('/', trim($url, '/'));
-
-        if (count($path) < 3) {
-            return false;
-        }
-
-        $url = implode('/', ['', $path[0], Str::snake($path[1]), strtolower($path[2])]);
+        $url = trim($url, '/');
 
         $noNeed = [
             '/admin/index/index',
@@ -178,11 +170,6 @@ class AdminUser extends Model implements Auth
         }
 
         $prmission = AdminPermission::where(['url' => $url])->find();
-
-        if (!$prmission && count($path) > 3) {
-            $url = implode('/', ['', Str::snake($path[0] . '/' . $path[1]), $path[2], $path[3]]);
-            $prmission = AdminPermission::where(['url' => $url])->find();
-        }
 
         if (!$prmission) {
             return false;
