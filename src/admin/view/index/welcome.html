@@ -1,365 +1,283 @@
-{extend name="$admin_layout"/}
+<!DOCTYPE html>
+<html lang="zh">
 
-{block name="style"}
-<style>
-  .page-footer {
-    height: 25px;
-    line-height: 25px;
-    width: 100%;
-    margin: 10px 0;
-  }
-  .row
-  {
-    margin-left:-8px;
-    margin-right:-8px;
-  }
-  .container-fluid
-  {
-    overflow-y: scroll;
-  }
-</style>
-{/block}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表盘</title>
+    <link rel="stylesheet" href="/assets/tpextmyadmin/lib/tailwind.min.css?v={$admin_assets_ver|default='1.0'}">
+    <link rel="stylesheet" href="/assets/tpextmyadmin/css/welcome.css?v={$admin_assets_ver|default='1.0'}">
+    <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}"
+        rel="stylesheet">
+</head>
 
-{block name="content"}
-<div class="row">
-    <div class="col-sm-6 col-lg-3">
-        <div class="card bg-primary">
-            <div class="card-body clearfix">
-                <div class="pull-right">
-                    <p class="h6 text-white m-t-0">今日收入</p>
-                    <p class="h3 text-white m-b-0">102,125.00</p>
-                </div>
-                <div class="pull-left">
-                    <span class="img-avatar img-avatar-48 bg-translucent">
-                        <i class="mdi mdi-currency-cny fa-1-5x"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-        <div class="card bg-danger">
-            <div class="card-body clearfix">
-                <div class="pull-right">
-                    <p class="h6 text-white m-t-0">用户总数</p>
-                    <p class="h3 text-white m-b-0">920,000</p>
-                </div>
-                <div class="pull-left">
-                    <span class="img-avatar img-avatar-48 bg-translucent">
-                        <i class="mdi mdi-account fa-1-5x"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-        <div class="card bg-success">
-            <div class="card-body clearfix">
-                <div class="pull-right">
-                    <p class="h6 text-white m-t-0">下载总量</p>
-                    <p class="h3 text-white m-b-0">34,005,000</p>
-                </div>
-                <div class="pull-left">
-                    <span class="img-avatar img-avatar-48 bg-translucent">
-                        <i class="mdi mdi-arrow-down-bold fa-1-5x"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-        <div class="card bg-purple">
-            <div class="card-body clearfix">
-                <div class="pull-right">
-                    <p class="h6 text-white m-t-0">新增留言</p>
-                    <p class="h3 text-white m-b-0">153 条</p>
-                </div>
-                <div class="pull-left">
-                    <span class="img-avatar img-avatar-48 bg-translucent">
-                        <i class="mdi mdi-comment-outline fa-1-5x"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h4>每周用户</h4>
-            </div>
-            <div class="card-body">
-                <canvas class="js-chartjs-bars"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h4>交易历史记录</h4>
-            </div>
-            <div class="card-body">
-                <canvas class="js-chartjs-lines"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">
-                <h4>项目信息</h4>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>项目名称</th>
-                                <th>开始日期</th>
-                                <th>截止日期</th>
-                                <th>状态</th>
-                                <th>进度</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>设计新主题</td>
-                                <td>10/02/2019</td>
-                                <td>12/05/2019</td>
-                                <td>
-                                    <span class="label label-warning">待定</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-warning" style="width: 45%;"></div>
+<body>
+    <script type="text/javascript">
+        (function () {
+            if (localStorage.getItem('site_theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.querySelector('body').style.background = 'rgb(16, 16, 20)';
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <div id="app" class="hidden">
+        <n-config-provider :theme="theme">
+            <n-layout>
+                <n-layout-content class="p-4">
+                    <!-- 数字统计区域 -->
+                    <div class="stat-grid">
+                        <div v-for="(card, index) in statCards" :key="index">
+                            <n-card :class="['stat-card', cardColors[index % cardColors.length]]"
+                                content-style="padding: 16px; height: 100%;" size="small">
+                                <div class="stat-content">
+                                    <div
+                                        class="w-12 h-12 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i :class="['mdi', card.icon, 'mdi-icon', 'text-white']"></i>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>网站重新设计</td>
-                                <td>01/03/2019</td>
-                                <td>12/04/2019</td>
-                                <td>
-                                    <span class="label label-success">进行中</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-success" style="width: 30%;"></div>
+                                    <div>
+                                        <a :href="card.url" class="open-tab" :title="card.title">
+                                            <p class="text-white text-sm">{{ card.title }}</p>
+                                            <p class="text-xl font-bold text-white">{{ card.prefix || '' }}{{ card.value
+                                                }}</p>
+                                        </a>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>模型设计</td>
-                                <td>10/10/2019</td>
-                                <td>12/11/2019</td>
-                                <td>
-                                    <span class="label label-warning">待定</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-warning" style="width: 25%;"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>后台管理系统模板设计</td>
-                                <td>25/01/2019</td>
-                                <td>09/05/2019</td>
-                                <td>
-                                    <span class="label label-success">进行中</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-success" style="width: 55%;"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>前端设计</td>
-                                <td>10/10/2019</td>
-                                <td>12/12/2019</td>
-                                <td>
-                                    <span class="label label-danger">未开始</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-danger" style="width: 0%;"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>桌面软件测试</td>
-                                <td>10/01/2019</td>
-                                <td>29/03/2019</td>
-                                <td>
-                                    <span class="label label-success">进行中</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-success" style="width: 75%;"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>APP改版开发</td>
-                                <td>25/02/2019</td>
-                                <td>12/05/2019</td>
-                                <td>
-                                    <span class="label label-danger">暂停</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-danger" style="width: 15%;"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>Logo设计</td>
-                                <td>10/02/2019</td>
-                                <td>01/03/2019</td>
-                                <td>
-                                    <span class="label label-warning">完成</span>
-                                </td>
-                                <td>
-                                    <div class="progress progress-striped progress-sm">
-                                        <div class="progress-bar progress-bar-success" style="width: 100%;"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+                                </div>
+                            </n-card>
+                        </div>
+                    </div>
+                    <!-- 主要统计区块 -->
+                    <div class="main-stat-grid">
+                        <n-card title="每周用户" size="small">
+                            <div style="height: 320px; width: 100%;">
+                                <div id="userChart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                        </n-card>
+                        <n-card title="交易历史记录" size="small">
+                            <div style="height: 320px; width: 100%;">
+                                <div id="salesChart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                        </n-card>
+                        <n-card title="系统状态" size="small">
+                            <n-list style="max-height: 300px; overflow: auto;">
+                                <n-list-item v-for="(item, index) in systemInfo" :key="index">
+                                    {{item.label}}：{{ item.value }}
+                                </n-list-item>
+                            </n-list>
+                        </n-card>
+                        <n-card title="最新活动" size="small">
+                            <n-list style="max-height: 300px; overflow: auto;">
+                                <n-list-item v-for="(item, index) in recentActivities" :key="index">
+                                    <n-thing :description="item.date">
+                                        {{ item.description }}
+                                    </n-thing>
+                                </n-list-item>
+                            </n-list>
+                        </n-card>
+                        <n-card title="myadmin" size="small">
+                            <a target="_blank" href="https://gitee.com/tpext/myadmin"><img
+                                    src="https://gitee.com/tpext/myadmin/widgets/widget_card.svg?colors=393222,ebdfc1,fffae5,d8ca9f,393222,a28b40"></a>
+                        </n-card>
+                        <n-card title="修改此页面">
+                            <n-space :vertical="true" size="small">
+                                <p>1.创建`application/admin/controller/Index.php`文件，</p>
+                                <p>2.新建 dashbord()方法，可把此视图模板：</p>
+                                <p>vendor/ichynul/tpextmyadmin/src/admin/view/index/welcome.html</p>
+                                <p>复制到 application/admin/view/index/dashbord.html中使用。</p>
+                                <p>3.修改[首页]菜单url指向`/admin/index/dashbord`。</p>
+                            </n-space>
+                        </n-card>
+                    </div>
+                    {$admin_copyright|raw}
+                    <!-- 其他区块 -->
+                </n-layout-content>
+            </n-layout>
+        </n-config-provider>
     </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header">
-                <h4>系统信息</h4>
-            </div>
-            <div class="card-body">
-                <table class="table table-responsive">
-                    <tr>
-                        <td>服务器操作系统：</td>
-                        <td>{$sys_info.os} / {$sys_info.domain}</td>
-                        <td>PHP 版本：</td>
-                        <td>{$sys_info.php_version}</td>
-                        <td>服务器环境：</td>
-                        <td>{$sys_info.web_server}</td>
-                    </tr>
-                    <tr>
-                        <td>Mysql 版本：</td>
-                        <td>{$sys_info.mysql_version}</td>
-                        <td>GD 版本</td>
-                        <td>{$sys_info.gdinfo}</td>
-                        <td>浏览器：</td>
-                        <td>{$sys_info.user_agent} / {$sys_info.ip}</td>
-                    </tr>
-                    <tr>
-                        <td>文件上传限制：</td>
-                        <td>{$sys_info.fileupload}</td>
-                        <td>最大占用内存：</td>
-                        <td>{$sys_info.memory_limit}</td>
-                        <td>最大执行时间：</td>
-                        <td>{$sys_info.max_ex_time}</td>
-                    </tr>
-                    <tr>
-                        <td>系统时间：</td>
-                        <td>{$sys_info.sys_time}</td>
-                        <td>Zlib支持：</td>
-                        <td>{$sys_info.zlib}</td>
-                        <td>Curl支持：</td>
-                        <td>{$sys_info.curl}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h4>myadmin</h4>
-            </div>
-            <div class="card-body">
-                <a target="_blank" href="https://gitee.com/tpext/myadmin"><img src="https://gitee.com/tpext/myadmin/widgets/widget_card.svg?colors=393222,ebdfc1,fffae5,d8ca9f,393222,a28b40"></a>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-6">
-        <pre>
-            修改此页面
-                1.创建`app/admin/controller/Index.php`文件，
-                2.新建 dashbord()方法，可把此视图模板：
-                  `vendor/ichynul/tpextmyadmin/src/admin/view/index/welcome.html`
-                  复制到：`app/admin/view/index/dashbord.html`中使用。
-                3.修改[首页]菜单url指向`/admin/index/dashbord`。
-        </pre>
-    </div>
-</div>
-{notempty name="$admin_copyright"}
-<footer class="page-footer">
-    <span class="copyright">{$admin_copyright|raw}</span>
-</footer>
-{/notempty}
-  {/block}
+    <script type="importmap">
+        {
+            "imports": {
+                "vue": "/assets/tpextmyadmin/lib/vue.esm-browser.prod.js?v={$admin_assets_ver|default='1.0'}",
+                "naive-ui": "/assets/tpextmyadmin/lib/naive-ui.prod.min.js?v={$admin_assets_ver|default='1.0'}"
+            }
+        }
+    </script>
+    <script src="/assets/tpextmyadmin/lib/echarts.min.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="text/javascript"
+        src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="module">
+        import { createApp, ref, computed, onMounted, reactive } from 'vue';
+        import { darkTheme } from 'naive-ui';
+        import naive from 'naive-ui';
 
-  {block name="script"}
-<!--图表插件-->
-<script type="text/javascript" src="/assets/lightyearadmin/js/Chart.js" charset="utf-8"></script>
-<script type="text/javascript">
-    $(document).ready(function (e) {
-      var $dashChartBarsCnt = jQuery('.js-chartjs-bars')[0].getContext('2d'),
-        $dashChartLinesCnt = jQuery('.js-chartjs-lines')[0].getContext('2d');
+        const App = {
+            setup() {
+                // 响应式数据
+                const isDarkMode = ref(false);
 
-      var $dashChartBarsData = {
-        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-        datasets: [{
-          label: '注册用户',
-          borderWidth: 1,
-          borderColor: 'rgba(0,0,0,0)',
-          backgroundColor: 'rgba(51,202,185,0.5)',
-          hoverBackgroundColor: "rgba(51,202,185,0.7)",
-          hoverBorderColor: "rgba(0,0,0,0)",
-          data: [2500, 1500, 1200, 3200, 4800, 3500, 1500]
-        }]
-      };
-      var $dashChartLinesData = {
-        labels: ['2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'],
-        datasets: [{
-          label: '交易资金',
-          data: [20, 25, 40, 30, 45, 40, 55, 40, 48, 40, 42, 50],
-          borderColor: '#358ed7',
-          backgroundColor: 'rgba(53, 142, 215, 0.175)',
-          borderWidth: 1,
-          fill: false,
-          lineTension: 0.5
-        }]
-      };
+                // 计算属性
+                const theme = computed(() => {
+                    return isDarkMode.value ? darkTheme : null;
+                });
 
-      new Chart($dashChartBarsCnt, {
-        type: 'bar',
-        data: $dashChartBarsData
-      });
+                // 定义卡片数据数组
+                const statCards = ref([
+                    { title: '订单', icon: 'mdi-clipboard-list', value: 128, url: "{:url('/admin/shoporder/index')}" },
+                    { title: '用户', icon: 'mdi-account-group', value: 2560, url: "{:url('/admin/member/index')}" },
+                    { title: '退款', icon: 'mdi-cash-refund', value: 12, url: "" },
+                    { title: '待发货', icon: 'mdi-truck', value: 24, url: "" },
+                    { title: '提现', icon: 'mdi-currency-usd', value: 8, url: "" },
+                    { title: '总收入', icon: 'mdi-cash-multiple', value: '24,560', prefix: '¥', url: "" }
+                ]);
 
-      var myLineChart = new Chart($dashChartLinesCnt, {
-        type: 'line',
-        data: $dashChartLinesData,
-      });
-    });
-</script>
-{/block}
+                // 预定义更多颜色数组
+                const cardColors = ref([
+                    'card-bg-1', 'card-bg-2', 'card-bg-3', 'card-bg-4',
+                    'card-bg-5', 'card-bg-6', 'card-bg-7', 'card-bg-8',
+                    'card-bg-9', 'card-bg-10', 'card-bg-11', 'card-bg-12'
+                ]);
+
+                // 最新活动数据
+                const recentActivities = ref([
+                    { date: '2小时前', description: '创建了新报告' },
+                    { date: '3小时前', description: '更新了用户资料' },
+                    { date: '5小时前', description: '处理了订单#2023' },
+                    { date: '1天前', description: '登录系统' }
+                ]);
+
+                // 系统信息数据
+                const systemInfo = ref([
+                    { label: '服务器操作系统', value: '{$sys_info.os} / {$sys_info.domain}' },
+                    { label: 'PHP 版本', value: '{$sys_info.php_version}' },
+                    { label: '服务器环境', value: '{$sys_info.web_server}' },
+                    { label: 'Mysql 版本', value: '{$sys_info.mysql_version}' },
+                    { label: 'GD 版本', value: '{$sys_info.gdinfo}' },
+                    { label: '浏览器', value: '{$sys_info.user_agent} / {$sys_info.ip}' },
+                    { label: '文件上传限制', value: '{$sys_info.fileupload}' },
+                    { label: '最大占用内存', value: '{$sys_info.memory_limit}' },
+                    { label: '最大执行时间', value: '{$sys_info.max_ex_time}' },
+                    { label: '系统时间', value: '{$sys_info.sys_time}' },
+                    { label: 'Zlib支持', value: '{$sys_info.zlib}' },
+                    { label: 'Curl支持', value: '{$sys_info.curl}' }
+                ]);
+
+                // 初始化ECharts图表
+                const initCharts = () => {
+                    // 初始化用户统计图表
+                    const userChart = echarts.init(document.getElementById('userChart'));
+                    const userOption = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: [120, 200, 150, 80, 70, 110, 60],
+                            type: 'bar',
+                            smooth: true,
+                            itemStyle: {
+                                color: '#10b981'
+                            }
+                        }]
+                    };
+                    userChart.setOption(userOption);
+
+                    // 初始化销售统计图表
+                    const salesChart = echarts.init(document.getElementById('salesChart'));
+                    const salesOption = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: ['1月', '2月', '3月', '4月', '5月', '6月']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: [220, 180, 190, 230, 290, 330],
+                            type: 'line',
+                            itemStyle: {
+                                color: '#0ea5e9'
+                            }
+                        }]
+                    };
+                    salesChart.setOption(salesOption);
+
+                    // 监听窗口大小变化，自适应图表
+                    window.addEventListener('resize', () => {
+                        userChart.resize();
+                        salesChart.resize();
+                    });
+                };
+
+                // 初始化主题
+                const initTheme = () => {
+                    // 从localStorage中加载用户偏好
+                    if (localStorage.getItem('site_theme') === 'dark') {
+                        isDarkMode.value = true;
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        isDarkMode.value = false;
+                        document.documentElement.classList.remove('dark');
+                    }
+                };
+
+                // 监听主题更改消息
+                const listenThemeChange = () => {
+                    // 监听来自父窗口的主题更改消息
+                    window.addEventListener('message', (event) => {
+                        // 检查消息类型是否为更改主题
+                        if (event.data.type === 'change_theme') {
+                            // 获取主题值
+                            const themeValue = event.data.value || event.data.theme;
+                            // 根据主题值设置暗黑模式
+                            if (themeValue === 'dark') {
+                                isDarkMode.value = true;
+                                document.documentElement.classList.add('dark');
+                            } else if (themeValue === 'light') {
+                                isDarkMode.value = false;
+                                document.documentElement.classList.remove('dark');
+                            }
+                        }
+                    });
+                };
+
+                // 组件挂载后执行
+                onMounted(() => {
+                    document.getElementById('app').classList.remove('hidden');
+                    initTheme();
+                    initCharts();
+                    listenThemeChange();
+                    $('a.open-tab').click(function () {
+                        top.$.fn.multitabs().create(this, true);
+                        return false;
+                    });
+                });
+
+                // 暴露给模板的数据和方法
+                return {
+                    isDarkMode,
+                    theme,
+                    statCards,
+                    cardColors,
+                    recentActivities,
+                    systemInfo
+                };
+            }
+        };
+
+        const app = createApp(App);
+        app.use(naive);
+        app.mount('#app');
+    </script>
+</body>
+
+</html>

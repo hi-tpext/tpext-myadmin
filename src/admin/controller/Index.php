@@ -107,7 +107,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-key',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 5,
                         'name' => '管理员',
                         'url' => url('admin/index'),
@@ -115,7 +116,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-card-details',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 6,
                         'name' => '角色管理',
                         'url' => url('role/index'),
@@ -123,7 +125,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-multiple',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 7,
                         'name' => '扩展管理',
                         'url' => url('extension/index'),
@@ -172,7 +175,7 @@ class Index extends Controller
         if (preg_match('/(.+?[\/\\\]view[\/\\\]).+?/', $template, $mch)) {
             $config['view_path'] = $mch[1];
         }
-        
+
         return $this->fetch($template, [], $config);
     }
 
@@ -205,7 +208,7 @@ class Index extends Controller
         $sysInfo['domain'] = request()->host();
         $sysInfo['memory_limit'] = ini_get('memory_limit');
         $mysqlinfo = Db::query('select VERSION() as version');
-        $sysInfo['mysql_version'] = json_encode($mysqlinfo);
+        $sysInfo['mysql_version'] = $mysqlinfo[0]['version'];
         if (function_exists('gd_info')) {
             $gd = gd_info();
             $sysInfo['gdinfo'] = $gd['GD Version'];
@@ -444,7 +447,7 @@ class Index extends Controller
             if (in_array(3, $types)) {
 
                 $dirs = ['', 'assets', 'minify', ''];
-                
+
                 $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
@@ -573,18 +576,12 @@ class Index extends Controller
             if (!empty($config['login_page_view_path']) && file_exists($rootPath . $config['login_page_view_path'])) { //直接填写的模板路径
                 $template = $rootPath . $config['login_page_view_path'];
             } else { //下拉选择模板路径
-                $template = 'login1';
+                $template = 'login';
                 if (!empty($config['login_page_style'])) {
-                    if (is_numeric($config['login_page_style'])) { // 1,2,3,4 默认样式
-                        $template = 'login' . $config['login_page_style'];
-                    } else { //其他
-                        $template = $config['login_page_style'];
-
-                        $template = str_replace('__WWW__', $rootPath, $template);
-
-                        if (!is_file($template)) { //其他模板不存在，回到默认3
-                            $template = 'login3';
-                        }
+                    $template = $config['login_page_style'];
+                    $template = str_replace('__WWW__', $rootPath, $template);
+                    if (!is_file($template)) { //其他模板不存在，回到默认
+                        $template = 'login';
                     }
                 }
             }

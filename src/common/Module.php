@@ -27,8 +27,8 @@ class Module extends baseModule
 
     protected static $tpextmyadminInstalled = false;
 
-    protected $loginViews = ['1' => '风格1', '2' => '风格2', '3' => '风格3', '4' => '风格4'];
-    protected $indexViews = ['1' => '默认lightYearAdmin'];
+    protected $loginViews = ['0' => 'v5默认'];
+    protected $indexViews = ['1' => 'v5默认'];
 
     protected $assets = 'assets';
 
@@ -189,5 +189,19 @@ class Module extends baseModule
         //可以监听此事件，调用addLoginView($path, $title)添加视图
         ExtLoader::trigger('tpext_admin_find_login_views');
         return $this->loginViews;
+    }
+
+    /**
+     * 实例安装并启用，查找到之后调用
+     *
+     * @return $this
+     */
+    public function loaded()
+    {
+        //确保新版本样式正常
+        if (!is_file(App::getPublicPath() . '/assets/tpextmyadmin/css/login.css')) {
+            $this->copyAssets(true);
+        }
+        return $this;
     }
 }

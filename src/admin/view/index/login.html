@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,
+            maximum-scale=1, user-scalable=no">
+    <title>登录 - {$admin_page_title|default=''}</title>
+    <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}"
+        rel="stylesheet">
+    <link href="/assets/tpextmyadmin/css/login.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
+    {notempty name="$login_css_file"}
+    <link href="{$login_css_file}" rel="stylesheet">
+    {/notempty}
+    <script>
+        if ('{$login_in_top}' == '1' && window != top) {
+            top.location.replace("{:url('/admin/index/login')}");
+            document.querySelector('body').innerHTML =
+                '<div style="background:#fff;z-index:999;padding-top:88px;position:fixed;top:0px;height:10000px;width:100%;text-align:center;font-size:18px;"><p>跳转中...</p></div>';
+            if (!!(window.attachEvent && !window.opera)) {
+                document.execCommand("stop");
+            } else {
+                window.stop();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        (function () {
+            if (localStorage.getItem('site_theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <div id="app" class="hidden">
+        {:\\tpext\\common\\ExtLoader::trigger('admin_login_page')}
+        <div class="dot-pattern"></div>
+        <div class="login-container">
+            <div class="decoration decoration-1"></div>
+            <div class="decoration decoration-2"></div>
+
+            <div class="theme-toggle-container" style="text-align: right; margin-bottom: 1rem;">
+                <div class="tooltip">
+                    <button id="theme-toggle" class="theme-toggle-button" @click="toggleTheme"
+                        style="background: transparent; border: none; cursor: pointer; padding: 0.5rem; border-radius: 50%;">
+                        <i :class="isDarkMode ? 'mdi mdi-weather-partlycloudy' : 'mdi mdi-white-balance-sunny'"
+                            :style="{ fontSize: '20px', color: isDarkMode ? '#a5b4fc' : '#6366f1' }"></i>
+                    </button>
+                    <span class="tooltiptext">切换主题</span>
+                </div>
+            </div>
+
+            <div class="logo-area">
+                <div class="logo-image">
+                    <img src="" alt="{$admin_page_title|default=''}" @error="handleLogoError">
+                    <div class="logo-text-fallback">管</div>
+                </div>
+                <div class="logo-text">后台管理系统</div>
+            </div>
+
+            <form id="loginForm" @submit.prevent="handleLogin">
+                <div class="form-group">
+                    <label class="form-label" for="username">用户名</label>
+                    <i class="input-icon mdi mdi-account-circle"></i>
+                    <input type="text" id="username" class="form-input" placeholder="请输入用户名" required
+                        v-model="form.username" autocomplete="off" @input="clearError('username')">
+                    <div class="error-message" id="username-error">{{ errors.username }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <i class="input-icon mdi mdi-lock"></i>
+                    <input type="password" id="password" autocomplete="new-password" class="form-input"
+                        placeholder="请输入密码" required v-model="form.password" @input="clearError('password')">
+                    <div class="error-message" id="password-error">{{ errors.password }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="captcha">验证码</label>
+                    <i class="input-icon mdi mdi-shield-check"></i>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="captcha" autocomplete="off" class="form-input" placeholder="请输入验证码"
+                            required style="flex: 1;" v-model="form.captcha" @input="clearError('captcha')">
+                        <img id="captcha-img" :src="captchaUrl" @click="refreshCaptcha" alt="验证码"
+                            style="height: 40px; border-radius: 6px; cursor: pointer;">
+                    </div>
+                    <div class="error-message" id="captcha-error">{{ errors.captcha }}</div>
+                </div>
+
+                <button type="submit" class="login-button" :disabled="loading">
+                    {{ loading ? '登录中...' : '登录' }}
+                </button>
+            </form>
+            {notempty name="$admin_copyright"}
+            <div class="copyright">
+                {$admin_copyright|raw}
+            </div>
+            {/notempty}
+        </div>
+        {:\\tpext\\common\\ExtLoader::trigger('admin_login_box_footer')}
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "vue": "/assets/tpextmyadmin/lib/vue.esm-browser.prod.js?v={$admin_assets_ver|default='1.0'}"
+            }
+        }
+    </script>
+    <script type="text/javascript" src="/assets/tpextmyadmin/lib/axios.min.js?v={$admin_assets_ver|default='1.0'}">
+    </script>
+    <script type="text/javascript"
+        src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="text/javascript" src="/assets/tpextmyadmin/js/layer/layer.js?v={$admin_assets_ver|default='1.0'}">
+    </script>
+    <script type="module">
+        import { createApp, ref, reactive, onMounted } from 'vue';
+
+        const App = {
+            setup() {
+                const isDarkMode = ref(false);
+                const loading = ref(false);
+                const captchaUrl = ref("{:url('/admin/index/captcha')}?d=1");
+
+                // 表单数据
+                const form = reactive({
+                    username: '',
+                    password: '',
+                    captcha: ''
+                });
+
+                // 错误信息
+                const errors = reactive({
+                    username: '',
+                    password: '',
+                    captcha: ''
+                });
+
+                // 清除错误信息
+                const clearError = (field) => {
+                    errors[field] = '';
+                    document.getElementById(field + '-error').style.display = 'none';
+                };
+
+                // 处理Logo加载错误
+                const handleLogoError = () => {
+                    const logoContainer = document.querySelector('.logo-image');
+                    logoContainer.classList.remove('has-logo');
+                };
+
+                // 切换主题
+                const toggleTheme = () => {
+                    isDarkMode.value = !isDarkMode.value;
+                    document.documentElement.classList.toggle('dark', isDarkMode.value);
+                    localStorage.setItem('site_theme', isDarkMode.value ? 'dark' : 'light');
+                };
+
+                // 初始化主题
+                const initTheme = () => {
+                    // 从localStorage中加载用户偏好
+                    if (localStorage.getItem('site_theme') === 'dark') {
+                        isDarkMode.value = true;
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        isDarkMode.value = false;
+                        document.documentElement.classList.remove('dark');
+                    }
+                };
+
+                // 处理登录
+                const handleLogin = (e) => {
+                    e.preventDefault();
+
+                    // 简单验证
+                    let isValid = true;
+
+                    if (!form.username.trim()) {
+                        errors.username = '请输入用户名';
+                        document.getElementById('username-error').style.display = 'block';
+                        isValid = false;
+                    }
+
+                    if (!form.password.trim()) {
+                        errors.password = '请输入密码';
+                        document.getElementById('password-error').style.display = 'block';
+                        isValid = false;
+                    }
+
+                    if (!form.captcha.trim()) {
+                        errors.captcha = '请输入验证码';
+                        document.getElementById('captcha-error').style.display = 'block';
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+                        loading.value = true;
+
+                        axios({
+                            method: 'post',
+                            url: location.href,
+                            responseType: 'json',
+                            data: form,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            timeout: 10000,
+                        }).then(res => {
+                            let data = res.data || {};
+
+                            if (data.code) {
+                                layer.msg(data.msg || data.message || '登录成功');
+                                if (window == top || '{$login_in_top}' == '1' || !data.url) {
+                                    location.href = "{:url('/admin/index/index')}";
+                                }
+                                else {
+                                    location.href = data.url;
+                                }
+                            } else {
+                                layer.msg(data.msg || data.message || '登录失败');
+                                refreshCaptcha();
+                                loading.value = false;
+                            }
+                        }).catch(e => {
+                            console.log(e);
+                            layer.msg('网络错误');
+                            loading.value = false;
+                        });
+                    }
+                };
+
+                const refreshCaptcha = () => {
+                    captchaUrl.value += 1;
+                }
+
+                // 页面加载完成后初始化
+                onMounted(() => {
+                    // 初始化主题
+                    initTheme();
+                    document.getElementById('app').classList.remove('hidden');
+                    // 这里可以设置logo图片路径，如果没有设置则使用文字回退方案
+                    const logoImg = document.querySelector('.logo-image img');
+                    logoImg.src = '{$admin_login_logo}'; // 使用真实图片
+                    logoImg.onload = function () {
+                        const logoContainer = document.querySelector('.logo-image');
+                        logoContainer.classList.add('has-logo');
+                    };
+                });
+
+                return {
+                    isDarkMode,
+                    loading,
+                    form,
+                    errors,
+                    captchaUrl,
+                    clearError,
+                    handleLogoError,
+                    toggleTheme,
+                    handleLogin,
+                    refreshCaptcha,
+                };
+            }
+        };
+
+        const app = createApp(App);
+        app.mount('#app');
+    </script>
+    {:\\tpext\\common\\ExtLoader::trigger('admin_login_script')}
+</body>
+
+</html>

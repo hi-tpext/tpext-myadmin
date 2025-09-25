@@ -1,6 +1,10 @@
-# tpextmyadmin for ThinkPHP6
+# tpextmyadmin for ThinkPHP 6 / 8
 
-此版本 3.0 有所不同，没有强制依赖`ichynul/tpextbuilder`UI 库，需要自己选择 UI 添加依赖。
+此版本 3.0 有所不同
+
+- 1、使用vue3技术栈构建页面
+
+- 2、没有强制依赖`ichynul/tpextbuilder`UI 库，需要自己选择 UI 添加依赖。
 
 目前已支持以下 UI 库，替换`ichynul/tpextbuilder`的依赖：
 
@@ -18,7 +22,7 @@
 
 2、安装 UI 库，只能选择其中一个安装，否则会冲突：
 
-`composer require ichynul/tpext-vexipui` 或 `composer require ichynul/tpext-tinyvue` 或 `composer require ichynul/tpextbuilder:^3.9.1`
+`composer require ichynul/tpext-vexipui` 或 `composer require ichynul/tpext-tinyvue` 或 `composer require ichynul/tpextbuilder`
 
 对已有 3.0(tp6)项目，可编辑网站根目录下的`composer.json`文件升级
 

@@ -1,0 +1,381 @@
+/* 基础样式 */
+body {
+  margin: 0;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.page-loader {
+  position: absolute;
+  top: 10px;
+  left: calc(50% - 16px);
+  border: 1px solid transparent;
+  border-radius: 50%;
+  border-top: 1px solid #5e7ce0;
+  border-right: 1px solid #5e7ce0;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  margin: 10px auto;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  z-index: 999;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 布局样式 */
+.layout-header {
+  height: 64px;
+  padding: 0 20px;
+}
+
+.tab-bar-container {
+  height: 35px;
+  /* 固定tab栏高度 */
+  margin-top: 3px;
+  padding: 0 8px;
+  --n-close-size: 14px;
+}
+
+.tab-bar-container
+  .n-tabs
+  .n-tabs-nav.n-tabs-nav--card-type
+  .n-tabs-tab.n-tabs-tab--closable {
+  padding-right: 16px;
+}
+
+.tab-bar-container .n-tabs .n-tabs-tab .n-tabs-tab__close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 12px;
+  display: none;
+}
+
+.tab-bar-container .n-tabs .n-tabs-tab:hover .n-tabs-tab__close {
+  display: flex;
+}
+
+.layout-content {
+  padding: 0;
+  height: calc(100vh - 64px - 35px - 3px);
+  /* 减去顶部导航和tab栏的高度 */
+  overflow: hidden;
+}
+
+.tab-content-area {
+  height: 100%;
+  overflow: auto;
+}
+
+/* Logo样式 */
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #18a058;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px var(--primary-color-light, rgba(24, 160, 88, 0.3));
+}
+
+.logo-text {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color, #18a058) 0%,
+    var(--primary-color-hover, #52c41a) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Logo区域样式 */
+.logo-area {
+  height: 64px;
+}
+
+/* 菜单切换按钮样式 */
+.menu-toggle-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.menu-toggle-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 顶部导航菜单样式 */
+.top-menu-container {
+  flex: 1;
+  min-width: 0;
+  /* 允许容器收缩 */
+}
+
+.top-menu-container .n-menu.n-menu--horizontal {
+  border-bottom: none;
+  background: transparent;
+}
+
+.top-menu-container .n-menu-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  /* 限制菜单项最大宽度 */
+}
+
+.top-menu-container .n-menu-item-content {
+  padding: 0 16px;
+  /* 增加左右内边距 */
+}
+
+.top-menu-container .n-menu-item-content .n-menu-item-content__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.n-menu > .n-submenu[aria-expanded="true"] {
+  border-left: 2px solid var(--n-item-text-color-active);
+}
+
+/* iframe样式 */
+.iframe-container {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.iframe-loading {
+  opacity: 0.8;
+}
+
+.content-wrapper {
+  height: 100%;
+  overflow: auto;
+}
+
+/* 顶部导航栏样式 */
+.header-container {
+  height: 64px;
+  padding: 0 20px;
+}
+
+.breadcrumb-container {
+  transition: all 0.2s ease;
+  align-items: center;
+}
+
+.menu-toggle-container,
+.breadcrumb-nav-container {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+/* 设置面板样式 */
+.settings-panel {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e8e8e8;
+}
+
+.dark .settings-panel {
+  background: #1f1f1f;
+  border-color: #434343;
+}
+
+.setting-item {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dark .setting-item {
+  border-bottom-color: #434343;
+}
+
+.setting-label {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* 主题色选择器样式 */
+.theme-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-option {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #d9d9d9;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  border-color: #999;
+}
+
+/* 主题色CSS变量 */
+:root {
+  --primary-color: #6366f1;
+  --primary-color-hover: #818cf8;
+  --primary-color-light: #818cf810;
+  --primary-color-lighter: #818cf805;
+}
+
+.n-layout-sider .n-menu .n-menu-item-content {
+  --n-item-text-color: rgba(255, 255, 255, 0.82);
+  --n-item-icon-color: rgba(255, 255, 255, 0.82);
+  --n-arrow-color: rgba(255, 255, 255, 0.82);
+
+  --n-item-color-hover: var(--primary-color-light);
+  --n-item-text-color-hover: rgba(255, 255, 255, 0.82);
+  --n-item-icon-color-hover: rgba(255, 255, 255, 0.82);
+  --n-arrow-color-hover: rgba(255, 255, 255, 0.82);
+
+  --n-item-icon-color-collapsed: rgba(255, 255, 255, 0.82);
+}
+
+.top-menu-container .n-menu.n-menu--horizontal .n-menu-item-content {
+  padding: 0 5px;
+}
+
+/* 页面加载提示组件样式 */
+.loading-indicator {
+  position: fixed;
+  top: 1;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+.loading-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 解决 n-layout-scroll-container 溢出问题 */
+.n-layout-content .n-layout-scroll-container {
+  height: 100%;
+  overflow: hidden;
+}
+
+.user-avatar-container > a,
+.user-avatar-container > span {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* 响应式样式 */
+/* 平板设备 (768px 及以下) */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 16px;
+  }
+
+  .breadcrumb-container {
+    gap: 12px;
+  }
+
+  .user-avatar-container {
+    gap: 8px;
+  }
+
+  .user-avatar-container .hidden.sm\:inline {
+    display: none;
+  }
+}
+
+/* 手机设备 (640px 及以下) */
+@media (max-width: 640px) {
+  .header-container {
+    padding: 0 12px;
+  }
+
+  .breadcrumb-container {
+    gap: 8px;
+  }
+
+  .menu-toggle-container {
+    margin-right: 4px;
+  }
+
+  /* 隐藏用户名文字，只显示头像 */
+  .user-avatar-container span {
+    display: none;
+  }
+
+  /* 调整设置按钮间距 */
+  .settings-container {
+    margin-right: 8px;
+  }
+}
+
+/* 小手机设备 (480px 及以下) */
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0 8px;
+  }
+
+  .breadcrumb-container {
+    gap: 4px;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .tab-bar-container {
+    padding: 0 8px !important;
+    height: 40px;
+  }
+
+  /* 在小屏幕上进一步限制菜单项宽度 */
+  .top-menu-container .n-menu-item {
+    max-width: 100px;
+  }
+}

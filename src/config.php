@@ -21,7 +21,7 @@ return [
     'operation_log_catch' => ['POST', 'PUT', 'PATCH', 'DELETE'],
     'operation_log_fields_except' => '*:content',
     'index_page_style' => '',
-    'login_page_style' => '1',
+    'login_page_style' => '0',
     'login_page_view_path' => '',
     'index_top_menu' => 1,
     //配置描述
