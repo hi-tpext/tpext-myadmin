@@ -1,0 +1,534 @@
+html,
+body {
+  background: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 添加: 暗黑模式下的html, body样式 */
+html.dark,
+html.dark body {
+  background: #0f172a;
+}
+
+#app {
+  width: 100%;
+  max-width: 460px;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  left: -200px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* 添加: 暗黑模式下的body::before样式 */
+html.dark body::before {
+  opacity: 0.05;
+  background: linear-gradient(135deg, #4338ca, #6366f1);
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: -250px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #818cf8, #a5b4fc);
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* 添加: 暗黑模式下的body::after样式 */
+html.dark body::after {
+  opacity: 0.1;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+}
+
+/* 添加: tooltip样式 */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 80px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -40px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+/* 添加: 暗黑模式下的.login-container样式 */
+html.dark .login-container {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(30, 41, 59, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.logo-area {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #818cf8, #a5b4fc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.logo-image.has-logo img {
+  display: block;
+}
+
+.logo-image.has-logo .logo-text-fallback {
+  display: none;
+}
+
+.logo-image::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: rotate(45deg) translateX(-100%);
+  }
+
+  100% {
+    transform: rotate(45deg) translateX(100%);
+  }
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #4338ca;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 添加: 暗黑模式下的.logo-text样式 */
+html.dark .logo-text {
+  color: #e2e8f0;
+  -webkit-text-fill-color: #e2e8f0;
+  background: none;
+}
+
+.login-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+/* 添加: 暗黑模式下的.login-title样式 */
+html.dark .login-title {
+  color: #e2e8f0;
+}
+
+.login-title::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  color: #4338ca;
+  font-size: 14px;
+}
+
+/* 添加: 暗黑模式下的.form-label样式 */
+html.dark .form-label {
+  color: #a5b4fc;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem 0.55rem 2.25rem;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  background: rgba(241, 245, 255, 0.5);
+}
+
+/* 添加: 暗黑模式下的.form-input样式 */
+html.dark .form-input {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid #4f46e5;
+  color: #e2e8f0;
+}
+
+/* 添加: 暗黑模式下输入框在不同状态下的背景色 */
+html.dark .form-input:valid {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+html.dark .form-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #1e293b inset;
+  -webkit-text-fill-color: #e2e8f0;
+}
+
+/* 添加: Firefox浏览器自动填充样式兼容 */
+html.dark .form-input:-moz-ui-invalid {
+  background: rgba(15, 23, 42, 0.5);
+  color: #e2e8f0;
+}
+
+html.dark .form-input:-moz-autofill {
+  background: rgba(15, 23, 42, 0.5) !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .form-input:-moz-autofill-preview {
+  background: rgba(15, 23, 42, 0.5) !important;
+  color: #e2e8f0 !important;
+}
+
+/* 添加: Firefox浏览器自动填充样式增强兼容 */
+@-moz-document url-prefix() {
+  html.dark .form-input {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.dark .form-input:focus {
+    background: #1e293b !important;
+  }
+
+  /* Firefox自动填充时的特殊处理 */
+  html.dark .form-input::-moz-autofill {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.dark .form-input::-moz-autofill-preview {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #e2e8f0 !important;
+  }
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+  background: white;
+}
+
+/* 添加: 暗黑模式下的.form-input:focus样式 */
+html.dark .form-input:focus {
+  background: #1e293b;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+}
+
+/* 添加: 暗黑模式下输入框在填写内容后的背景色 */
+html.dark .form-input:not(:placeholder-shown) {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+/* 添加: Firefox浏览器额外的自动填充样式兼容 */
+@-moz-document url-prefix() {
+  html.dark .form-input {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.dark .form-input:focus {
+    background: #1e293b !important;
+  }
+}
+
+.input-icon {
+  position: absolute;
+  left: 10px;
+  top: 32px;
+  color: #818cf8;
+  font-size: 16px;
+}
+
+/* 添加: 暗黑模式下的.input-icon样式 */
+html.dark .input-icon {
+  color: #a5b4fc;
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.65rem;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加: 暗黑模式下的.login-button样式 */
+html.dark .login-button {
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.login-button:active {
+  background: linear-gradient(135deg, #4338ca, #4f46e5);
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
+}
+
+.login-button::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 20%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(25deg);
+  transition: all 0.6s;
+}
+
+.login-button:hover::after {
+  left: 140%;
+}
+
+.copyright,
+.copyright a {
+  font-size: 12px;
+  color: #666;
+  margin-top: 20px;
+}
+
+html.dark .copyright {
+  color: #e2e8f0;
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 0.4rem;
+  display: none;
+}
+
+/* 添加: 暗黑模式下的.error-message样式 */
+html.dark .error-message {
+  color: #f87171;
+}
+
+.decoration {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c7d2fe, #e0e7ff);
+  z-index: -1;
+}
+
+/* 添加: 暗黑模式下的.decoration样式 */
+html.dark .decoration {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  opacity: 0.2;
+}
+
+.decoration-1 {
+  top: -40px;
+  right: -10px;
+  width: 90px;
+  height: 90px;
+}
+
+.decoration-2 {
+  bottom: -30px;
+  left: -50px;
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #a5b4fc, #c7d2fe);
+}
+
+/* 添加: 暗黑模式下的.decoration-2样式 */
+html.dark .decoration-2 {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+}
+
+/* 添加: 暗黑模式切换按钮样式 */
+.theme-toggle-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-button:hover {
+  background: rgba(129, 140, 248, 0.1);
+}
+
+html.dark .theme-toggle-button:hover {
+  background: rgba(129, 140, 248, 0.2);
+}
+/* chrome */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 100px white inset;
+  box-shadow: 0 0 0px 100px white inset;
+}
+/* firefox */
+input {
+  filter: none !important;
+}
+
+input:autofill {
+  background: #fff; /* or any other */
+}
+
+@media (max-width: 480px) {
+  html,
+  body {
+    overflow: hidden;
+  }
+
+  #app {
+    max-width: 350px;
+  }
+
+  .login-container {
+    margin: 0.5rem;
+    padding: 1rem;
+    max-width: 100%;
+    width: calc(100% - 1rem);
+    min-height: auto;
+    box-sizing: border-box;
+  }
+
+  body::before {
+    width: 150px;
+    height: 150px;
+    top: -50px;
+    left: -50px;
+  }
+
+  body::after {
+    width: 200px;
+    height: 200px;
+    bottom: -80px;
+    right: -80px;
+  }
+}

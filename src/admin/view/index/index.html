@@ -1,649 +1,300 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1,
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,
       maximum-scale=1, user-scalable=no" />
-  <title>首页 - {$admin_page_title|default=''}</title>
-  <link rel="icon" href="{$admin_favicon|default=''}" type="image/ico">
-  <meta name="description" content="{$admin_page_description|default=''}">
-  <link href="/assets/lightyearadmin/css/bootstrap.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
-  <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}"
-    rel="stylesheet">
-  <link href="/assets/lightyearadmin/js/bootstrap-multitabs/multitabs.min.css?v={$admin_assets_ver|default='1.0'}"
-    rel="stylesheet">
-  <link href="/assets/lightyearadmin/css/style.min.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
-  <link href="/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css?v={$admin_assets_ver|default='1.0'}"
-    rel="stylesheet">
-  <style>
-    .lyear-layout-header .navbar {
-      min-height: 50px;
-    }
-
-    .topbar-right>li>a {
-      padding: 2px 0px 2px 15px;
-    }
-
-    .icon-palette {
-      height: 50px;
-      line-height: 50px;
-    }
-
-    .topbar {
-      min-height: 50px;
-    }
-
-    .img-avatar-44 {
-      width: 44px;
-      height: 44px;
-      line-height: 44px;
-    }
-
-    .lyear-layout-content {
-      padding-top: 50px;
-      padding-left: 210px;
-    }
-
-    .lyear-layout-header {
-      padding-left: 210px;
-    }
-
-    .nav-tabs.nav>li>a {
-      padding: 5px 10px;
-    }
-
-    .mt-nav-tools-right .dropdown-toggle {
-      padding-right: 40px;
-    }
-
-    .mt-dropdown .caret {
-      top: 17px;
-    }
-
-    .nav-drawer>li>a {
-      padding-bottom: 10px;
-      padding-top: 10px;
-    }
-
-    .lyear-layout-sidebar {
-      width: 210px;
-    }
-
-    [data-logobg*='color_'] .sidebar-header img,
-    [data-theme='translucent'] .sidebar-header img {
-      margin: 0;
-      min-height: 50px;
-      left: 0;
-    }
-
-    .mt-close-tab {
-      top: 11px;
-    }
-
-    .lyear-layout-sidebar-scroll {
-      height: calc(100% - 50px);
-    }
-
-    .topbar-right>li>a.link {
-      display: block;
-      height: 50px;
-      line-height: 50px;
-      font-size: 1.5em;
-      cursor: pointer;
-      text-align: center;
-      padding: 0 5px;
-    }
-
-    .nav {
-      padding-left: 0;
-      margin-bottom: 0;
-      list-style: none;
-    }
-
-    .navbar-top-links li {
-      display: inline-block;
-    }
-
-    #top-menu-out li>a {
-      padding: 15px 10px;
-      color: #fff;
-    }
-
-    #top-menu-out li.current a,
-    #top-menu-out li.current a:hover,
-    #top-menu-out li.current a:focus {
-      text-decoration: none;
-      background-color: #728291;
-      color: #fff;
-    }
-
-    #top-menu-out li a:hover,
-    #top-menu-out li a:focus {
-      background-color: #dae0e6;
-      color: #728291;
-    }
-
-    .navbar-header {
-      width: 100%;
-    }
-
-    /* 
-    .navbar-header.has-top-meun {
-        background: #fff;
-    } */
-
-    .navbar-top-links li.navbar-right {
-      margin-right: -15px;
-    }
-
-    .navbar-right a {
-      color: #999c9e;
-    }
-
-    .sub-nav-item.preview li>a {
-      color: #5d636f;
-    }
-
-    /** ----------------------------------
-    * 响应式处理
-    -------------------------------------- */
-    @media (max-width: 1024px) {
-
-      .lyear-layout-header,
-      .lyear-layout-content {
-        padding-left: 0;
-      }
-
-      .lyear-layout-sidebar-close .lyear-layout-header,
-      .lyear-layout-sidebar-close .lyear-layout-content {
-        padding-left: 0px;
-      }
-
-      .sidebar-header img {
-        left: -220px;
-      }
-    }
-
-    /* 标签页 */
-    .mt-nav-bar .nav-tabs {
-      border-bottom-color: #ebebeb;
-      margin-bottom: 1rem;
-    }
-
-    .mt-nav-bar .nav-tabs>li>a {
-      margin-right: 0px;
-      border: none;
-      border-bottom: 1px solid transparent;
-      border-radius: 0;
-      color: #8b95a5;
-      -webkit-transition: 0.5s;
-      transition: 0.5s;
-    }
-
-    .mt-nav-bar .nav-tabs>li.active>a,
-    .mt-nav-bar .nav-tabs>li.active>a:focus,
-    .mt-nav-bar .nav-tabs>li.active>a:hover {
-      color: #4d5259;
-      border: none;
-      background-color: transparent;
-      border-bottom: 1px solid #33cabb;
-    }
-
-    .mt-nav-bar .nav-tabs.nav>li>a:hover,
-    .mt-nav-bar .nav-tabs.nav>li>a:focus {
-      text-decoration: none;
-      background-color: transparent;
-      border-bottom-color: #33cabb;
-    }
-
-    .mt-nav-bar .nav-tabs.nav-justified>.active>a,
-    .mt-nav-bar .nav-tabs.nav-justified>.active>a:focus,
-    .mt-nav-bar .nav-tabs.nav-justified>.active>a:hover {
-      color: #4d5259;
-      border: none;
-      border-bottom: 1px solid #33cabb;
-    }
-
-    [data-theme="dark"] .mt-nav-bar .mt-nav
-    {
-      background-color: #303243;
-      color: #8c909a;
-    }
-    [data-theme="dark"] .mt-nav-bar .nav-tabs > li.active > a,
-    [data-theme="dark"] .mt-nav-bar .nav-tabs > li.active > a:focus, 
-    [data-theme="dark"] .mt-nav-bar .nav-tabs > li.active > a:hover
-    {
-      color: #ebebeb;
-    }
-
-    [data-theme="dark"] .mt-nav-bar .mt-nav .nav-tabs
-    {
-      border-color: #303243;
-    }
-
-    @media (min-width: 768px) {
-      .mt-nav-bar .nav-tabs.nav-justified>li>a {
-        border-bottom-color: #ebebeb;
-        -webkit-border-radius: 0px;
-        border-radius: 0px;
-      }
-    }
-  </style>
+    <title>首页 - {$admin_page_title|default=''}</title>
+    <meta name="description" content="{$admin_page_description|default=''}">
+    <link rel="stylesheet" href="/assets/tpextmyadmin/css/styles.css?v={$admin_assets_ver|default='1.0'}">
+    <link rel="stylesheet" href="/assets/tpextmyadmin/lib/tailwind.min.css?v={$admin_assets_ver|default='1.0'}">
+    <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}"
+        rel="stylesheet">
 </head>
 
 <body>
-  <div class="lyear-layout-web">
-    <div class="lyear-layout-container">
-      <!--左侧导航-->
-      <aside class="lyear-layout-sidebar">
-
-        <!-- logo -->
-        <div id="logo" class="sidebar-header">
-          <a href="#">
-            {$admin_logo|raw|default='admin'}
-          </a>
-        </div>
-        <div class="lyear-layout-sidebar-scroll">
-
-          <nav id="side-menu-out">
-
-          </nav>
-
-          <div class="sidebar-footer">
-          </div>
-        </div>
-
-      </aside>
-      <!--End 左侧导航-->
-
-      <!--头部信息-->
-      <header class="lyear-layout-header">
-
-        <nav class="navbar navbar-default">
-          <div class="topbar">
-
-            <div class="topbar-left">
-              <div class="lyear-aside-toggler">
-                <span class="lyear-toggler-bar"></span>
-                <span class="lyear-toggler-bar"></span>
-                <span class="lyear-toggler-bar"></span>
-              </div>
-              <!--扩展左侧链接(不再支持topbar_left_links)-->
-              <ul class="nav navbar-top-links" id="top-menu-out">
-
-              </ul>
-            </div>
-
-            <ul class="topbar-right">
-              <li class="dropdown dropdown-profile">
-                <a href="javascript:void(0)" data-toggle="dropdown">
-                  <img class="img-avatar img-avatar-44 m-r-10"
-                    src="{$admin_user.avatar|default='/assets/lightyearadmin/images/no-avatar.jpg'}"
-                    alt="{$admin_user.name|default='Tpext'}" />
-                  <span>{$admin_user.name|default='Tpext'}<span class="caret"></span></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  <li> <a class="open-tab" href="{:url('/admin/index/profile')}"><i class="mdi
-                          mdi-account"></i> 个人信息</a>
-                  </li>
-                  <li> <a class="open-tab" href="{:url('/admin/index/changepwd')}"><i class="mdi
-                          mdi-lock-outline"></i>
-                      修改密码</a> </li>
-                  {if condition="checkUrl('/admin/index/clearcache')"}
-                  <li> <a class="open-tab" href="{:url('/admin/index/clearcache')}"><i class="mdi
-                    mdi-delete"></i>清空缓存</a>
-                  </li>
-                  {/if}
-                  <li class="divider"></li>
-                  <li> <a href="#" onclick="logout();"><i class="mdi
-                          mdi-logout-variant"></i>注销登录</a> </li>
-                </ul>
-              </li>
-              <!--切换主题配色-->
-              <li class="dropdown dropdown-skin">
-                <span data-toggle="dropdown" class="icon-palette"><i class="mdi mdi-palette"></i></span>
-                <ul class="dropdown-menu dropdown-menu-right" data-stopPropagation="true">
-                  <li class="drop-title"><p>主题</p></li>
-                  <li class="drop-skin-li clearfix">
-                    <span class="inverse">
-                      <input type="radio" name="site_theme" value="default" id="site_theme_1" checked>
-                      <label for="site_theme_1"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="site_theme" value="dark" id="site_theme_2">
-                      <label for="site_theme_2"></label>
-                    </span>
-                  </li>  
-                  <li class="drop-title">
-                    <p>LOGO</p>
-                  </li>
-                  <li class="drop-skin-li clearfix">
-                    <span class="inverse">
-                      <input type="radio" name="logo_bg" value="color_1" id="logo_bg_1">
-                      <label for="logo_bg_1"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_2" id="logo_bg_2">
-                      <label for="logo_bg_2"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_3" id="logo_bg_3">
-                      <label for="logo_bg_3"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_4" id="logo_bg_4">
-                      <label for="logo_bg_4"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_5" id="logo_bg_5">
-                      <label for="logo_bg_5"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_6" id="logo_bg_6">
-                      <label for="logo_bg_6"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_7" id="logo_bg_7">
-                      <label for="logo_bg_7"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="logo_bg" value="color_8" id="logo_bg_8" checked>
-                      <label for="logo_bg_8"></label>
-                    </span>
-                  </li>
-                  <li class="drop-title">
-                    <p>头部</p>
-                  </li>
-                  <li class="drop-skin-li clearfix">
-                    <span class="inverse">
-                      <input type="radio" name="header_bg" value="color_1" id="header_bg_1">
-                      <label for="header_bg_1"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_2" id="header_bg_2">
-                      <label for="header_bg_2"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_3" id="header_bg_3">
-                      <label for="header_bg_3"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_4" id="header_bg_4">
-                      <label for="header_bg_4"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_5" id="header_bg_5">
-                      <label for="header_bg_5"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_6" id="header_bg_6">
-                      <label for="header_bg_6"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_7" id="header_bg_7">
-                      <label for="header_bg_7"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="header_bg" value="color_8" id="header_bg_8" checked>
-                      <label for="header_bg_8"></label>
-                    </span>
-                  </li>
-                  <li class="drop-title">
-                    <p>侧边栏</p>
-                  </li>
-                  <li class="drop-skin-li clearfix">
-                    <span class="inverse">
-                      <input type="radio" name="sidebar_bg" value="color_1" id="sidebar_bg_1">
-                      <label for="sidebar_bg_1"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_2" id="sidebar_bg_2">
-                      <label for="sidebar_bg_2"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_3" id="sidebar_bg_3">
-                      <label for="sidebar_bg_3"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_4" id="sidebar_bg_4">
-                      <label for="sidebar_bg_4"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_5" id="sidebar_bg_5">
-                      <label for="sidebar_bg_5"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_6" id="sidebar_bg_6">
-                      <label for="sidebar_bg_6"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_7" id="sidebar_bg_7">
-                      <label for="sidebar_bg_7"></label>
-                    </span>
-                    <span>
-                      <input type="radio" name="sidebar_bg" value="color_8" id="sidebar_bg_8" checked>
-                      <label for="sidebar_bg_8"></label>
-                    </span>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a title="打开首页" class="link" href="/" target="_blank"><i class="mdi mdi-home"></i></a>
-              </li>
-              <!--
-              扩展右侧链接
-              ****************** tags.php注册 ********************
-              'topbar_right_links' => [
-                'app\\common\\behavior\\RightLinks'
-              ],
-              ****************** tags.php注册 ********************
-              class RightLinks
-              {
-                  public function run()
-                  {
-                      echo '<li><a href="xxx">我的链接</a></li>';
-                  }
-              }
-              -->
-              {:\\tpext\\common\\ExtLoader::trigger('topbar_right_links')}
-              <!--切换主题配色-->
-            </ul>
-
-          </div>
-        </nav>
-
-      </header>
-      <!--End 头部信息-->
-
-      <!--页面主要内容-->
-      <main class="lyear-layout-content">
-
-        <div id="iframe-content"></div>
-
-      </main>
-      <!--End 页面主要内容-->
-    </div>
-  </div>
-  <script type="text/javascript" src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript" src="/assets/lightyearadmin/js/bootstrap.min.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript"
-    src="/assets/lightyearadmin/js/perfect-scrollbar.min.js?v={$admin_assets_ver|default='1.0'}" charset="utf-8">
-    </script>
-  <script type="text/javascript"
-    src="/assets/lightyearadmin/js/bootstrap-multitabs/multitabs.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8">
-    </script>
-  <script type="text/javascript" src="/assets/tpextbuilder/js/layer/layer.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript"
-    src="/assets/lightyearadmin/js/bootstrap-notify.min.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript"
-    src="/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript"
-    src="/assets/lightyearadmin/js/jquery.lyear.loading.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript" src="/assets/lightyearadmin/js/lightyear.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-  <script type="text/javascript" src="/assets/lightyearadmin/js/index.min.js?v={$admin_assets_ver|default='1.0'}"
-    charset="utf-8"></script>
-
-  <script>
-    // 选项卡
-    $('#iframe-content').multitabs({
-      iframe: true,
-      nav: {
-        backgroundColor: localStorage.getItem('site_theme') == 'dark' ? '#222437' : '#ffffff',
-        maxTabs: 35, // 选项卡最大值
-      },
-      init: [{
-        type: 'main',
-        title: '{$dashbord.name}',
-        url: "{$dashbord.url}"
-      }]
-    });
-    /**
-     * 菜单
-     * @param data 菜单JSON数据
-     *        id 菜单唯一ID
-     *        name 菜单名称
-     *        url 菜单链接地址
-     *        icon 图标
-     *        pid  父级ID
-     *        is_out 是否外链0否|1是,外链a标签没有class='multitabs'
-     *        is_home 是否首页
-     */
-
-    var hasTopMenu = '{$index_top_menu}' == '1';
-
-    var setSidebar = function (data) {
-      if (data.length == 0) {
-        return false;
-      }
-      var treeObj = treeData(data, 'id', 'pid', 'children');
-      if (hasTopMenu) {
-        $('.navbar-header').addClass('has-top-meun');
-
-        for (var i = 0; i < treeObj.length; i++) {
-          var children = treeObj[i].children;
-          if (!children || !children.length) {
-            if (treeObj[i].url && treeObj[i].url != '#') {
-              children = [treeObj[i]];
+    <script type="text/javascript">
+        (function () {
+            if (localStorage.getItem('site_theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.querySelector('body').style.background = 'rgb(16, 16, 20)';
+            } else {
+                document.documentElement.classList.remove('dark');
             }
-          }
-          var html = children ? createMenu(children, 0, treeObj[i].id) : '';
-          if (!treeObj[i].is_home) {
-            $('#top-menu-out').append('<li data-nav="' + treeObj[i].id + '" class="nav-item ' + (i == 0 ? 'current' : '') + '"><a class="link" href="#"><i class="' + treeObj[i].icon + '"></i>' + treeObj[i].name + '</a></li>');
-          }
-          $('#side-menu-out').append('<ul id="sub-nav-' + treeObj[i].id + '" class="nav nav-drawer sub-nav-item sidebar-main ' + (i == 0 ? '' : ' hidden') + '">' + html + '</ul>');
+        })();
+    </script>
+    <div class="page-loader" id="page-loader"></div>
+    <div id="app" class="hidden">
+        <!-- 使用n-config-provider作为根元素 -->
+        <n-config-provider :theme="theme" :theme-overrides="themeOverrides">
+            <!-- 页面加载提示组件 -->
+            <div id="loading-indicator" class="loading-indicator hidden">
+                <n-progress type="line" :height="2" color="var(--primary-color)" :percentage="loadingProgress"
+                    :show-indicator="false"></n-progress>
+            </div>
+            <!-- 全局设置Drawer -->
+            <n-drawer v-model:show="showSettingsDrawer" :width="360" placement="right">
+                <n-drawer-content title="系统设置" :closable="true">
+                    <div class="settings-content p-4 space-y-8">
+                        <!-- 布局设置 -->
+                        <div class="setting-section">
+                            <h3
+                                class="setting-title text-base font-semibold setting-text-primary mb-4 flex items-center">
+                                <n-icon size="18"
+                                    class="mr-3 text-blue-500 flex items-center justify-center mdi mdi-view-dashboard"></n-icon>
+                                <span class="leading-none">布局模式</span>
+                            </h3>
+                            <div class="ml-6">
+                                <n-radio-group v-model:value="layoutMode" @update:value="handleLayoutChange"
+                                    size="medium">
+                                    <n-space vertical size="large">
+                                        <n-radio value="sidebar">
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-medium">侧边栏布局</span>
+                                                <span class="text-xs mt-1">菜单在左侧，适合宽屏使用</span>
+                                            </div>
+                                        </n-radio>
+                                        <n-radio value="top-nav">
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-medium">顶部导航布局</span>
+                                                <span class="text-xs mt-1">菜单在顶部，适合窄屏使用</span>
+                                            </div>
+                                        </n-radio>
+                                    </n-space>
+                                </n-radio-group>
+                            </div>
+                        </div>
+
+                        <!-- 分割线 -->
+                        <n-divider></n-divider>
+
+                        <!-- 主题色设置 -->
+                        <div class="setting-section">
+                            <h3
+                                class="setting-title text-base font-semibold setting-text-primary mb-4 flex items-center">
+                                <n-icon size="18"
+                                    class="mr-3 text-purple-500 flex items-center justify-center mdi mdi-palette"></n-icon>
+                                <span class="leading-none">主题色彩</span>
+                            </h3>
+                            <div class="ml-6">
+                                <div class="grid grid-cols-4 gap-4">
+                                    <div v-for="color in themeColors" :key="color.key"
+                                        class="flex flex-col items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                        :class="{
+                                            'border-gray-200': currentThemeColor !== color.key,
+                                            'border-blue-400 ring-2 ring-blue-200': currentThemeColor === color.key
+                                        }" @click="handleThemeColorChange(color.key)">
+                                        <div class="w-10 h-10 rounded-full mb-3 shadow-md border-2 border-white"
+                                            :style="{ backgroundColor: color.primary }"></div>
+                                        <span class="text-xs font-medium text-center leading-tight">{{
+                                            color.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 分割线 -->
+                        <n-divider></n-divider>
+
+                        <!-- 外观模式设置 -->
+                        <div class="setting-section">
+                            <h3
+                                class="setting-title text-base font-semibold setting-text-primary mb-4 flex items-center">
+                                <n-icon size="18"
+                                    class="mr-3 text-orange-500 flex items-center justify-center mdi mdi-theme-light-dark"></n-icon>
+                                <span class="leading-none">外观模式</span>
+                            </h3>
+                            <div class="ml-6">
+                                <div class="rounded-xl p-4 border transition-all duration-200">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="text-3xl">{{ isDarkMode ? '🌙' : '☀️' }}</div>
+                                            <div class="flex flex-col">
+                                                <div class="text-sm font-semibold">
+                                                    {{ isDarkMode ? '夜间模式' : '白天模式' }}
+                                                </div>
+                                                <div class="text-xs mt-1">
+                                                    {{ isDarkMode ? '保护眼睛，适合夜间使用' : '明亮清晰，适合白天使用' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <n-switch v-model:value="isDarkMode" @update:value="handleThemeChange"
+                                            size="large" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </n-drawer-content>
+            </n-drawer>
+            <n-layout style="height: 100vh;">
+                <n-layout has-sider style="height: 100%;">
+                    <!-- 左侧统一区域：Logo + 菜单 -->
+                    <n-layout-sider :bordered="true" collapse-mode="width" :collapsed-width="64" :width="220"
+                        :collapsed="collapsed" :show-trigger="false" style="height: 100%;">
+                        <!-- Logo区域 -->
+                        <div class="logo-area flex items-center justify-center space-x-3">
+                            <!-- Logo图片（始终显示） -->
+                            <div
+                                class="logo-image w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                                {:mb_substr($admin_page_title, 0, 1)}
+                            </div>
+
+                            <!-- 展开时显示文字（图片右侧） -->
+                            <span class="logo-text text-lg font-bold"
+                                v-show="!collapsed">{$admin_page_title|default='admin'}</span>
+                        </div>
+
+                        <!-- 菜单区域 -->
+                        <div style="height: calc(100% - 64px); overflow-y: auto;">
+                            <n-menu v-if="!loading" v-model:value="activeKey" :collapsed="collapsed" :icon-size="14"
+                                :root-indent="25" :indent="25" :accordion="true" :collapsed-width="64"
+                                :collapsed-icon-size="18" :options="sideMenuOptions"
+                                @update:value="handleMenuSelect"></n-menu>
+                            <div v-else style="padding: 20px; text-align: center;">
+                                <n-spin size="small"></n-spin>
+                                <div class="loading-text" style="margin-top: 8px; font-size: 12px;">加载中...</div>
+                            </div>
+                        </div>
+                    </n-layout-sider>
+
+                    <!-- 右侧区域 -->
+                    <n-layout style="height: 100%;">
+                        <!-- 顶部导航栏（优化版） -->
+                        <n-layout-header class="header-container flex items-center justify-between" :bordered="true">
+                            <!-- 左侧区域：菜单切换按钮 + 面包屑导航 -->
+                            <div class="breadcrumb-container flex items-center space-x-4">
+                                <!-- 菜单切换按钮 -->
+                                <div class="menu-toggle-container flex items-center">
+                                    <n-button text @click="toggleMenu"
+                                        class="transition-colors duration-200 p-2 rounded-md"
+                                        style="display: flex; align-items: center; height: 32px;">
+                                        <n-icon size="16"
+                                            :class="collapsed ? 'mdi mdi-menu' : 'mdi mdi-format-align-left'"></n-icon>
+                                    </n-button>
+                                </div>
+                                <!-- 菜单切换按钮 -->
+                                <!-- 面包屑导航区域 -->
+                                <div class="breadcrumb-nav-container flex items-center" v-if="layoutMode !== 'top-nav'"
+                                    v-show="currentTabBreadcrumb.length > 0" style="height: 32px;">
+                                    <n-breadcrumb>
+                                        <n-breadcrumb-item v-for="item in currentTabBreadcrumb" :key="item"
+                                            class="font-medium">
+                                            {{ item }}
+                                        </n-breadcrumb-item>
+                                    </n-breadcrumb>
+                                </div>
+                                <!-- 一级菜单 -->
+                                <div class="top-menu-container" v-if="layoutMode === 'top-nav'">
+                                    <n-menu v-if="!loading" mode="horizontal" v-model:value="activeKey"
+                                        :options="topMenuOptions" :icon-size="14"
+                                        @update:value="handleMenuSelect"></n-menu>
+                                </div>
+                            </div>
+
+                            <!-- 右侧区域：设置 + 用户 -->
+                            <div class="user-avatar-container flex items-center">
+                                {:\\tpext\\common\\ExtLoader::trigger('topbar_right_links')}
+                                <!-- 首页按钮 -->
+                                <a target="_blank" href="/" title="首页">
+                                    <n-icon size="18" class="mdi mdi-home"></n-icon>
+                                </a>
+                                {if condition="checkUrl('/admin/index/clearcache')"}
+                                <!-- 清除缓存按钮 -->
+                                <a class="open-tab" href="{:url('/admin/index/clearcache')}" title="清除缓存">
+                                    <n-icon size="18" class="mdi mdi-delete"></n-icon>
+                                </a>
+                                {/if}
+                                <!-- 统一设置区域 -->
+                                <a @click="showSettingsDrawer = true" title="设置">
+                                    <n-icon size="18" class="mdi mdi-settings"></n-icon>
+                                </a>
+                                <!-- 用户头像下拉菜单区域 -->
+                                <div class="user-dropdown-container">
+                                    <n-dropdown :options="userOptions" @select="handleUserSelect">
+                                        <n-button text class="flex items-center space-x-3 px-3 py-2 rounded-lg">
+                                            <div
+                                                class="logo-image w-10 h-10 overflow-hidden flex items-center justify-center">
+                                                <img class="img-avatar"
+                                                    src="{$admin_user.avatar|default='/assets/lightyearadmin/images/no-avatar.jpg'}"
+                                                    alt="{$admin_user.name|default='Tpext'}" />
+                                            </div>
+                                            <span class="font-medium">{$admin_user.name|default='Tpext'}</span>
+                                        </n-button>
+                                    </n-dropdown>
+                                </div>
+                            </div>
+                        </n-layout-header>
+
+                        <!-- Tab页签区域 -->
+                        <div class="tab-bar-container flex items-center">
+                            <!-- 左侧滚动按钮 -->
+                            <n-button text class="p-2 rounded-md transition-colors duration-200"
+                                @click="scrollTabsLeft">
+                                <n-icon size="18" class="mdi mdi-chevron-left"></n-icon>
+                            </n-button>
+
+                            <n-tabs v-model:value="activeTabKey" type="card" size="small" :closable="true"
+                                @close="handleTabClose" @update:value="handleTabChange" @before-leave="handleTabLeave"
+                                class="flex-grow overflow-hidden">
+                                <n-tab v-for="tab in openTabs" :key="tab.key" :name="tab.key" :tab="tab.title"
+                                    :closable="tab.closable" @dblclick="handleTabDblClick"
+                                    @contextmenu.prevent="handleTabContextMenu($event)">
+                                </n-tab>
+                            </n-tabs>
+
+                            <!-- 右侧滚动按钮 -->
+                            <n-button text class="p-2 rounded-md transition-colors duration-200"
+                                @click="scrollTabsRight">
+                                <n-icon size="18" class="mdi mdi-chevron-right"></n-icon>
+                            </n-button>
+                        </div>
+
+                        <!-- 主内容区 -->
+                        <n-layout-content class="layout-content">
+                            <!-- Tab内容区域 -->
+                            <div class="tab-content-area" v-if="openTabs.length > 0">
+                                <div class="content-wrapper" v-for="tab in openTabs" :key="tab.key"
+                                    v-show="activeTabKey === tab.key">
+                                    <!-- iframe 外部页面 -->
+                                    <iframe :src="tab.url" class="iframe-container" frameborder="0"
+                                        @load="handleIframeLoad(tab.key)" @error="handleIframeError(tab.key)"
+                                        allowfullscreen></iframe>
+                                </div>
+                            </div>
+
+                            <!-- 无标签页时的默认显示 -->
+                            <div v-else class="tab-content-area" style="text-align: center;">
+                                <n-spin size="large"></n-spin>
+                            </div>
+                        </n-layout-content>
+                    </n-layout>
+                </n-layout>
+            </n-layout>
+            <!-- 右键菜单 -->
+            <n-dropdown :show="showTabContextMenu" :x="tabContextMenuX" :y="tabContextMenuY"
+                :options="tabContextMenuOptions" @clickoutside="showTabContextMenu = false"
+                @select="handleTabContextSelect" />
+        </n-config-provider>
+    </div>
+    <script type="importmap">
+        {
+            "imports": {
+                "vue": "/assets/tpextmyadmin/lib/vue.esm-browser.prod.js?v={$admin_assets_ver|default='1.0'}",
+                "naive-ui": "/assets/tpextmyadmin/lib/naive-ui.prod.min.js?v={$admin_assets_ver|default='1.0'}"
+            }
         }
-
-        $('body').on('click', '#top-menu-out li.nav-item', function () {
-          if ($(this).hasClass('current')) {
-            return false;
-          }
-          $('#top-menu-out li.current').removeClass('current');
-          $(this).addClass('current');
-          //
-          $('#side-menu-out ul.sub-nav-item').addClass('hidden').removeClass('preview');
-          $('#sub-nav-' + $(this).data('nav')).removeClass('hidden').removeClass('preview');
-        });
-
-        $("#top-menu-out li.nav-item").hover(function () {
-          if ($(this).hasClass('current')) {
-            return false;
-          }
-          $('#sub-nav-' + $(this).data('nav')).removeClass('hidden').addClass('preview');
-        }, function () {
-          if ($(this).hasClass('current')) {
-            return false;
-          }
-          $('#sub-nav-' + $(this).data('nav')).addClass('hidden').removeClass('preview');
-        });
-      }
-      else {
-        var html = createMenu(treeObj, 0, 0);
-        $('#side-menu-out').append('<ul class="nav nav-drawer">' + html + '</ul>');
-      }
-    }
-
-    var createMenu = function (data, deep) {
-
-      deep += 1;
-      var menu_body = deep > 1 ? '<ul class="nav nav-subnav">' : '';
-
-      for (var i = 0; i < data.length; i++) {
-        var iframe_class = data[i].is_out == 1 ? '' : 'class="multitabs"';
-
-        //icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '';
-        var icon_div = data[i].pid == 0 ? '<i class="' + data[i].icon + '"></i>' : '<i class="' + data[i].icon +
-          '"></i>&nbsp;';
-        var selected = (data[i].pid == 0) && (data[i].is_home == 1) ? 'active' : '';
-        var menuName = data[i].pid == 0 ? '<span>' + data[i].name + '</span>' : '<span>' + data[i].name + '</span>';
-        if (data[i].children && data[i].children.length > 0) {
-          menu_body += '<li class="nav-item' + (data[i].is_hidden == 1 ? ' hidden' : '') +
-            ' nav-item-has-subnav"><a href="javascript:void(0)">' + icon_div +
-            menuName + '</a>';
-          menu_body += createMenu(data[i].children, deep, data[i].id);
-        } else {
-          menu_body += '<li class="nav-item ' + selected + (data[i].is_hidden == 1 ? ' hidden' : '') + '"><a href="' +
-            data[i].url + '" ' + iframe_class + '>' +
-            icon_div + '<span>' + data[i].name + '</span>' + '</a>';
-        }
-        menu_body += deep > 1 ? '</li>' : '';
-      }
-
-      menu_body += '</ul>';
-      return menu_body;
-    };
-
-    window.logout = function () {
-      layer.msg('确定要注销登录？', {
-        time: 4000,
-        btn: ['确定', '取消'],
-        yes: function (params) {
-          location.replace("{:url('/admin/index/logout')}");
-        }
-      });
-    };
-
-    /**
-     * @author CSDN 蔚莱先森
-     * @param source json数据源
-     * @param id 主键ID
-     * @param parendId 父级ID名称
-     * @param children 子级名称
-     */
-    var treeData = function (source, id, parentId, children) {
-      var cloneData = (typeof source == 'object') ? source : JSON.parse(source);
-      return cloneData.filter(function (father) {
-        var branchArr = cloneData.filter(function (child) { return father[id] == child[parentId] });
-        branchArr.length > 0 ? father[children] = branchArr : '';
-        return father[parentId] == 0
-      })
-    }
-    // 使用
-
-    var json_str = '{$menus|raw}';
-
-    setSidebar(json_str);
-
-    $('a.open-tab').click(function () {
-
-      $.fn.multitabs().create(this, true);
-
-      if ($(this).parents('.dropdown').size() && (toggle = $(this).parents('.dropdown').find('a:first'))) {
-        $(this).parents('.dropdown .dropdown-menu li.active').removeClass('active');
-        toggle.trigger('click');
-      }
-
-      return false;
-    });
-  </script>
+    </script>
+    <script type="text/javascript">
+        window.menuJson = JSON.parse('{$menus|raw}');
+    </script>
+    <script type="text/javascript"
+        src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="module" src="/assets/tpextmyadmin/js/router.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="module" src="/assets/tpextmyadmin/js/app.js?v={$admin_assets_ver|default='1.0'}"></script>
+    <script type="text/javascript" src="/assets/tpextmyadmin/js/layer/layer.js?v={$admin_assets_ver|default='1.0'}"
+        charset="utf-8"></script>
 </body>
 
 </html>
