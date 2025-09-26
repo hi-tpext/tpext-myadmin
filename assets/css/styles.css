@@ -43,18 +43,14 @@ body {
   display: none;
 }
 
-/* 布局样式 */
-.layout-header {
-  height: 64px;
-  padding: 0 20px;
-}
-
 .tab-bar-container {
-  height: 35px;
-  /* 固定tab栏高度 */
-  margin-top: 3px;
+  height: 39px;
   padding: 0 8px;
   --n-close-size: 14px;
+}
+
+.dark .tab-bar-container {
+  background-color: rgb(24, 24, 28);
 }
 
 .tab-bar-container
@@ -76,16 +72,21 @@ body {
   display: flex;
 }
 
+.content-wrapper {
+  height: 100%;
+  overflow: auto;
+}
+
 .layout-content {
   padding: 0;
-  height: calc(100vh - 64px - 35px - 3px);
   /* 减去顶部导航和tab栏的高度 */
+  height: calc(100vh - 64px);
   overflow: hidden;
 }
 
 .tab-content-area {
-  height: 100%;
-  overflow: auto;
+  height: calc(100% - 39px);
+  overflow: hidden;
 }
 
 /* Logo样式 */
@@ -179,11 +180,6 @@ body {
 
 .iframe-loading {
   opacity: 0.8;
-}
-
-.content-wrapper {
-  height: 100%;
-  overflow: auto;
 }
 
 /* 顶部导航栏样式 */

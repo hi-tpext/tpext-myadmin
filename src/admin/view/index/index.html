@@ -162,7 +162,7 @@
                     <!-- 右侧区域 -->
                     <n-layout style="height: 100%;">
                         <!-- 顶部导航栏（优化版） -->
-                        <n-layout-header class="header-container flex items-center justify-between" :bordered="true">
+                        <n-layout-header class="header-container flex items-center justify-between" :bordered="!isDarkMode">
                             <!-- 左侧区域：菜单切换按钮 + 面包屑导航 -->
                             <div class="breadcrumb-container flex items-center space-x-4">
                                 <!-- 菜单切换按钮 -->
@@ -226,33 +226,32 @@
                                 </div>
                             </div>
                         </n-layout-header>
-
-                        <!-- Tab页签区域 -->
-                        <div class="tab-bar-container flex items-center">
-                            <!-- 左侧滚动按钮 -->
-                            <n-button text class="p-2 rounded-md transition-colors duration-200"
-                                @click="scrollTabsLeft">
-                                <n-icon size="18" class="mdi mdi-chevron-left"></n-icon>
-                            </n-button>
-
-                            <n-tabs v-model:value="activeTabKey" type="card" size="small" :closable="true"
-                                @close="handleTabClose" @update:value="handleTabChange" @before-leave="handleTabLeave"
-                                class="flex-grow overflow-hidden">
-                                <n-tab v-for="tab in openTabs" :key="tab.key" :name="tab.key" :tab="tab.title"
-                                    :closable="tab.closable" @dblclick="handleTabDblClick"
-                                    @contextmenu.prevent="handleTabContextMenu($event)">
-                                </n-tab>
-                            </n-tabs>
-
-                            <!-- 右侧滚动按钮 -->
-                            <n-button text class="p-2 rounded-md transition-colors duration-200"
-                                @click="scrollTabsRight">
-                                <n-icon size="18" class="mdi mdi-chevron-right"></n-icon>
-                            </n-button>
-                        </div>
-
                         <!-- 主内容区 -->
                         <n-layout-content class="layout-content">
+                            <!-- Tab页签区域 -->
+                            <div class="tab-bar-container flex items-center">
+                                <!-- 左侧滚动按钮 -->
+                                <n-button text class="p-2 rounded-md transition-colors duration-200"
+                                    @click="scrollTabsLeft">
+                                    <n-icon size="18" class="mdi mdi-chevron-left"></n-icon>
+                                </n-button>
+
+                                <n-tabs v-model:value="activeTabKey" type="card" size="small" :closable="true"
+                                    @close="handleTabClose" @update:value="handleTabChange"
+                                    @before-leave="handleTabLeave" class="flex-grow overflow-hidden">
+                                    <n-tab v-for="tab in openTabs" :key="tab.key" :name="tab.key" :tab="tab.title"
+                                        :closable="tab.closable" @dblclick="handleTabDblClick"
+                                        @contextmenu.prevent="handleTabContextMenu($event)">
+                                    </n-tab>
+                                </n-tabs>
+
+                                <!-- 右侧滚动按钮 -->
+                                <n-button text class="p-2 rounded-md transition-colors duration-200"
+                                    @click="scrollTabsRight">
+                                    <n-icon size="18" class="mdi mdi-chevron-right"></n-icon>
+                                </n-button>
+                            </div>
+
                             <!-- Tab内容区域 -->
                             <div class="tab-content-area" v-if="openTabs.length > 0">
                                 <div class="content-wrapper" v-for="tab in openTabs" :key="tab.key"
