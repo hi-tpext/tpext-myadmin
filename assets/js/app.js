@@ -170,7 +170,6 @@ const createMainApp = () => {
 
             // 一级菜单项（用于顶部导航）
             const topMenuOptions = computed(() => {
-                console.log(menuOptions.value);
                 return menuOptions.value.filter(x => !x.is_home).map(item => ({
                     ...item,
                     children: undefined // 顶部菜单不显示子菜单
@@ -378,10 +377,6 @@ const createMainApp = () => {
                 document.getElementById('page-loader').style.display = 'none';
                 // 初始化响应式检测
                 checkScreenSize();
-                $('a.open-tab').click(function () {
-                    $.fn.multitabs().create(this, true);
-                    return false;
-                });
 
                 // 监听窗口大小变化
                 window.addEventListener('resize', checkScreenSize);
@@ -643,7 +638,12 @@ const createMainApp = () => {
                 const existingTab = openTabs.value.find(tab => tab.key === key);
                 if (existingTab) {
                     // 如果已经打开，就切换到该Tab
+                    const oldKey = activeTabKey.value;
                     activeTabKey.value = key;
+                    window.dispatchEvent(new CustomEvent('tab-change', {
+                        detail: { oldKey: oldKey, newKey: key }
+                    }));
+
                 } else {
                     // 显示加载进度
                     showLoadingProgress();
@@ -661,7 +661,14 @@ const createMainApp = () => {
 
                     openTabs.value.push(newTab);
                     handleTabAdd(key);
+                    const oldKey = activeTabKey.value;
                     activeTabKey.value = key;
+
+                    setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('tab-change', {
+                            detail: { oldKey: oldKey, newKey: key }
+                        }));
+                    }, 500);
                 }
             };
 
@@ -773,6 +780,14 @@ const createMainApp = () => {
             const handleTabLeave = (name, oldName) => {
                 // 这个方法在tab切换前调用，可以用来计算方向
                 // 获取当前tab和目标tab的索引
+
+                console.log('Tab切换：', oldName, '->', name);
+
+                // 触发自定义事件，用于其他组件监听tab切换
+                window.dispatchEvent(new CustomEvent('tab-change', {
+                    detail: { oldKey: oldName, newKey: name }
+                }));
+
                 const currentIndex = openTabs.value.findIndex(tab => tab.key === oldName);
                 const targetIndex = openTabs.value.findIndex(tab => tab.key === name);
                 if (currentIndex !== -1 && targetIndex !== -1) {
@@ -898,6 +913,32 @@ const createMainApp = () => {
 const app = createMainApp();
 const vueObj = app.use(naive).mount('#app');
 
+// 监听tab切换事件，添加页面切换动画
+window.addEventListener('tab-change', (event) => {
+    const { oldKey, newKey } = event.detail;
+
+    // 为iframe添加切换动画
+    const oldIframe = document.querySelector(`#tab-${oldKey}`);
+    const newIframe = document.querySelector(`#tab-${newKey}`);
+
+    if (oldIframe) {
+        oldIframe.style.opacity = '0';
+        oldIframe.style.transition = 'opacity 0.5s ease';
+    }
+
+    if (newIframe) {
+        newIframe.style.opacity = '0';
+        newIframe.style.transition = 'opacity 0.5s ease';
+
+        // 强制重绘
+        newIframe.offsetHeight;
+
+        setTimeout(() => {
+            newIframe.style.opacity = '1';
+        }, 50);
+    }
+});
+
 ((function ($) {
     // 兼容 lightyear 的 MultiTabs js
     var MultiTabs = function (element) {
@@ -933,4 +974,9 @@ const vueObj = app.use(naive).mount('#app');
         }
         return $(document).data(did);
     };
+
+    $('a.open-tab').click(function () {
+        $.fn.multitabs().create(this, true);
+        return false;
+    });
 })(jQuery));

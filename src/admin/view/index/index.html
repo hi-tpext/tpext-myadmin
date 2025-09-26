@@ -162,7 +162,8 @@
                     <!-- 右侧区域 -->
                     <n-layout style="height: 100%;">
                         <!-- 顶部导航栏（优化版） -->
-                        <n-layout-header class="header-container flex items-center justify-between" :bordered="!isDarkMode">
+                        <n-layout-header class="header-container flex items-center justify-between"
+                            :bordered="!isDarkMode">
                             <!-- 左侧区域：菜单切换按钮 + 面包屑导航 -->
                             <div class="breadcrumb-container flex items-center space-x-4">
                                 <!-- 菜单切换按钮 -->
@@ -254,13 +255,15 @@
 
                             <!-- Tab内容区域 -->
                             <div class="tab-content-area" v-if="openTabs.length > 0">
-                                <div class="content-wrapper" v-for="tab in openTabs" :key="tab.key"
-                                    v-show="activeTabKey === tab.key">
-                                    <!-- iframe 外部页面 -->
-                                    <iframe :src="tab.url" class="iframe-container" frameborder="0"
-                                        @load="handleIframeLoad(tab.key)" @error="handleIframeError(tab.key)"
-                                        allowfullscreen></iframe>
-                                </div>
+                                <transition-group name="fade" tag="div" class="transition-wrapper">
+                                    <div :id="'tab-'+tab.key" class="content-wrapper" v-for="tab in openTabs"
+                                        v-show="activeTabKey === tab.key" :key="tab.key"
+                                        :class="{ 'active': activeTabKey === tab.key }">
+                                        <iframe :src="tab.url" class="iframe-container" frameborder="0"
+                                            @load="handleIframeLoad(tab.key)" @error="handleIframeError(tab.key)"
+                                            allowfullscreen></iframe>
+                                    </div>
+                                </transition-group>
                             </div>
 
                             <!-- 无标签页时的默认显示 -->
