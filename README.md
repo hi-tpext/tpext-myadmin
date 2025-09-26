@@ -1,6 +1,6 @@
 # tpextmyadmin for ThinkPHP 6 / 8
 
-此版本 3.0 有所不同
+此版本与 3.0 有所不同
 
 - 1、使用vue3技术栈构建页面
 
