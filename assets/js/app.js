@@ -780,9 +780,6 @@ const createMainApp = () => {
             const handleTabLeave = (name, oldName) => {
                 // 这个方法在tab切换前调用，可以用来计算方向
                 // 获取当前tab和目标tab的索引
-
-                console.log('Tab切换：', oldName, '->', name);
-
                 // 触发自定义事件，用于其他组件监听tab切换
                 window.dispatchEvent(new CustomEvent('tab-change', {
                     detail: { oldKey: oldName, newKey: name }
@@ -921,10 +918,10 @@ window.addEventListener('tab-change', (event) => {
     const oldIframe = document.querySelector(`#tab-${oldKey}`);
     const newIframe = document.querySelector(`#tab-${newKey}`);
 
-    if (oldIframe) {
-        oldIframe.style.opacity = '0';
-        oldIframe.style.transition = 'opacity 0.5s ease';
-    }
+    // if (oldIframe) {
+    //     oldIframe.style.opacity = '0';
+    //     oldIframe.style.transition = 'opacity 0.5s ease';
+    // }
 
     if (newIframe) {
         newIframe.style.opacity = '0';
