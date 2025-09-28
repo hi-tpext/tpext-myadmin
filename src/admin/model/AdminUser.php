@@ -146,7 +146,13 @@ class AdminUser extends Model implements Auth
             return true;
         }
 
-        $url = trim($url, '/');
+        $path = explode('/', trim($url, '/'));
+
+        if (count($path) < 3) {
+            return false;
+        }
+
+        $url = '/' . strtolower(implode('/', $path));
 
         $noNeed = [
             '/admin/index/index',

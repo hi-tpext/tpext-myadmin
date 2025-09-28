@@ -117,6 +117,10 @@ body {
   height: 64px;
 }
 
+.img-avatar {
+  border-radius: 100%;
+}
+
 /* 菜单切换按钮样式 */
 .menu-toggle-button {
   background-color: transparent;
