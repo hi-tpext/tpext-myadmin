@@ -57,9 +57,9 @@
             <div class="logo-area">
                 <div class="logo-image">
                     <img src="" alt="{$admin_page_title|default=''}" @error="handleLogoError">
-                    <div class="logo-text-fallback">管</div>
+                    <div class="logo-text-fallback">{:mb_substr($admin_page_title, 0, 1)}</div>
                 </div>
-                <div class="logo-text">后台管理系统</div>
+                <div class="logo-text">{$admin_page_title|default='后台管理系统'}</div>
             </div>
 
             <form id="loginForm" @submit.prevent="handleLogin">
