@@ -160,6 +160,8 @@ class Role extends Controller
             $ids = [];
             $controllerPermList = $this->permModel->order('controller,action')->select();
             $menuUlrs = [];
+            $allPerIds = [];
+            $perIds = [];
 
             if ($isEdit) {
                 $menuIds = $this->roleMenuModel->where(['role_id' => $data['id']])->column('menu_id');
@@ -173,9 +175,8 @@ class Role extends Controller
 
             $tree = $this->menuModel->getLineData();
 
-            $perIds = [];
             if ($isEdit) {
-                $perIds = $this->rolePermModel->where(['role_id' => $data['id']])->column('permission_id');
+                $allPerIds = $this->rolePermModel->where(['role_id' => $data['id']])->column('permission_id');
             }
 
             foreach ($tree as $tr) {
@@ -192,6 +193,7 @@ class Role extends Controller
 
                 $controllerPerm = null;
                 $permissions = [];
+                $perIds = [];
 
                 foreach ($controllerPermList as $cprow) {
                     if ($cprow['url'] == $tr['url']) {
@@ -221,6 +223,9 @@ class Role extends Controller
                             continue;
                         }
                         $permissions[] = $cprow;
+                        if (in_array($cprow['id'], $allPerIds)) {
+                            $perIds[] = $cprow['id'];
+                        }
                         $cprow['c'] = 1;
                     }
                 }
@@ -242,12 +247,16 @@ class Role extends Controller
                 foreach ($otherPermList as $cprow) {
                     if ($cprow['action'] == '#') {
                         $permissions = [];
+                        $perIds = [];
                         foreach ($otherPermList as $cprow_) {
                             if ($cprow_['action'] == '#') {
                                 continue;
                             }
                             if ($cprow_['controller'] == $cprow['controller'] || ($urlBase && $cprow_['url'] && strstr($cprow_['url'], $urlBase))) {
                                 $permissions[] = $cprow_;
+                                if (in_array($cprow_['id'], $allPerIds)) {
+                                    $perIds[] = $cprow_['id'];
+                                }
                                 if (!$urlBase) {
                                     $urlBase = preg_replace('/^(.+?\/)\w+$/', '$1', $cprow_['url']);
                                 }
