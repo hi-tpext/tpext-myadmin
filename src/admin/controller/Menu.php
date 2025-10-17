@@ -101,9 +101,7 @@ class Menu extends Controller
                 $contrl = preg_replace('/.+?\\\controller\\\(.+)$/', '$1', $controller);
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
-                    $contrl = $arr[0] . '.' . Str::snake($arr[1]);
-                } else {
-                    $contrl = Str::snake($contrl);
+                    $contrl = $arr[0] . '/' . $arr[1];
                 }
 
                 foreach ($permissionList as $prow) {
