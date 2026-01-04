@@ -29,9 +29,16 @@ class Auth implements MiddlewareInterface
     {
         $path = strtolower(str_replace('[.html]', '', $request->path()));
         $explode = explode('/', ltrim($path, '/'));
-        $this->module = !empty($explode[0]) ? $explode[0] : 'index';
-        $this->controller  = !empty($explode[1]) ? $explode[1] : 'index';
-        $this->action  = !empty($explode[2]) ? $explode[2] : 'index';
+        
+        if (count($explode) > 3) {
+            $this->module = array_shift($explode);
+            $this->action = array_pop($explode);
+            $this->controller = implode('/', $explode);
+        } else {
+            $this->module = !empty($explode[0]) ? $explode[0] : 'index';
+            $this->controller = !empty($explode[1]) ? $explode[1] : 'index';
+            $this->action = !empty($explode[2]) ? $explode[2] : 'index';
+        }
 
         $this->setup();
 
