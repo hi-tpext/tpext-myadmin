@@ -114,7 +114,7 @@ class AdminUser extends Model implements Auth
 
         unset($user['password'], $user['salt']);
 
-        Session::set('admin_user', $user);
+        Session::set('admin_user', $user->toArray());
 
         $url = "/admin/$controller/$action";
 
