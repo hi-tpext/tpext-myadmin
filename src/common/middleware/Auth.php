@@ -219,7 +219,8 @@ class Auth
                             $tpext_myadmin_entry = cookie('tpext_myadmin_entry');
                             return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：' . request()->domain() . url($tpext_myadmin_entry, [], false) . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
                         }
-                        header("HTTP/1.1 404 Not Found");
+                        header("HTTP/1.1 403 Forbidden");
+                        echo '<div style="text-align:center"><h1>验证未通过</h1><hr>请从后台前置入口进入登录页面</div>';
                         exit;
                     }
                 }
