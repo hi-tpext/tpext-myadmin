@@ -221,7 +221,7 @@ class Auth implements MiddlewareInterface
                 }
 
                 if (!Session::has('login_session_key')) {
-                    return new Response(404, [], '404 Not Found');
+                    return new Response(403, [], '<div style="text-align:center"><h1>验证未通过</h1><hr>请从后台前置入口进入登录页面</div>');
                 }
             }
 
