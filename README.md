@@ -4,7 +4,7 @@
 
 - 1、使用vue3技术栈构建页面
 
-- 2、没有强制依赖`ichynul/tpextbuilder`UI 库，需要自己选择 UI 添加依赖。
+- 2、默认依赖`ichynul/tpextbuilder`UI 库，可以自己选择 UI添加依赖以替换。
 
 目前已支持以下 UI 库，替换`ichynul/tpextbuilder`的依赖：
 
@@ -20,9 +20,9 @@
 
 `composer require ichynul/tpextmyadmin:^5.0.1`
 
-2、安装 UI 库，只能选择其中一个安装，否则会冲突：
+2、[可选] 替换 UI 库，只能选择其中一个安装，否则会冲突：
 
-`composer require ichynul/tpext-vexipui` 或 `composer require ichynul/tpext-tinyvue` 或 `composer require ichynul/tpextbuilder`
+`composer require ichynul/tpext-vexipui` 或 `composer require ichynul/tpext-tinyvue`
 
 对已有 3.0(tp6)项目，可编辑网站根目录下的`composer.json`文件升级
 
