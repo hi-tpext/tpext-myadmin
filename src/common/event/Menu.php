@@ -9,19 +9,29 @@ class Menu
 {
     public function handle($data)
     {
-        $type = Db::getConfig('default', 'mysql');
+        $driver = Db::getConfig('default', 'mysql');
 
         $connections = Db::getConfig('connections');
 
-        $config = $connections[$type] ?? [];
+        $config = $connections[$driver] ?? [];
 
         if (empty($config) || empty($config['database'])) {
             return false;
         }
 
-        $tableName = $config['prefix'] . 'admin_menu';
+        $prefix = $config['prefix'];
 
-        $isTable = Db::query("SHOW TABLES LIKE '{$tableName}'");
+        $type = $config['type'];
+
+        $tableName = $prefix . 'admin_menu';
+
+        $sql = "SHOW TABLES LIKE '{$tableName}'";
+
+        if ($type == 'pgsql') {
+            $sql = "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename = '{$tableName}'";
+        }
+
+        $isTable = Db::query($sql);
 
         if (empty($isTable)) {
             cache('tpextmyadmin_installed', 0);

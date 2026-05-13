@@ -14,8 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "topthink/framework": "^6.0.1|^8.0",
+        "topthink/framework": "^8.1",
         "topthink/think-captcha": "^3.0",
         "ichynul/lightyearadmin": "^1.0",
         "ichynul/tpext": "^3.0",
