@@ -10,11 +10,11 @@ class Menu
 {
     public function handle($data)
     {
-        $type = Db::getConfig('default', 'mysql');
+        $driver = Db::getConfig('default', 'mysql');
 
         $connections = Db::getConfig('connections');
 
-        $config = $connections[$type] ?? [];
+        $config = $connections[$driver] ?? [];
 
         if (empty($config) || empty($config['database'])) {
             return false;

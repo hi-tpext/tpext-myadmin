@@ -92,7 +92,11 @@ class Module extends baseModule
             return true;
         }
 
-        $config = config('thinkorm.connections.mysql', []);
+        $driver = Db::getConfig('default', 'mysql');
+
+        $connections = Db::getConfig('connections');
+
+        $config = $connections[$driver] ?? [];
 
         if (empty($config['database']) || empty($config['username']) || empty($config['password'])) {
             return false;
