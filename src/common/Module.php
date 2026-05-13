@@ -83,11 +83,11 @@ class Module extends baseModule
             return true;
         }
 
-        $type = Db::getConfig('default', 'mysql');
+        $driver = Db::getConfig('default', 'mysql');
 
         $connections = Db::getConfig('connections');
 
-        $config = $connections[$type] ?? [];
+        $config = $connections[$driver] ?? [];
 
         if (empty($config['database']) || empty($config['username']) || empty($config['password'])) {
             return false;
