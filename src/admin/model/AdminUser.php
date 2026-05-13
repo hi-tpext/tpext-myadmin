@@ -65,7 +65,7 @@ class AdminUser extends Model implements Auth
     public function passCrypt($pwd)
     {
         $pwd = md5($pwd);
-        $salt = substr($pwd, 7 + mt_rand(5, 10), 7);
+        $salt = substr(md5(time()), mt_rand(0, 22), 10);
         $pwd = md5($salt . $pwd . $salt);
 
         return [$pwd, $salt];
