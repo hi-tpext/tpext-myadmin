@@ -1,4 +1,4 @@
-# tpextmyadmin for ThinkPHP 6 / 8
+# tpextmyadmin for ThinkPHP 8
 
 此版本与 3.0 有所不同
 
