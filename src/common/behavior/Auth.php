@@ -4,6 +4,7 @@ namespace tpext\myadmin\common\behavior;
 
 use think\Response;
 use think\Container;
+use think\Loader;
 use tpext\myadmin\common\Module;
 use tpext\myadmin\admin\model\AdminUser;
 
@@ -35,7 +36,7 @@ class Auth
 
         if (strtolower($module) == 'admin') { //admin模块
 
-            $controller = strtolower(request()->controller());
+            $controller = strtolower(Loader::parseName(request()->controller()));
             $action = strtolower(request()->action());
 
             if (!$this->isInstalled()) {
