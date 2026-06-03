@@ -4,18 +4,19 @@ namespace tpext\myadmin\common\middleware;
 
 use Closure;
 use think\App;
+use think\event\HttpEnd;
+use think\helper\Str;
 use think\Request;
 use think\Response;
-use tpext\think\View;
-use think\event\HttpEnd;
-use tpext\common\ExtLoader;
-use tpext\myadmin\common\Module;
 use tpext\builder\common\Builder;
-use tpext\myadmin\common\UrlAuth;
+use tpext\common\ExtLoader;
+use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\common\event\Assets;
 use tpext\myadmin\common\event\Log;
 use tpext\myadmin\common\event\Menu;
-use tpext\myadmin\common\event\Assets;
-use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\common\Module;
+use tpext\myadmin\common\UrlAuth;
+use tpext\think\View;
 
 /**
  * for tp6
@@ -168,7 +169,7 @@ class Auth
 
             $this->setup();
 
-            $controller = strtolower($this->app->request->controller());
+            $controller = strtolower(Str::snake($this->app->request->controller()));
             $action = strtolower($this->app->request->action());
 
             if (!$this->isInstalled()) {
@@ -234,7 +235,7 @@ class Auth
 
     protected function success($msg = '', $url = '', $wait = 2)
     {
-        $url = (string)$url;
+        $url = (string) $url;
         if ($this->app->request->isAjax()) {
             return json([
                 'code' => 1,
@@ -252,7 +253,7 @@ class Auth
 
     protected function error($msg = '', $url = '', $wait = 2)
     {
-        $url = (string)$url;
+        $url = (string) $url;
         if ($this->app->request->isAjax()) {
             return json([
                 'code' => 0,
