@@ -109,7 +109,6 @@ class AdminUser extends Model implements Auth
      */
     public function checkPermission($admin_id, $controller, $action)
     {
-        $controller = Str::studly($controller);
         $user = static::find($admin_id);
 
         if (!$user) {

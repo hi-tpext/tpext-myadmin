@@ -5,14 +5,15 @@ namespace tpext\myadmin\common\middleware;
 use Closure;
 use think\App;
 use think\event\HttpEnd;
+use think\helper\Str;
 use think\Request;
 use think\Response;
 use tpext\builder\common\Builder;
 use tpext\common\ExtLoader;
 use tpext\myadmin\admin\model\AdminUser;
+use tpext\myadmin\common\event\Assets;
 use tpext\myadmin\common\event\Log;
 use tpext\myadmin\common\event\Menu;
-use tpext\myadmin\common\event\Assets;
 use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\common\Module;
 use tpext\think\View;
@@ -153,7 +154,7 @@ class Auth
 
             $this->setup();
 
-            $controller = strtolower($this->app->request->controller());
+            $controller = strtolower(Str::snake($this->app->request->controller()));
             $action = strtolower($this->app->request->action());
 
             if (!$this->isInstalled()) {
