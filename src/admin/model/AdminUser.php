@@ -64,11 +64,14 @@ class AdminUser extends Model implements Auth
      */
     public function passCrypt($pwd)
     {
-        $pwd = md5($pwd);
-        $salt = substr(md5(time()), mt_rand(0, 22), 10);
-        $pwd = md5($salt . $pwd . $salt);
+        $hash = password_hash($pwd, PASSWORD_BCRYPT, ['cost' => 12]);
 
-        return [$pwd, $salt];
+        return [$hash, 'pwd_hash'];
+        // $pwd = md5($pwd);
+        // $salt = substr(md5(time()), mt_rand(0, 22), 10);
+        // $pwd = md5($salt . $pwd . $salt);
+
+        // return [$pwd, $salt];
     }
 
     /**
@@ -81,6 +84,10 @@ class AdminUser extends Model implements Auth
      */
     public function passValidate($savedCryptPwd, $savedSalt, $inputPwd)
     {
+        if ($savedSalt == 'pwd_hash') {
+            return password_verify($inputPwd, $savedCryptPwd);
+        }
+
         $inputPwd = md5($inputPwd);
 
         return $savedCryptPwd == md5($savedSalt . $inputPwd . $savedSalt);

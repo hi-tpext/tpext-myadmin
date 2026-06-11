@@ -229,7 +229,7 @@ class Auth implements MiddlewareInterface
             if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
                 if (request()->cookie('tpext_myadmin_entry')) {
                     $tpext_myadmin_entry = rawurldecode(request()->cookie('tpext_myadmin_entry'));
-                    return $this->error(__admin_lang('login_timeout_redirect') . request()->domain() . url($tpext_myadmin_entry, [], false) . __admin_lang('reenter_after_browser_change'), $tpext_myadmin_entry, 20);
+                    return $this->error(__admin_lang('login_timeout_redirect') . 'http://' . request()->host() . $tpext_myadmin_entry . __admin_lang('reenter_after_browser_change'), $tpext_myadmin_entry, 20);
                 }
 
                 if (!Session::has('login_session_key')) {
