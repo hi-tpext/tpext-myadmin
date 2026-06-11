@@ -543,7 +543,15 @@ class Index extends Controller
                 $this->error('密码错误');
             }
 
-            $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
+            $upData = ['login_time' => date('Y-m-d H:i:s'), 'errors' => 0];
+
+            if ($user['salt'] != 'pwd_hash') {
+                $password = $this->dataModel->passCrypt($data['password']);
+                $upData['password'] = $password[0];
+                $upData['salt'] = $password[1];
+            }
+
+            $this->dataModel->where(['id' => $user['id']])->update($upData);
 
             Cache::delete('admin_try_login_' . $user['id']);
             unset($user['password'], $user['salt']);
