@@ -31,7 +31,6 @@
 ```josn
 "require": {
     "topthink/framework": "^8.1",
-    "topthink/think-orm": "^3.0",
     "ichynul/tpextmyadmin": "^5.0.1",
     "ichynul/tpext-tinyvue": "^5.1.1"
 },
