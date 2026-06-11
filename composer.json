@@ -19,6 +19,7 @@
         "ichynul/lightyearadmin": "^1.0",
         "ichynul/tpext": "^3.0",
         "tpext/builder": "^3.0",
+        "ichynul/tpextbuilder": "^3.9.191",
         "ichynul/tpextmanager": "^3.0"
     },
     "autoload": {
