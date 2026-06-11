@@ -6,6 +6,7 @@ use tpext\myadmin\common\event\Menu;
 use tpext\myadmin\common\event\Assets;
 use tpext\myadmin\common\UrlAuth;
 use tpext\builder\inface\Auth;
+use think\facade\Lang;
 
 $classMap = [
     'tpext\\myadmin\\common\\Module',
@@ -23,5 +24,12 @@ if (!function_exists('checkUrl')) {
         if (interface_exists(Auth::class)) {
             return UrlAuth::checkUrl($url);
         }
+    }
+}
+
+if (!function_exists('__admin_lang')) {
+    function __admin_lang($name = null, $vars = [], $range = '')
+    {
+        return Lang::get($name, $vars, $range);
     }
 }

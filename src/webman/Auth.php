@@ -12,7 +12,6 @@ use Webman\MiddlewareInterface;
 use tpext\myadmin\common\Module;
 use tpext\builder\common\Builder;
 use tpext\myadmin\common\UrlAuth;
-use tpext\myadmin\common\MinifyTool;
 use tpext\myadmin\admin\model\AdminUser;
 use tpext\builder\common\Module as BuilderModule;
 
@@ -26,11 +25,32 @@ class Auth implements MiddlewareInterface
     protected $controller = '';
     protected $action = '';
 
+    protected $js = [
+        '/assets/lightyearadmin/js/jquery.min.js',
+        '/assets/lightyearadmin/js/bootstrap.min.js',
+        '/assets/lightyearadmin/js/jquery.lyear.loading.js',
+        '/assets/lightyearadmin/js/bootstrap-notify.min.js',
+        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.js',
+        '/assets/lightyearadmin/js/lightyear.js',
+        '/assets/lightyearadmin/js/main.min.js',
+        '/assets/tpextmyadmin/js/tpextbuilder.js',
+        '/assets/tpextmyadmin/js/layer/layer.js',
+    ];
+
+    protected $css = [
+        '/assets/lightyearadmin/css/bootstrap.min.css',
+        '/assets/lightyearadmin/css/materialdesignicons.min.css',
+        '/assets/lightyearadmin/css/animate.css',
+        '/assets/lightyearadmin/css/style.min.css',
+        '/assets/lightyearadmin/js/jconfirm/jquery-confirm.min.css',
+        '/assets/tpextmyadmin/css/tpextbuilder.css',
+    ];
+
     public function process(Request $request, callable $next): Response
     {
         $path = strtolower(str_replace('[.html]', '', $request->path()));
         $explode = explode('/', ltrim($path, '/'));
-        
+
         if (count($explode) > 3) {
             $this->module = array_shift($explode);
             $this->action = array_pop($explode);
@@ -113,15 +133,7 @@ class Auth implements MiddlewareInterface
 
         $admin_layout = $rootPath . implode(DIRECTORY_SEPARATOR, ['src', 'admin', 'view', 'layout.html']);
 
-        if ($config['minify']) {
-            $tool = new MinifyTool;
-            $tool->minify();
-        }
-
-        $css = MinifyTool::getCss();
-        $js = MinifyTool::getJs();
-
-        foreach ($css as &$c) {
+        foreach ($this->css as &$c) {
             if (strpos($c, '?') == false && strpos($c, 'http') == false) {
                 $c .= '?aver=' . $config['assets_ver'];
             }
@@ -129,7 +141,7 @@ class Auth implements MiddlewareInterface
 
         unset($c);
 
-        foreach ($js as &$j) {
+        foreach ($this->js as &$j) {
             if (strpos($j, '?') == false && strpos($j, 'http') == false) {
                 $j .= '?aver=' . $config['assets_ver'];
             }
@@ -149,8 +161,8 @@ class Auth implements MiddlewareInterface
                 'admin_copyright' => isset($config['copyright']) ? $config['copyright'] : '',
                 'admin_login_logo' => isset($config['login_logo']) ? $config['login_logo'] : '',
                 'admin_login_background_img' => isset($config['login_background_img']) ? $config['login_background_img'] : '',
-                'admin_js' => $js,
-                'admin_css' => $css,
+                'admin_js' => $this->js,
+                'admin_css' => $this->css,
                 'admin_layout' => $admin_layout,
                 'admin_assets_ver' => $config['assets_ver'],
             ]
@@ -174,7 +186,7 @@ class Auth implements MiddlewareInterface
 
         if (!$this->isInstalled()) {
             if ($controller != 'extension') {
-                return $this->error('请安装扩展！', url('/admin/extension/prepare'));
+                return $this->error(__admin_lang('not_installed'), url('/admin/extension/prepare'));
             } else {
                 return false;
             }
@@ -204,7 +216,7 @@ class Auth implements MiddlewareInterface
                 $res = $userModel->checkPermission($admin_id, $controller, $action);
 
                 if (!$res) {
-                    return $this->error('无权限访问！', url('/admin/index/denied'), 1);
+                    return $this->error(__admin_lang('access_denied'), url('/admin/index/denied'), 1);
                 }
             }
         }
@@ -217,17 +229,17 @@ class Auth implements MiddlewareInterface
             if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
                 if (request()->cookie('tpext_myadmin_entry')) {
                     $tpext_myadmin_entry = rawurldecode(request()->cookie('tpext_myadmin_entry'));
-                    return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：http://' . request()->host() . $tpext_myadmin_entry . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
+                    return $this->error(__admin_lang('login_timeout_redirect') . request()->domain() . url($tpext_myadmin_entry, [], false) . __admin_lang('reenter_after_browser_change'), $tpext_myadmin_entry, 20);
                 }
 
                 if (!Session::has('login_session_key')) {
-                    return new Response(403, [], '<div style="text-align:center"><h1>验证未通过</h1><hr>请从后台前置入口进入登录页面</div>');
+                    return new Response(403, [], '<div style="text-align:center"><h1>' . __admin_lang('verification_failed') . '</h1><hr>' . __admin_lang('please_use_admin_entrance') . '</div>');
                 }
             }
 
-            return $this->error('登录超时，请重新登录！', url('/admin/index/login'));
+            return $this->error(__admin_lang('login_timeout_relogin'), url('/admin/index/login'));
         } else if ($isLogin && $isAdmin) {
-            return $this->success('您已经登录！', url('/admin/index/index'));
+            return $this->success(__admin_lang('already_logged_in'), url('/admin/index/index'));
         }
 
         return false;
@@ -254,7 +266,7 @@ class Auth implements MiddlewareInterface
         $result = [
             'code' => 1,
             'msg' => $msg,
-            'url' => (string)$url,
+            'url' => (string) $url,
             'wait' => $wait,
         ];
 
@@ -289,7 +301,7 @@ class Auth implements MiddlewareInterface
         $result = [
             'code' => 0,
             'msg' => $msg,
-            'url' => (string)$url,
+            'url' => (string) $url,
             'wait' => $wait,
         ];
 

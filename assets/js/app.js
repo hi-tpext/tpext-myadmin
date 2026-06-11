@@ -22,14 +22,14 @@ const createMainApp = () => {
 
             // 主题色配置
             const themeColors = ref([
-                { key: 'purple', name: '默认', primary: '#6366f1', secondary: '#818cf8' },
-                { key: 'blue', name: '蓝色', primary: '#317AF7', secondary: '#74ADF7' },
-                { key: 'green', name: '绿色', primary: '#7cb342', secondary: '#8bc34a' },
-                { key: 'red', name: '红色', primary: '#f5222d', secondary: '#ff4d4f' },
-                { key: 'orange', name: '橙色', primary: '#fa8c16', secondary: '#ffa940' },
-                { key: 'cyan', name: '青色', primary: '#13c2c2', secondary: '#36cfc9' },
-                { key: 'pink', name: '粉色', primary: '#eb2f96', secondary: '#f759ab' },
-                { key: 'yellow', name: '黄色', primary: '#fadb14', secondary: '#ffec3d' }
+                { key: 'purple', name: t('default'), primary: '#6366f1', secondary: '#818cf8' },
+                { key: 'blue', name: t('blue'), primary: '#317AF7', secondary: '#74ADF7' },
+                { key: 'green', name: t('green'), primary: '#7cb342', secondary: '#8bc34a' },
+                { key: 'red', name: t('red'), primary: '#f5222d', secondary: '#ff4d4f' },
+                { key: 'orange', name: t('orange'), primary: '#fa8c16', secondary: '#ffa940' },
+                { key: 'cyan', name: t('cyan'), primary: '#13c2c2', secondary: '#36cfc9' },
+                { key: 'pink', name: t('pink'), primary: '#eb2f96', secondary: '#f759ab' },
+                { key: 'yellow', name: t('yellow'), primary: '#fadb14', secondary: '#ffec3d' }
             ]);
 
             // 布局模式管理
@@ -40,7 +40,7 @@ const createMainApp = () => {
             const isSmallScreen = ref(false); // 新增：小屏幕检测
             const userManuallyToggled = ref(false); // 新增：用户手动切换标记
             const activeKey = ref('menu-1'); // 默认选中首页
-            const currentPage = ref({ breadcrumb: ['首页'] });
+            const currentPage = ref({ breadcrumb: [t('home')] });
             const menuOptions = ref([]);
             const loading = ref(true);
 
@@ -63,22 +63,22 @@ const createMainApp = () => {
             // 右键菜单选项
             const tabContextMenuOptions = ref([
                 {
-                    label: '刷新页面',
+                    label: t('refresh_page'),
                     key: 'refresh',
                     icon: () => h('i', { class: 'mdi mdi-refresh' }),
                 },
                 {
-                    label: '关闭页面',
+                    label: t('close_page'),
                     key: 'close',
                     icon: () => h('i', { class: 'mdi mdi-minus' }),
                 },
                 {
-                    label: '关闭其他',
+                    label: t('close_other'),
                     key: 'close-other',
                     icon: () => h('i', { class: 'mdi mdi-close' }),
                 },
                 {
-                    label: '关闭所有',
+                    label: t('close_all'),
                     key: 'close-all',
                     icon: () => h('i', { class: 'mdi mdi-close-outline' }),
                 }
@@ -502,15 +502,15 @@ const createMainApp = () => {
 
             const userOptions = [
                 {
-                    label: '个人设置',
+                    label: t('personal_settings'),
                     key: 'profile'
                 },
                 {
-                    label: '修改密码',
+                    label: t('change_password'),
                     key: 'change_pwd'
                 },
                 {
-                    label: '退出登录',
+                    label: t('logout'),
                     key: 'logout'
                 }
             ];
@@ -819,18 +819,18 @@ const createMainApp = () => {
 
             const handleUserSelect = (key) => {
                 if (key === 'logout') {
-                    layer.msg('确定要注销登录？', {
+                    layer.msg(t('confirm_logout'), {
                         time: 4000,
-                        btn: ['确定', '取消'],
+                        btn: [t('confirm'), t('cancel')],
                         yes: function (params) {
                             location.replace("/admin/index/logout");
                         }
                     });
                 } else if (key === 'profile') {
-                    openUrl('/admin/index/profile', '个人中心');
+                    openUrl('/admin/index/profile', t('profile_center'));
                 }
                 else if (key == 'change_pwd') {
-                    openUrl('/admin/index/changepwd', '修改密码');
+                    openUrl('/admin/index/changepwd', t('change_password'));
                 }
             };
 

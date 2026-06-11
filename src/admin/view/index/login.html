@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,
             maximum-scale=1, user-scalable=no">
-    <title>登录 - {$admin_page_title|default=''}</title>
+    <title>{:__admin_lang('login_btn')} - {$admin_page_title|default=''}</title>
     <link href="/assets/lightyearadmin/css/materialdesignicons.min.css?v={$admin_assets_ver|default='1.0'}"
         rel="stylesheet">
     <link href="/assets/tpextmyadmin/css/login.css?v={$admin_assets_ver|default='1.0'}" rel="stylesheet">
@@ -16,7 +16,7 @@
         if ('{$login_in_top}' == '1' && window != top) {
             top.location.replace("{:url('/admin/index/login')}");
             document.querySelector('body').innerHTML =
-                '<div style="background:#fff;z-index:999;padding-top:88px;position:fixed;top:0px;height:10000px;width:100%;text-align:center;font-size:18px;"><p>跳转中...</p></div>';
+                '<div style="background:#fff;z-index:999;padding-top:88px;position:fixed;top:0px;height:10000px;width:100%;text-align:center;font-size:18px;"><p>{:__admin_lang('redirecting')}</p></div>';
             if (!!(window.attachEvent && !window.opera)) {
                 document.execCommand("stop");
             } else {
@@ -50,7 +50,7 @@
                         <i :class="isDarkMode ? 'mdi mdi-weather-partlycloudy' : 'mdi mdi-white-balance-sunny'"
                             :style="{ fontSize: '20px', color: isDarkMode ? '#a5b4fc' : '#6366f1' }"></i>
                     </button>
-                    <span class="tooltiptext">切换主题</span>
+                    <span class="tooltiptext">{:__admin_lang('switch_theme')}</span>
                 </div>
             </div>
 
@@ -59,40 +59,40 @@
                     <img src="" alt="{$admin_page_title|default=''}" @error="handleLogoError">
                     <div class="logo-text-fallback">{:mb_substr($admin_page_title, 0, 1)}</div>
                 </div>
-                <div class="logo-text">{$admin_page_title|default='后台管理系统'}</div>
+                <div class="logo-text">{:$admin_page_title ?: __admin_lang('admin_system')}</div>
             </div>
 
             <form id="loginForm" @submit.prevent="handleLogin">
                 <div class="form-group">
-                    <label class="form-label" for="username">用户名</label>
+                    <label class="form-label" for="username">{:__admin_lang('username_label')}</label>
                     <i class="input-icon mdi mdi-account-circle"></i>
-                    <input type="text" id="username" class="form-input" placeholder="请输入用户名" required
+                    <input type="text" id="username" class="form-input" placeholder="{:__admin_lang('enter_username')}" required
                         v-model="form.username" autocomplete="off" @input="clearError('username')">
                     <div class="error-message" id="username-error">{{ errors.username }}</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="password">密码</label>
+                    <label class="form-label" for="password">{:__admin_lang('password_label')}</label>
                     <i class="input-icon mdi mdi-lock"></i>
                     <input type="password" id="password" autocomplete="new-password" class="form-input"
-                        placeholder="请输入密码" required v-model="form.password" @input="clearError('password')">
+                        placeholder="{:__admin_lang('enter_password')}" required v-model="form.password" @input="clearError('password')">
                     <div class="error-message" id="password-error">{{ errors.password }}</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="captcha">验证码</label>
+                    <label class="form-label" for="captcha">{:__admin_lang('captcha_label')}</label>
                     <i class="input-icon mdi mdi-shield-check"></i>
                     <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="captcha" autocomplete="off" class="form-input" placeholder="请输入验证码"
+                        <input type="text" id="captcha" autocomplete="off" class="form-input" placeholder="{:__admin_lang('enter_captcha')}"
                             required style="flex: 1;" v-model="form.captcha" @input="clearError('captcha')">
-                        <img id="captcha-img" :src="captchaUrl" @click="refreshCaptcha" alt="验证码"
+                        <img id="captcha-img" :src="captchaUrl" @click="refreshCaptcha" alt="{:__admin_lang('captcha_label')}"
                             style="height: 40px; border-radius: 6px; cursor: pointer;">
                     </div>
                     <div class="error-message" id="captcha-error">{{ errors.captcha }}</div>
                 </div>
 
                 <button type="submit" class="login-button" :disabled="loading">
-                    {{ loading ? '登录中...' : '登录' }}
+                    {{ loading ? '{:__admin_lang('logging_in')}' : '{:__admin_lang('login_btn')}' }}
                 </button>
             </form>
             {notempty name="$admin_copyright"}
@@ -117,11 +117,16 @@
         src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}"></script>
     <script type="text/javascript" src="/assets/tpextmyadmin/js/layer/layer.js?v={$admin_assets_ver|default='1.0'}">
     </script>
+    <script type="text/javascript">
+        window.__lang = JSON.parse('{$__lang|raw}');
+        window.t = function(key) { return window.__lang && window.__lang[key] ? window.__lang[key] : key; };
+    </script>
     <script type="module">
         import { createApp, ref, reactive, onMounted } from 'vue';
 
         const App = {
             setup() {
+                const t = (key) => window.__lang && window.__lang[key] ? window.__lang[key] : key;
                 const isDarkMode = ref(false);
                 const loading = ref(false);
                 const captchaUrl = ref("{:url('/admin/index/captcha')}?d=1");
@@ -179,19 +184,19 @@
                     let isValid = true;
 
                     if (!form.username.trim()) {
-                        errors.username = '请输入用户名';
+                        errors.username = t('enter_username');
                         document.getElementById('username-error').style.display = 'block';
                         isValid = false;
                     }
 
                     if (!form.password.trim()) {
-                        errors.password = '请输入密码';
+                        errors.password = t('enter_password');
                         document.getElementById('password-error').style.display = 'block';
                         isValid = false;
                     }
 
                     if (!form.captcha.trim()) {
-                        errors.captcha = '请输入验证码';
+                        errors.captcha = t('enter_captcha');
                         document.getElementById('captcha-error').style.display = 'block';
                         isValid = false;
                     }
@@ -212,7 +217,7 @@
                             let data = res.data || {};
 
                             if (data.code) {
-                                layer.msg(data.msg || data.message || '登录成功');
+                                layer.msg(data.msg || data.message || t('login_success_msg'));
                                 if (window == top || '{$login_in_top}' == '1' || !data.url) {
                                     location.href = "{:url('/admin/index/index')}";
                                 }
@@ -220,13 +225,13 @@
                                     location.href = data.url;
                                 }
                             } else {
-                                layer.msg(data.msg || data.message || '登录失败');
+                                layer.msg(data.msg || data.message || t('login_failed_msg'));
                                 refreshCaptcha();
                                 loading.value = false;
                             }
                         }).catch(e => {
                             console.log(e);
-                            layer.msg('网络错误');
+                            layer.msg(t('network_error'));
                             loading.value = false;
                         });
                     }

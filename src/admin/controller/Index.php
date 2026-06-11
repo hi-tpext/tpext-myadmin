@@ -60,17 +60,21 @@ class Index extends Controller
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('index');
+
         $this->dataModel = new AdminUser;
         $this->menuModel = new AdminMenu;
         $this->roleMenuModel = new AdminRoleMenu;
         $this->rolePerModel = new AdminRolePermission;
         $this->perModel = new AdminPermission;
+
+        $lang = Module::getInstance()->getLang('index');
+        $this->assign('__lang', json_encode($lang));
     }
 
     public function index()
     {
         $admin_user = Session::get('admin_user');
-
         $menus = [];
         if ($admin_user['role_id'] == 1) {
             $list = $this->menuModel->where(['enable' => 1])->order('parent_id,sort')->select();
@@ -78,7 +82,7 @@ class Index extends Controller
                 $menus = [
                     [
                         'id' => 1,
-                        'name' => '首页',
+                        'name' => __admin_lang('home'),
                         'url' => url('welcome'),
                         'pid' => 0,
                         'icon' => 'mdi mdi-home',
@@ -87,7 +91,7 @@ class Index extends Controller
                     ],
                     [
                         'id' => 2,
-                        'name' => '系统管理',
+                        'name' => __admin_lang('system_management'),
                         'url' => '#',
                         'pid' => 0,
                         'icon' => 'mdi mdi-settings',
@@ -96,7 +100,7 @@ class Index extends Controller
                     ],
                     [
                         'id' => 3,
-                        'name' => '菜单管理',
+                        'name' => __admin_lang('menu_management'),
                         'url' => url('menu/index'),
                         'pid' => 2,
                         'icon' => 'mdi mdi-arrange-send-to-back',
@@ -105,7 +109,7 @@ class Index extends Controller
                     ],
                     [
                         'id' => 4,
-                        'name' => '权限设置',
+                        'name' => __admin_lang('permission_settings'),
                         'url' => url('permission/index'),
                         'pid' => 2,
                         'icon' => 'mdi mdi-account-key',
@@ -114,7 +118,7 @@ class Index extends Controller
                     ],
                     [
                         'id' => 5,
-                        'name' => '管理员',
+                        'name' => __admin_lang('admin_management'),
                         'url' => url('admin/index'),
                         'pid' => 2,
                         'icon' => 'mdi mdi-account-card-details',
@@ -123,7 +127,7 @@ class Index extends Controller
                     ],
                     [
                         'id' => 6,
-                        'name' => '角色管理',
+                        'name' => __admin_lang('role_management'),
                         'url' => url('role/index'),
                         'pid' => 2,
                         'icon' => 'mdi mdi-account-multiple',
@@ -132,7 +136,7 @@ class Index extends Controller
                     ],
                     [
                         'id' => 7,
-                        'name' => '扩展管理',
+                        'name' => __admin_lang('ext_management'),
                         'url' => url('extension/index'),
                         'pid' => 2,
                         'icon' => 'mdi mdi-blur',
@@ -161,7 +165,7 @@ class Index extends Controller
 
         $this->assign('admin_user', $admin_user);
         $this->assign('menus', json_encode($menus));
-        $this->assign('dashbord', count($menus) ? $menus[0] : ['id' => 1, 'url' => url('welcome'), 'name' => '首页', 'pid' => 0, 'icon' => 'mdi mdi-home', 'is_out' => 0, 'is_home' => 1]);
+        $this->assign('dashbord', count($menus) ? $menus[0] : ['id' => 1, 'url' => url('welcome'), 'name' => __admin_lang('home'), 'pid' => 0, 'icon' => 'mdi mdi-home', 'is_out' => 0, 'is_home' => 1]);
         $this->assign('index_top_menu', $config['index_top_menu'] ?? 1);
 
         $template = 'index';
@@ -185,7 +189,7 @@ class Index extends Controller
 
     public function denied()
     {
-        return '<span style="color:#333;font-size:12px;">无权限访问！</span>';
+        return '<span style="color:#333;font-size:12px;">' . __admin_lang('access_denied') . '</span>';
     }
 
     /**
@@ -197,15 +201,15 @@ class Index extends Controller
     public function welcome()
     {
         $sysInfo['os'] = PHP_OS;
-        $sysInfo['zlib'] = function_exists('gzclose') ? '是' : '否';
+        $sysInfo['zlib'] = function_exists('gzclose') ? __admin_lang('yes') : __admin_lang('no');
 
         $sysInfo['timezone'] = function_exists("date_default_timezone_get") ? date_default_timezone_get() : "no_timezone";
-        $sysInfo['curl'] = function_exists('curl_init') ? '是' : '否';
+        $sysInfo['curl'] = function_exists('curl_init') ? __admin_lang('yes') : __admin_lang('no');
         $sysInfo['web_server'] = 'Workerman/' . Worker::VERSION;
         $sysInfo['user_agent'] = request()->header('User-Agent');
         $sysInfo['php_version'] = phpversion();
         $sysInfo['ip'] = request()->ip();
-        $sysInfo['fileupload'] = @ini_get('upload_max_filesize') ?: '未知';
+        $sysInfo['fileupload'] = @ini_get('upload_max_filesize') ?: __admin_lang('unknown');
         $sysInfo['sys_time'] = date('Y-m-d H:i:s', time());
         $sysInfo['max_ex_time'] = @ini_get("max_execution_time") . 's';
         $sysInfo['set_time_limit'] = function_exists("set_time_limit") ? true : false;
@@ -217,7 +221,7 @@ class Index extends Controller
             $gd = gd_info();
             $sysInfo['gdinfo'] = $gd['GD Version'];
         } else {
-            $sysInfo['gdinfo'] = "未知";
+            $sysInfo['gdinfo'] = __admin_lang('unknown');
         }
         return $this->fetch('', ['sys_info' => $sysInfo]);
     }
@@ -232,9 +236,9 @@ class Index extends Controller
         Session::delete('admin_last_time');
 
         if (isset($config['login_session_key']) && $config['login_session_key'] == '1') {
-            $this->success('注销成功！', '/');
+            $this->success(__admin_lang('logout_success'), '/');
         } else {
-            $this->success('注销成功！', url('/admin/index/login'));
+            $this->success(__admin_lang('logout_success'), url('/admin/index/login'));
         }
     }
 
@@ -254,9 +258,9 @@ class Index extends Controller
             ], 'post');
 
             $result = $this->validate($data, [
-                'password_old|原密码' => 'require',
-                'password_new|新密码' => 'require',
-                'password_confirm|确认新密码' => 'require',
+                'password_old|' . __admin_lang('old_password') => 'require',
+                'password_new|' . __admin_lang('new_password') => 'require',
+                'password_confirm|' . __admin_lang('confirm_password') => 'require',
             ]);
 
             if (true !== $result) {
@@ -269,15 +273,15 @@ class Index extends Controller
             $user = $this->dataModel->find(Session::get('admin_id'));
 
             if (!$this->dataModel->passValidate($user['password'], $user['salt'], $data['password_old'])) {
-                $this->error('原密码不正确');
+                $this->error(__admin_lang('old_password_incorrect'));
             }
 
             if ($data['password_new'] != $data['password_confirm']) {
-                $this->error('两次输入新密码不匹配');
+                $this->error(__admin_lang('password_not_match'));
             }
 
             if ($data['password_new'] == $data['password_old']) {
-                $this->error('新旧密码一样');
+                $this->error(__admin_lang('same_as_old_password'));
             }
 
             $password = $this->dataModel->passCrypt($data['password_new']);
@@ -296,18 +300,18 @@ class Index extends Controller
 
                 Session::set('admin_user', $user->toArray());
 
-                $this->success('修改成功');
+                $this->success(__admin_lang('modify_success'));
             } else {
-                $this->error('修改失败');
+                $this->error(__admin_lang('modify_failed'));
             }
         } else {
-            $builder = Builder::getInstance('个人设置', '修改密码');
+            $builder = Builder::getInstance(__admin_lang('personal_settings'), __admin_lang('change_password'));
 
             $form = $builder->form();
 
-            $form->password('password_old', '原密码')->required()->help('输入您现在使用的密码');
-            $form->password('password_new', '新密码')->required()->help('输入新密码（6～20位）');
-            $form->password('password_confirm', '确认新密码')->required()->help('再次输入新密码');
+            $form->password('password_old', __admin_lang('old_password'))->required()->help(__admin_lang('old_password_placeholder'));
+            $form->password('password_new', __admin_lang('new_password'))->required()->help(__admin_lang('new_password_placeholder'));
+            $form->password('password_confirm', __admin_lang('confirm_password'))->required()->help(__admin_lang('confirm_password_placeholder'));
 
             return $builder->render();
         }
@@ -324,17 +328,17 @@ class Index extends Controller
         if (request()->isPost() && !input('post.__search__', '0')) {
             return $this->saveProfile();
         } else {
-            $builder = Builder::getInstance('个人设置', '资料修改');
+            $builder = Builder::getInstance(__admin_lang('personal_settings'), __admin_lang('profile_edit'));
 
             $form = $builder->form(6);
-            $form->show('username', '登录帐号')->size(3, 9);
-            $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
-            $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9)->imageResize(200, 200);
-            $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>')->size(3, 9);
-            $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>')->size(3, 9);
-            $form->show('login_time', '登录时间')->size(3, 9);
-            $form->show('create_time', '添加时间')->size(3, 9);
-            $form->show('update_time', '修改时间')->size(3, 9);
+            $form->show('username')->size(3, 9);
+            $form->text('name')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>')->size(3, 9);
+            $form->image('avatar')->default('/assets/lightyearadmin/images/no-avatar.jpg')->size(3, 9)->imageResize(200, 200);
+            $form->text('email')->beforSymbol('<i class="mdi mdi-email-variant"></i>')->size(3, 9);
+            $form->text('phone')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>')->size(3, 9);
+            $form->show('login_time')->size(3, 9);
+            $form->show('create_time')->size(3, 9);
+            $form->show('update_time')->size(3, 9);
 
             $form->butonsSizeClass('btn-xs');
 
@@ -346,10 +350,10 @@ class Index extends Controller
 
             $table = $builder->table(6);
 
-            $table->show('id', 'ID');
-            $table->show('path', '路径');
-            $table->show('ip', 'IP');
-            $table->show('create_time', '登录时间');
+            $table->show('id');
+            $table->show('path');
+            $table->show('ip');
+            $table->show('create_time', __admin_lang('login_time'));
             $table->getToolbar()
                 ->btnRefresh();
             $table->useActionbar(false);
@@ -396,9 +400,9 @@ class Index extends Controller
         ], 'post');
 
         $result = $this->validate($data, [
-            'name|姓名' => 'require',
-            'email|电子邮箱' => 'email',
-            'phone|手机号' => 'mobile',
+            'name|' . __admin_lang('name') => 'require',
+            'email|' . __admin_lang('email') => 'email',
+            'phone|' . __admin_lang('phone') => 'mobile',
         ]);
 
         if (true !== $result) {
@@ -418,9 +422,9 @@ class Index extends Controller
 
             Session::set('admin_user', $user->toArray());
 
-            $this->success('修改成功');
+            $this->success(__admin_lang('modify_success'));
         } else {
-            $this->error('修改失败');
+            $this->error(__admin_lang('modify_failed'));
         }
     }
 
@@ -439,7 +443,7 @@ class Index extends Controller
             $types = input('post.types');
 
             if (empty($types)) {
-                $this->error('请选择清除类型');
+                $this->error(__admin_lang('select_clear_type'));
             }
 
             if (in_array(1, $types)) {
@@ -451,22 +455,23 @@ class Index extends Controller
             if (in_array(3, $types)) {
 
                 $dirs = ['', 'assets', 'minify', ''];
+
                 $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
             }
 
-            $this->success('操作成功！');
+            $this->success(__admin_lang('operation_success'));
         } else {
-            $builder = Builder::getInstance('系统设置', '清空缓存');
+            $builder = Builder::getInstance(__admin_lang('system_settings'), __admin_lang('clear_cache'));
 
             $form = $builder->form();
 
-            $form->checkbox('types', '要清除的缓存类型')->options([
-                1 => '数据缓存[cache]',
-                2 => '模板缓存[temp]',
-                3 => '资源压缩[minify]',
-            ])->checkallBtn('全部')->inline(false);
+            $form->checkbox('types', __admin_lang('cache_types'))->options([
+                1 => __admin_lang('data_cache'),
+                2 => __admin_lang('template_cache'),
+                3 => __admin_lang('minify_cache'),
+            ])->checkallBtn(__admin_lang('all_types'))->inline(false);
 
             return $builder->render();
         }
@@ -480,9 +485,9 @@ class Index extends Controller
             if (!Session::has('login_session_key')) {
                 if (request()->cookie('tpext_myadmin_entry')) {
                     $tpext_myadmin_entry = rawurldecode(request()->cookie('tpext_myadmin_entry'));
-                    return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：http://' . request()->host() . $tpext_myadmin_entry . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
+                    return $this->error(__admin_lang('hidden_login_redirect') . request()->domain() . url($tpext_myadmin_entry, [], false) . __admin_lang('reenter_after_browser_change'), $tpext_myadmin_entry, '', 20);
                 }
-                return new Response(403, [], '<div style="text-align:center"><h1>验证未通过</h1><hr>请从后台前置入口进入登录页面</div>');
+                return new Response(403, [], '<div style="text-align:center"><h1>' . __admin_lang('verification_failed') . '</h1><hr>' . __admin_lang('please_use_admin_entrance') . '</div>');
             }
         }
 
@@ -494,9 +499,9 @@ class Index extends Controller
             ], 'post');
 
             $result = $this->validate($data, [
-                'username|登录帐号' => 'require',
-                'password|密码' => 'require',
-                'captcha|验证码' => 'require',
+                'username|' . __admin_lang('username') => 'require',
+                'password|' . __admin_lang('password') => 'require',
+                'captcha|' . __admin_lang('captcha') => 'require',
             ]);
 
             if (true !== $result) {
@@ -505,17 +510,17 @@ class Index extends Controller
             }
 
             if (!Captcha::check($data['captcha'])) {
-                $this->error('验证码错误');
+                $this->error(__admin_lang('captcha_error'));
             }
 
             $user = $this->dataModel->where(['username' => $data['username']])->find();
 
             if (!$user) {
-                $this->error('用户帐号不存');
+                $this->error(__admin_lang('account_not_exist'));
             }
 
             if ($user['enable'] == 0) {
-                $this->error('帐号已禁用');
+                $this->error(__admin_lang('account_disabled'));
             }
 
             if ($user['errors'] > 10) {
@@ -529,7 +534,7 @@ class Index extends Controller
                     $time_gone = time() - $try_login;
 
                     if ($time_gone < $errors) {
-                        $this->error('错误次数过多，请' . ($errors - $time_gone) . '秒后再试');
+                        $this->error(__admin_lang('login_error_limit', [$errors - $time_gone]));
                     }
                 }
             }
@@ -540,7 +545,7 @@ class Index extends Controller
 
                 Cache::set('admin_try_login_' . $user['id'], time());
 
-                $this->error('密码错误');
+                $this->error(__admin_lang('password_error'));
             }
 
             $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
@@ -550,6 +555,7 @@ class Index extends Controller
             Session::set('admin_user', $user->toArray());
             Session::set('admin_id', $user['id']);
             Session::delete('login_session_key');
+
             Session::set('admin_last_time', time());
 
             AdminOperationLog::create([
@@ -566,7 +572,7 @@ class Index extends Controller
 
             Session::delete($after_login_url);
 
-            $this->success('登录成功', $after_login_url);
+            $this->success(__admin_lang('login_success'), $after_login_url);
         } else {
 
             if (!Module::isInstalled()) {
@@ -590,6 +596,7 @@ class Index extends Controller
                     }
                 }
             }
+
             $config = [];
             if (preg_match('/(.+?[\/\\\]view[\/\\\]).+?/', $template, $mch)) {
                 $config['view_path'] = $mch[1];
@@ -617,7 +624,7 @@ class Index extends Controller
         $token = Session::get('_csrf_token_');
 
         if (empty($token) || $token != input('__token__')) {
-            $this->error('token错误');
+            $this->error(__admin_lang('token_error'));
         }
     }
 }

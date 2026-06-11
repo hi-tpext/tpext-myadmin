@@ -31,23 +31,27 @@ class Group extends Controller
      */
     protected $userModel;
 
-    protected $adminGroupTitle = '分组';
+    protected $adminGroupTitle = '';
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('group');
+
         $instance = Module::getInstance();
 
         $config = $instance->getConfig();
 
         if (!empty($config['admin_group_title'])) {
             $this->adminGroupTitle = $config['admin_group_title'];
+        } else {
+            $this->adminGroupTitle = __admin_lang('group');
         }
 
         $this->userModel = new AdminUser;
 
         $this->dataModel = new AdminGroup;
 
-        $this->pageTitle = $this->adminGroupTitle . '管理';
+        $this->pageTitle = $this->adminGroupTitle . __admin_lang('management');
         $this->sortOrder = 'id desc';
         $this->pagesize = 999;
         $this->postAllowFields = ['name', 'sort'];
@@ -67,19 +71,19 @@ class Group extends Controller
     {
         $form = $this->form;
 
-        $tree = [0 => '顶级' . $this->adminGroupTitle];
+        $tree = [0 => __admin_lang('top_level') . $this->adminGroupTitle];
         $tree += $this->dataModel->getOptionsData($isEdit ? $data['id'] : 0); //数组合并不要用 array_merge , 会重排数组键 ，作为options导致bug
 
-        $form->text('name', '名称')->required();
+        $form->text('name')->required();
 
-        $form->textarea('description', '描述')->maxlength(100);
-        $form->select('parent_id', '上级')->required()->options($tree);
-        $form->tags('tags', '标签');
-        $form->text('sort', '排序')->default(1)->required();
+        $form->textarea('description')->maxlength(100);
+        $form->select('parent_id')->required()->options($tree);
+        $form->tags('tags');
+        $form->text('sort')->default(1)->required();
 
         if ($isEdit) {
-            $form->show('create_time', '添加时间');
-            $form->show('update_time', '修改时间');
+            $form->show('create_time');
+            $form->show('update_time');
         }
     }
 
@@ -91,14 +95,14 @@ class Group extends Controller
     protected function buildTable(&$data = [])
     {
         $table = $this->table;
-        $table->show('id', 'ID');
-        $table->raw('__text__', '名称')->getWrapper()->addStyle('text-align:left;');
-        $table->show('users', '用户数');
-        $table->show('description', '描述')->default('无描述');
-        $table->text('name', '名称')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
-        $table->text('sort', '排序')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
-        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
+        $table->show('id');
+        $table->raw('__text__', __admin_lang('name'))->getWrapper()->addStyle('text-align:left;');
+        $table->show('users', __admin_lang('users_count'));
+        $table->show('description')->default(__admin_lang('no_description'));
+        $table->text('name')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
+        $table->text('sort')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
+        $table->show('create_time')->getWrapper()->addStyle('width:180px');
+        $table->show('update_time')->getWrapper()->addStyle('width:180px');
 
         $table->sortable([]);
     }
@@ -114,9 +118,9 @@ class Group extends Controller
         ], 'post');
 
         $result = $this->validate($data, [
-            'name|名称' => 'require',
-            'sort|排序' => 'require|number',
-            'parent_id|上级' => 'require',
+            'name|' . __admin_lang('name') => 'require',
+            'sort|' . __admin_lang('sort') => 'require|number',
+            'parent_id|' . __admin_lang('parent_id') => 'require',
         ]);
 
         if (true !== $result) {
@@ -125,7 +129,7 @@ class Group extends Controller
         }
 
         if ($id && $data['parent_id'] == $id) {
-            $this->error('上级不能是自己');
+            $this->error(__admin_lang('parent_cannot_be_self'));
         }
 
         return $this->doSave($data, $id);

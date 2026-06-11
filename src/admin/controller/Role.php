@@ -5,6 +5,7 @@ namespace tpext\myadmin\admin\controller;
 use think\Controller;
 use think\facade\Db;
 use tpext\builder\traits\HasBuilder;
+use tpext\myadmin\common\Module;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 use tpext\myadmin\admin\model\AdminRole;
@@ -52,13 +53,15 @@ class Role extends Controller
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('role');
+
         $this->dataModel = new AdminRole;
         $this->permModel = new AdminPermission;
         $this->rolePermModel = new AdminRolePermission;
         $this->menuModel = new AdminMenu;
         $this->roleMenuModel = new AdminRoleMenu;
 
-        $this->pageTitle = '角色管理';
+        $this->pageTitle = __admin_lang('role_management');
         $this->postAllowFields = ['sort', 'name'];
         $this->delNotAllowed = [1];
         $this->sortOrder = 'sort asc';
@@ -89,7 +92,7 @@ class Role extends Controller
     {
         $search = $this->search;
 
-        $search->text('name', '名称', 3)->maxlength(20);
+        $search->text('name', '', 3)->maxlength(20);
     }
     /**
      * 构建表格
@@ -100,13 +103,13 @@ class Role extends Controller
     {
         $table = $this->table;
 
-        $table->show('id', 'ID');
-        $table->show('name', '名称');
-        $table->show('users', '用户数');
-        $table->show('description', '描述')->default('无描述');
-        $table->text('sort', '排序')->autoPost()->getWrapper()->addStyle('max-width:40px');
-        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
+        $table->show('id');
+        $table->show('name');
+        $table->show('users', __admin_lang('users_count'));
+        $table->show('description')->default(__admin_lang('no_description'));
+        $table->text('sort')->autoPost()->getWrapper()->addStyle('max-width:40px');
+        $table->show('create_time')->getWrapper()->addStyle('width:180px');
+        $table->show('update_time')->getWrapper()->addStyle('width:180px');
         $table->sortable('id,sort');
 
         foreach ($data as &$d) {
@@ -140,18 +143,18 @@ class Role extends Controller
         }
 ');
 
-        $form->text('name', '名称')->maxlength(25)->required();
-        $form->textarea('description', '描述')->maxlength(100);
-        $form->text('sort', '排序')->required()->default(1);
-        $form->tags('tags', '标签');
+        $form->text('name')->maxlength(25)->required();
+        $form->textarea('description')->maxlength(100);
+        $form->text('sort')->required()->default(1);
+        $form->tags('tags');
 
         if ($isEdit) {
-            $form->show('create_time', '添加时间');
-            $form->show('update_time', '修改时间');
+            $form->show('create_time');
+            $form->show('update_time');
         }
         if ($isEdit && $data['id'] == 1) {
-            $form->raw('menus', '菜单')->value('<label class="label label-warning">拥有所有菜单</label>');
-            $form->raw('permission', '权限')->value('<label class="label label-warning">拥有所有权限</label>');
+            $form->raw('menus', __admin_lang('menu'))->value('<label class="label label-warning">' . __admin_lang('has_all_menus') . '</label>');
+            $form->raw('permission', __admin_lang('permission'))->value('<label class="label label-warning">' . __admin_lang('has_all_permissions') . '</label>');
         } else {
 
             $menuIds = [];
@@ -169,9 +172,9 @@ class Role extends Controller
                 $menuIds = $this->menuModel->where(['parent_id' => 0, 'url' => '#'])->column('id');
             }
 
-            $form->checkbox('menus', '菜单')->required()->optionsData($this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select(), 'title')->default($menuIds)->checkallBtn('全部菜单');
+            $form->checkbox('menus', __admin_lang('menu'))->required()->optionsData($this->menuModel->where(['parent_id' => 0, 'url' => '#'])->select(), 'title')->default($menuIds)->checkallBtn(__admin_lang('all_menus'));
 
-            $form->raw('permission', '权限')->required()->value('请选择权限：</label><small> 若权限显示不全，请到【权限设置】页面刷新；<br>若权限过多无法保存，修改php.ini中`max_input_vars`的值(默认1000)。</small>');
+            $form->raw('permission', __admin_lang('permission'))->required()->value('<label class="label label-info">' . __admin_lang('please_select_permissions') . '</label><small> ' . __admin_lang('permissions_incomplete') . '</small>');
 
             $tree = $this->menuModel->getLineData();
 
@@ -236,13 +239,13 @@ class Role extends Controller
                     ->optionsData($permissions, 'action_name')
                     ->inline()
                     ->size(2, 10)
-                    ->checkallBtn(count($permissions) > 1 ? '全选' : '');
+                    ->checkallBtn(count($permissions) > 1 ? __admin_lang('select_all') : '');
             }
 
             $otherPermList = $this->permModel->where('id', 'not in', $ids)->order('controller,action')->select();
 
             if (count($otherPermList)) {
-                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . '其他' . '</label></h4>')->size(0, 12)->showLabel(false);
+                $form->divider('', '', 12)->value('<h4><label class="label label-secondary">' . __admin_lang('other') . '</label></h4>')->size(0, 12)->showLabel(false);
 
                 foreach ($otherPermList as $cprow) {
                     if ($cprow['action'] == '#') {
@@ -288,8 +291,8 @@ class Role extends Controller
         ], 'post');
 
         $result = $this->validate($data, [
-            'name|名称' => 'require',
-            'sort|排序' => 'require|number',
+            'name|' . __admin_lang('name') => 'require',
+            'sort|' . __admin_lang('sort') => 'require|number',
         ]);
 
         if (true !== $result) {
@@ -309,7 +312,7 @@ class Role extends Controller
         }
 
         if (!$res) {
-            $this->error('保存失败');
+            $this->error(__admin_lang('save_failed'));
         }
 
         if ($id > 1) {
@@ -317,7 +320,7 @@ class Role extends Controller
             $this->savePermissions($id);
         }
 
-        return $this->builder()->layer()->closeRefresh(1, '保存成功');
+        return $this->builder()->layer()->closeRefresh(1, __admin_lang('save_success'));
     }
 
     private function saveMenus($roleId)
