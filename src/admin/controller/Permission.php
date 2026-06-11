@@ -8,6 +8,7 @@ use tpext\builder\traits\actions\HasAutopost;
 use tpext\builder\traits\actions\HasBase;
 use tpext\builder\traits\actions\HasIndex;
 use tpext\myadmin\admin\model\AdminPermission;
+use tpext\myadmin\common\Module;
 
 /**
  * Undocumented class
@@ -28,8 +29,10 @@ class Permission extends Controller
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('permission');
+
         $this->dataModel = new AdminPermission;
-        $this->pageTitle = '权限设置';
+        $this->pageTitle = __admin_lang('permission_settings');
         $this->pagesize = 9999; //不产生分页
     }
 
@@ -48,30 +51,30 @@ class Permission extends Controller
         $arr = null;
 
         $actionNames = [
-            'index' => '列表',
-            'list' => '列表',
-            'add' => '添加',
-            'create' => '新建',
-            'edit' => '修改',
-            'view' => '查看',
-            'update' => '更新',
-            'delete' => '删除',
-            'enable' => '启用',
-            'disable' => '禁用',
-            'status' => '状态',
-            'install' => '安装',
-            'uninstall' => '卸载',
-            'login' => '登录',
-            'logout' => '注销',
-            'dashbord' => '仪表盘',
-            'upload' => '上传',
-            'download' => '下载',
-            'autopost' => '字段编辑',
-            'import' => '导入',
-            'export' => '导出',
-            'welcom' => '欢迎',
-            'selectpage' => '下拉选择',
-            'upgrade' => '升级',
+            'index' => __admin_lang('list_view'),
+            'list' => __admin_lang('list_view'),
+            'add' => __admin_lang('add'),
+            'create' => __admin_lang('create'),
+            'edit' => __admin_lang('edit'),
+            'view' => __admin_lang('view'),
+            'update' => __admin_lang('update'),
+            'delete' => __admin_lang('delete'),
+            'enable' => __admin_lang('enable'),
+            'disable' => __admin_lang('disable'),
+            'status' => __admin_lang('status'),
+            'install' => __admin_lang('install'),
+            'uninstall' => __admin_lang('uninstall'),
+            'login' => __admin_lang('login'),
+            'logout' => __admin_lang('logout'),
+            'dashbord' => __admin_lang('dashboard'),
+            'upload' => __admin_lang('upload'),
+            'download' => __admin_lang('download'),
+            'autopost' => __admin_lang('field_edit'),
+            'import' => __admin_lang('import'),
+            'export' => __admin_lang('export'),
+            'welcom' => __admin_lang('welcome'),
+            'selectpage' => __admin_lang('select_dropdown'),
+            'upgrade' => __admin_lang('upgrade'),
         ];
 
         $modControllers = $this->dataModel->getControllers();
@@ -93,7 +96,7 @@ class Permission extends Controller
             if (empty($modController['controllers'])) {
                 $data[] = [
                     'id' => $key . '_empty',
-                    'controller' => '<label class="label label-default">无控制器～</label>',
+                    'controller' => '<label class="label label-default">' . __admin_lang('no_controllers') . '</label>',
                     'action' => '#',
                     'url' => '--',
                     'action_name' => '',
@@ -223,11 +226,11 @@ class Permission extends Controller
     {
         $table = $this->table;
 
-        $table->field('controller', '控制器');
-        $table->field('action', '动作');
-        $table->field('url', 'url链接')->to('<a target="_blank" href="{val}">{val}</a>');
-        $table->text('action_name', '动作名称')->mapClass([''], 'hidden')->autoPost('', false)->getWrapper()->addStyle('max-width:100px');
-        $table->switchBtn('action_type', '是权限')->autoPost('', false)->mapClass(['-1'], 'hidden')->getWrapper()->addStyle('max-width:80px');
+        $table->field('controller');
+        $table->field('action');
+        $table->field('url', __admin_lang('url_link'))->to('<a target="_blank" href="{val}">{val}</a>');
+        $table->text('action_name')->mapClass([''], 'hidden')->autoPost('', false)->getWrapper()->addStyle('max-width:100px');
+        $table->switchBtn('action_type', __admin_lang('is_permission'))->autoPost('', false)->mapClass(['-1'], 'hidden')->getWrapper()->addStyle('max-width:80px');
 
         $table->getToolbar()->btnRefresh();
         $table->useActionbar(false);

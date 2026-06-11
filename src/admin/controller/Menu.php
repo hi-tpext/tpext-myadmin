@@ -3,9 +3,9 @@
 namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
-use think\helper\Arr;
 use think\helper\Str;
 use tpext\builder\traits\actions;
+use tpext\myadmin\common\Module;
 use tpext\myadmin\admin\model\AdminMenu;
 use tpext\myadmin\admin\model\AdminPermission;
 
@@ -34,10 +34,12 @@ class Menu extends Controller
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('menu');
+
         $this->dataModel = new AdminMenu;
         $this->permModel = new AdminPermission;
 
-        $this->pageTitle = '菜单管理';
+        $this->pageTitle = __admin_lang('menu_management');
         $this->sortOrder = 'id desc';
         $this->postAllowFields = ['title', 'sort', 'enable'];
 
@@ -56,7 +58,7 @@ class Menu extends Controller
     {
         $form = $this->form;
 
-        $tree = [0 => '根菜单'];
+        $tree = [0 => __admin_lang('root_menu')];
 
         $list = $this->dataModel->getLineData($isEdit ? $data['id'] : 0);
 
@@ -75,10 +77,10 @@ class Menu extends Controller
         $urls = [];
 
         $urls[''] = [
-            'label' => '是否菜单目录？',
+            'label' => __admin_lang('is_menu_dir'),
             'options' => [
-                '' => '请选择',
-                '#' => '是目录，拥有下级节点',
+                '' => __admin_lang('please_select'),
+                '#' => __admin_lang('is_dir_with_children'),
             ],
         ];
 
@@ -139,17 +141,17 @@ class Menu extends Controller
             }
         }
 
-        $form->text('title', '名称')->required();
-        $form->select('parent_id', '上级')->required()->options($tree);
-        $form->select('url', 'url')->required()->options($urls);
-        $form->icon('icon', '图标')->required()->default('mdi mdi-access-point');
-        $form->radio('enable', '启用')->default(1)->required()->options([1 => '已启用', 0 => '未启用'])
+        $form->text('title')->required();
+        $form->select('parent_id')->required()->options($tree);
+        $form->select('url')->required()->options($urls);
+        $form->icon('icon')->required()->default('mdi mdi-access-point');
+        $form->radio('enable')->default(1)->required()->options([1 => __admin_lang('enabled'), 0 => __admin_lang('disabled')])
             ->disabled($isEdit && $data['url'] == '/admin/menu/index');
-        $form->text('sort', '排序')->default(1)->required();
+        $form->text('sort')->default(1)->required();
 
         if ($isEdit) {
-            $form->show('create_time', '添加时间');
-            $form->show('update_time', '修改时间');
+            $form->show('create_time');
+            $form->show('update_time');
         }
     }
 
@@ -161,15 +163,15 @@ class Menu extends Controller
     protected function buildTable(&$data = [])
     {
         $table = $this->table;
-        $table->show('id', 'ID');
-        $table->raw('__text__', '结构')->getWrapper()->addStyle('text-align:left;');
-        $table->show('url', 'url');
-        $table->raw('icon', '图标')->to('<i class="{val}"></i>');
-        $table->text('title', '名称')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
-        $table->switchBtn('enable', '启用')->default(1)->autoPost()->mapClass('/admin/menu/index', 'hidden', 'url')->getWrapper()->addStyle('max-width:120px');
-        $table->text('sort', '排序')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
-        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
-        $table->show('update_time', '修改时间')->getWrapper()->addStyle('width:180px');
+        $table->show('id');
+        $table->raw('__text__', __admin_lang('structure'))->getWrapper()->addStyle('text-align:left;');
+        $table->show('url');
+        $table->raw('icon')->to('<i class="{val}"></i>');
+        $table->text('title')->autoPost('', true)->getWrapper()->addStyle('max-width:80px');
+        $table->switchBtn('enable')->default(1)->autoPost()->mapClass('/admin/menu/index', 'hidden', 'url')->getWrapper()->addStyle('max-width:120px');
+        $table->text('sort')->autoPost('', true)->getWrapper()->addStyle('max-width:40px');
+        $table->show('create_time')->getWrapper()->addStyle('width:180px');
+        $table->show('update_time')->getWrapper()->addStyle('width:180px');
 
         $table->sortable([]);
 
@@ -196,11 +198,11 @@ class Menu extends Controller
         ], 'post');
 
         $result = $this->validate($data, [
-            'title|名称' => 'require',
-            'url|url' => 'require',
-            'icon|图标' => 'require',
-            'sort|排序' => 'require|number',
-            'parent_id|上级' => 'require',
+            'title|' . __admin_lang('title') => 'require',
+            'url|' . __admin_lang('url') => 'require',
+            'icon|' . __admin_lang('icon') => 'require',
+            'sort|' . __admin_lang('sort') => 'require|number',
+            'parent_id|' . __admin_lang('parent_id') => 'require',
         ]);
 
         if (true !== $result) {
@@ -209,7 +211,7 @@ class Menu extends Controller
         }
 
         if ($id && $data['parent_id'] == $id) {
-            $this->error('上级不能是自己');
+            $this->error(__admin_lang('parent_cannot_be_self'));
         }
 
         return $this->doSave($data, $id);

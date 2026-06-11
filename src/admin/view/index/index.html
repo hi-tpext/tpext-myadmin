@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,
       maximum-scale=1, user-scalable=no" />
-    <title>首页 - {$admin_page_title|default=''}</title>
+    <title>{:__admin_lang('home')} - {$admin_page_title|default=''}</title>
     <meta name="description" content="{$admin_page_description|default=''}">
     <link rel="stylesheet" href="/assets/tpextmyadmin/css/styles.css?v={$admin_assets_ver|default='1.0'}">
     <link rel="stylesheet" href="/assets/tpextmyadmin/lib/tailwind.min.css?v={$admin_assets_ver|default='1.0'}">
@@ -35,7 +35,7 @@
             </div>
             <!-- 全局设置Drawer -->
             <n-drawer v-model:show="showSettingsDrawer" :width="360" placement="right">
-                <n-drawer-content title="系统设置" :closable="true">
+                <n-drawer-content title="{:__admin_lang('system_settings')}" :closable="true">
                     <div class="settings-content p-4 space-y-8">
                         <!-- 布局设置 -->
                         <div class="setting-section">
@@ -43,7 +43,7 @@
                                 class="setting-title text-base font-semibold setting-text-primary mb-4 flex items-center">
                                 <n-icon size="18"
                                     class="mr-3 text-blue-500 flex items-center justify-center mdi mdi-view-dashboard"></n-icon>
-                                <span class="leading-none">布局模式</span>
+                                <span class="leading-none">{:__admin_lang('layout_mode')}</span>
                             </h3>
                             <div class="ml-6">
                                 <n-radio-group v-model:value="layoutMode" @update:value="handleLayoutChange"
@@ -51,14 +51,14 @@
                                     <n-space vertical size="large">
                                         <n-radio value="sidebar">
                                             <div class="flex flex-col">
-                                                <span class="text-sm font-medium">侧边栏布局</span>
-                                                <span class="text-xs mt-1">菜单在左侧，适合宽屏使用</span>
+                                                <span class="text-sm font-medium">{:__admin_lang('sidebar_layout')}</span>
+                                                <span class="text-xs mt-1">{:__admin_lang('sidebar_layout_desc')}</span>
                                             </div>
                                         </n-radio>
                                         <n-radio value="top-nav">
                                             <div class="flex flex-col">
-                                                <span class="text-sm font-medium">顶部导航布局</span>
-                                                <span class="text-xs mt-1">菜单在顶部，适合窄屏使用</span>
+                                                <span class="text-sm font-medium">{:__admin_lang('top_nav_layout')}</span>
+                                                <span class="text-xs mt-1">{:__admin_lang('top_nav_layout_desc')}</span>
                                             </div>
                                         </n-radio>
                                     </n-space>
@@ -75,7 +75,7 @@
                                 class="setting-title text-base font-semibold setting-text-primary mb-4 flex items-center">
                                 <n-icon size="18"
                                     class="mr-3 text-purple-500 flex items-center justify-center mdi mdi-palette"></n-icon>
-                                <span class="leading-none">主题色彩</span>
+                                <span class="leading-none">{:__admin_lang('theme_color')}</span>
                             </h3>
                             <div class="ml-6">
                                 <div class="grid grid-cols-4 gap-4">
@@ -103,7 +103,7 @@
                                 class="setting-title text-base font-semibold setting-text-primary mb-4 flex items-center">
                                 <n-icon size="18"
                                     class="mr-3 text-orange-500 flex items-center justify-center mdi mdi-theme-light-dark"></n-icon>
-                                <span class="leading-none">外观模式</span>
+                                <span class="leading-none">{:__admin_lang('appearance_mode')}</span>
                             </h3>
                             <div class="ml-6">
                                 <div class="rounded-xl p-4 border transition-all duration-200">
@@ -112,10 +112,10 @@
                                             <div class="text-3xl">{{ isDarkMode ? '🌙' : '☀️' }}</div>
                                             <div class="flex flex-col">
                                                 <div class="text-sm font-semibold">
-                                                    {{ isDarkMode ? '夜间模式' : '白天模式' }}
+                                                    {{ isDarkMode ? '{:__admin_lang('dark_mode')}' : '{:__admin_lang('light_mode')}' }}
                                                 </div>
                                                 <div class="text-xs mt-1">
-                                                    {{ isDarkMode ? '保护眼睛，适合夜间使用' : '明亮清晰，适合白天使用' }}
+                                                    {{ isDarkMode ? '{:__admin_lang('dark_mode_desc')}' : '{:__admin_lang('light_mode_desc')}' }}
                                                 </div>
                                             </div>
                                         </div>
@@ -154,7 +154,7 @@
                                 @update:value="handleMenuSelect"></n-menu>
                             <div v-else style="padding: 20px; text-align: center;">
                                 <n-spin size="small"></n-spin>
-                                <div class="loading-text" style="margin-top: 8px; font-size: 12px;">加载中...</div>
+                                <div class="loading-text" style="margin-top: 8px; font-size: 12px;">{:__admin_lang('loading')}</div>
                             </div>
                         </div>
                     </n-layout-sider>
@@ -198,17 +198,17 @@
                             <div class="user-avatar-container flex items-center">
                                 {:\\tpext\\common\\ExtLoader::trigger('topbar_right_links')}
                                 <!-- 首页按钮 -->
-                                <a target="_blank" href="/" title="首页">
+                                <a target="_blank" href="/" title="{:__admin_lang('home_page')}">
                                     <n-icon size="18" class="mdi mdi-home"></n-icon>
                                 </a>
                                 {if condition="checkUrl('/admin/index/clearcache')"}
                                 <!-- 清除缓存按钮 -->
-                                <a class="open-tab" href="{:url('/admin/index/clearcache')}" title="清除缓存">
+                                <a class="open-tab" href="{:url('/admin/index/clearcache')}" title="{:__admin_lang('clear_cache_btn')}">
                                     <n-icon size="18" class="mdi mdi-delete"></n-icon>
                                 </a>
                                 {/if}
                                 <!-- 统一设置区域 -->
-                                <a @click="showSettingsDrawer = true" title="设置">
+                                <a @click="showSettingsDrawer = true" title="{:__admin_lang('settings')}">
                                     <n-icon size="18" class="mdi mdi-settings"></n-icon>
                                 </a>
                                 <!-- 用户头像下拉菜单区域 -->
@@ -290,6 +290,8 @@
     </script>
     <script type="text/javascript">
         window.menuJson = JSON.parse('{$menus|raw}');
+        window.__lang = JSON.parse('{$__lang|raw}');
+        window.t = function(key) { return window.__lang && window.__lang[key] ? window.__lang[key] : key; };
     </script>
     <script type="text/javascript"
         src="/assets/lightyearadmin/js/jquery.min.js?v={$admin_assets_ver|default='1.0'}"></script>

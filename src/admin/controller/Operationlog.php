@@ -7,6 +7,7 @@ use tpext\builder\traits\actions;
 use tpext\myadmin\admin\model\AdminOperationLog;
 use tpext\myadmin\admin\model\AdminUser;
 use tpext\myadmin\admin\model\AdminPermission;
+use tpext\myadmin\common\Module;
 
 /**
  * Undocumented class
@@ -35,9 +36,11 @@ class Operationlog extends Controller
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('operationlog');
+
         $this->dataModel = new AdminOperationLog;
         $this->userModel = new AdminUser;
-        $this->pageTitle = '操作记录';
+        $this->pageTitle = __admin_lang('operation_log');
 
         $this->indexWith = ['admin', 'action']; //列表页关联模型
 
@@ -85,12 +88,12 @@ class Operationlog extends Controller
     {
         $search = $this->search;
 
-        $search->select('user_id', '管理员', 3)->optionsData($this->userModel->select(), 'username');
-        $search->text('path', '路径', 3);
-        $search->text('ip', 'IP', 3);
-        $search->select('method', '提交方式', 3)->options(['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']);
-        $search->datetime('start ', '操作时间', 3)->placeholder('起始');
-        $search->datetime('end ', '~', 3)->placeholder('截止');
+        $search->select('user_id', __admin_lang('admin_user'), 3)->optionsData($this->userModel->select(), 'username');
+        $search->text('path', '', 3);
+        $search->text('ip', '', 3);
+        $search->select('method', '', 3)->options(['GET' => 'GET', 'POST' => 'POST', 'PUT' => 'PUT', 'PATCH' => 'PATCH', 'DELETE' => 'DELETE']);
+        $search->datetime('start ', __admin_lang('operation_time'), 3)->placeholder(__admin_lang('start_time'));
+        $search->datetime('end ', '~', 3)->placeholder(__admin_lang('end_time'));
     }
 
     /**
@@ -102,15 +105,15 @@ class Operationlog extends Controller
     protected function buildForm($isEdit, &$data = [])
     {
         $form = $this->form;
-        $form->show('id', 'ID');
-        $form->show('user_id', '管理员id');
-        $form->show('admin.username', '登录帐号');
-        $form->show('admin.name', '姓名');
-        $form->show('path', '路径');
-        $form->show('method', '提交方式');
-        $form->show('ip', 'IP');
-        $form->show('create_time', '时间');
-        $form->html('data', '数据')->display(
+        $form->show('id');
+        $form->show('user_id', __admin_lang('admin_id'));
+        $form->show('admin.username', __admin_lang('username'));
+        $form->show('admin.name', __admin_lang('name'));
+        $form->show('path');
+        $form->show('method');
+        $form->show('ip');
+        $form->show('create_time', __admin_lang('time'));
+        $form->html('data')->display(
             '<pre style="white-space:pre-wrap;word-break:break-all;">{$data}</pre>',
             ['data' => json_encode(json_decode($data['data']), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)]
         )->size(2, 10);
@@ -125,15 +128,15 @@ class Operationlog extends Controller
     {
         $table = $this->table;
 
-        $table->show('id', 'ID');
-        $table->show('admin.username', '登录帐号');
-        $table->show('admin.name', '姓名');
-        $table->show('path', '路径');
-        $table->show('permission', '操作')->to('{controller_name}-{action.action_name}');
-        $table->show('method', '提交方式');
-        $table->show('ip', 'IP');
-        $table->show('data', '数据')->cut(100)->getWrapper()->style('max-width:40%;');
-        $table->show('create_time', '时间')->getWrapper()->addStyle('width:160px');
+        $table->show('id');
+        $table->show('admin.username', __admin_lang('username'));
+        $table->show('admin.name', __admin_lang('name'));
+        $table->show('path');
+        $table->show('permission', __admin_lang('action'))->to('{controller_name}-{action.action_name}');
+        $table->show('method');
+        $table->show('ip');
+        $table->show('data')->cut(100)->getWrapper()->style('max-width:40%;');
+        $table->show('create_time', __admin_lang('time'))->getWrapper()->addStyle('width:160px');
 
         $table->getToolbar()
             ->btnDelete()

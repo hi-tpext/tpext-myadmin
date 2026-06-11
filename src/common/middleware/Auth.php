@@ -174,7 +174,7 @@ class Auth
 
             if (!$this->isInstalled()) {
                 if ($controller != 'extension') {
-                    return $this->error('请安装扩展！', url('/admin/extension/prepare'));
+                    return $this->error(__admin_lang('not_installed'), url('/admin/extension/prepare'));
                 } else {
                     return false;
                 }
@@ -204,7 +204,7 @@ class Auth
                     $res = $userModel->checkPermission($admin_id, $controller, $action);
 
                     if (!$res) {
-                        return $this->error('无权限访问！', url('/admin/index/denied'), 1);
+                        return $this->error(__admin_lang('access_denied'), url('/admin/index/denied'), 1);
                     }
                 }
             }
@@ -218,17 +218,17 @@ class Auth
                     if (!session('?login_session_key')) {
                         if (cookie('tpext_myadmin_entry')) {
                             $tpext_myadmin_entry = cookie('tpext_myadmin_entry');
-                            return $this->error('登录超时，即将自动跳转缓存的后台入口（请保存入口地址：' . request()->domain() . url($tpext_myadmin_entry, [], false) . '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...', $tpext_myadmin_entry, 20);
+                            return $this->error(__admin_lang('login_timeout_redirect') . request()->domain() . url($tpext_myadmin_entry, [], false) . __admin_lang('reenter_after_browser_change'), $tpext_myadmin_entry, 20);
                         }
                         header("HTTP/1.1 403 Forbidden");
-                        echo '<div style="text-align:center"><h1>验证未通过</h1><hr>请从后台前置入口进入登录页面</div>';
+                        echo '<div style="text-align:center"><h1>' . __admin_lang('verification_failed') . '</h1><hr>' . __admin_lang('please_use_admin_entrance') . '</div>';
                         exit;
                     }
                 }
 
-                return $this->error('登录超时，请重新登录！', url('/admin/index/login'));
+                return $this->error(__admin_lang('login_timeout_relogin'), url('/admin/index/login'));
             } else if ($isLogin && $isAdmin) {
-                return $this->success('您已经登录！', url('/admin/index/index'));
+                return $this->success(__admin_lang('already_logged_in'), url('/admin/index/index'));
             }
         }
     }

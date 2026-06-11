@@ -2,16 +2,16 @@
 
 namespace tpext\myadmin\common;
 
-use think\facade\Db;
-use tpext\think\App;
 use think\facade\Cache;
+use think\facade\Db;
 use tpext\common\ExtLoader;
 use tpext\common\Module as baseModule;
 use tpext\myadmin\admin\model\AdminUser;
+use tpext\think\App;
 
 class Module extends baseModule
 {
-    protected $version = '1.0.1';
+    protected $version = '1.2.0';
 
     protected $name = 'tpext.myadmin';
 
@@ -27,8 +27,8 @@ class Module extends baseModule
 
     protected static $tpextmyadminInstalled = false;
 
-    protected $loginViews = ['0' => 'v5默认'];
-    protected $indexViews = ['1' => 'v5默认'];
+    protected $loginViews = [];
+    protected $indexViews = [];
 
     protected $assets = 'assets';
 
@@ -212,6 +212,12 @@ class Module extends baseModule
         if (!is_file(App::getPublicPath() . '/assets/tpextmyadmin/css/login.css')) {
             $this->copyAssets(true);
         }
+
+        $this->loadLang('common');
+
+        $this->loginViews = ['0' => __admin_lang('v5_default')];
+        $this->indexViews = ['1' => __admin_lang('v5_default')];
+
         return $this;
     }
 }

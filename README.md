@@ -30,8 +30,8 @@
 
 ```josn
 "require": {
-    "topthink/framework": "^6.1.4",//或^8.0
-    "topthink/think-orm": "^2.0",
+    "topthink/framework": "^8.1",
+    "topthink/think-orm": "^3.0",
     "ichynul/tpextmyadmin": "^5.0.1",
     "ichynul/tpext-tinyvue": "^5.1.1"
 },

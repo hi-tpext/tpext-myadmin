@@ -3,6 +3,7 @@
 use tpext\common\ExtLoader;
 use tpext\myadmin\common\UrlAuth;
 use tpext\builder\inface\Auth;
+use think\facade\Lang;
 
 $classMap = [
     'tpext\\myadmin\\common\\Module',
@@ -18,5 +19,12 @@ if (!function_exists('checkUrl')) {
         }
 
         return true;
+    }
+}
+
+if (!function_exists('__admin_lang')) {
+    function __admin_lang($name = null, $vars = [], $range = '')
+    {
+        return Lang::get($name, $vars, $range);
     }
 }

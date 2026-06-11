@@ -4,6 +4,7 @@ namespace tpext\myadmin\admin\controller;
 
 use think\Controller;
 use tpext\builder\traits\HasBuilder;
+use tpext\myadmin\common\Module;
 use tpext\myadmin\admin\model\AdminRole;
 use tpext\myadmin\admin\model\AdminUser;
 
@@ -38,11 +39,13 @@ class Admin extends Controller
 
     protected function initialize()
     {
+        Module::getInstance()->loadLang('admin');
+
         $this->dataModel = new AdminUser;
         $this->roleModel = new AdminRole;
         $this->groupModel = $this->dataModel->getAdminGroupModel();
 
-        $this->pageTitle = '用户管理';
+        $this->pageTitle = __admin_lang('user_management');
         $this->postAllowFields = ['phone', 'name', 'email'];
         $this->delNotAllowed = [1, session('admin_id')];
 
@@ -94,13 +97,13 @@ class Admin extends Controller
     {
         $search = $this->search;
 
-        $search->text('username', '账号')->maxlength(20);
-        $search->text('name', '姓名')->maxlength(20);
-        $search->text('phone', '手机号')->maxlength(20);
-        $search->text('email', '邮箱')->maxlength(20);
-        $search->select('role_id', '角色组')->optionsData($this->roleModel->select(), 'name');
+        $search->text('username')->maxlength(20);
+        $search->text('name')->maxlength(20);
+        $search->text('phone')->maxlength(20);
+        $search->text('email')->maxlength(20);
+        $search->select('role_id')->optionsData($this->roleModel->select(), 'name');
         if (method_exists($this->groupModel, 'buildTree')) {
-            $search->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->buildTree());
+            $search->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => __admin_lang('please_select')] + $this->groupModel->buildTree());
         } else {
             $search->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->select(), 'name');
         }
@@ -115,17 +118,17 @@ class Admin extends Controller
     {
         $table = $this->table;
 
-        $table->show('id', 'ID');
-        $table->show('username', '登录帐号');
-        $table->text('name', '姓名')->autoPost()->getWrapper()->addStyle('max-width:80px');
-        $table->show('role.name', '角色');
+        $table->show('id');
+        $table->show('username');
+        $table->text('name')->autoPost()->getWrapper()->addStyle('max-width:80px');
+        $table->show('role.name', __admin_lang('role_id'));
         $table->show('group.name', $this->dataModel->getAdminGroupTitle());
-        $table->match('enable', '启用')->options([0 => '<label class="label label-danger">禁用</label>', 1 => '<label class="label label-success">正常</label>']);
-        $table->show('email', '电子邮箱')->default('无');
-        $table->show('phone', '手机号')->default('无');
-        $table->show('errors', '登录失败');
-        $table->show('login_time', '登录时间')->getWrapper()->addStyle('width:180px');
-        $table->show('create_time', '添加时间')->getWrapper()->addStyle('width:180px');
+        $table->match('enable')->options([0 => '<label class="label label-danger">' . __admin_lang('disable') . '</label>', 1 => '<label class="label label-success">' . __admin_lang('normal') . '</label>']);
+        $table->show('email')->default(__admin_lang('none'));
+        $table->show('phone')->default(__admin_lang('none'));
+        $table->show('errors');
+        $table->show('login_time')->getWrapper()->addStyle('width:180px');
+        $table->show('create_time')->getWrapper()->addStyle('width:180px');
 
         foreach ($data as &$d) {
             $d['__h_del__'] = $d['id'] == 1;
@@ -146,7 +149,7 @@ class Admin extends Controller
             ->btnEnableAndDisable()
             ->btnView()
             ->btnDelete()
-            ->btnPostRowid('clear_errors', url('clearErrors'), '', 'btn-info', 'mdi-backup-restore', 'title="重置登录失败次数"')
+            ->btnPostRowid('clear_errors', url('clearErrors'), '', 'btn-info', 'mdi-backup-restore', 'title="' . __admin_lang('clear_login_errors') . '"')
             ->mapClass([
                 'delete' => ['hidden' => '__h_del__'],
                 'enable' => ['hidden' => '__h_en__'],
@@ -167,30 +170,30 @@ class Admin extends Controller
 
         $admin = AdminUser::current();
 
-        $form->tab('基本信息');
+        $form->tab(__admin_lang('basic_info'));
 
-        $form->text('username', '登录帐号')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
-        $form->text('name', '姓名')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
-        $form->password('password', '密码')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? '不修改则留空（6～20位）' : '添加用户，密码必填（6～20位）');
-        $form->select('role_id', '角色')->required()->optionsData($this->roleModel->select(), 'name')->disabled($isEdit && $data['id'] == 1);
+        $form->text('username')->required()->beforSymbol('<i class="mdi mdi-account-key"></i>');
+        $form->text('name')->required()->beforSymbol('<i class="mdi mdi-rename-box"></i>');
+        $form->password('password')->required(!$isEdit)->beforSymbol('<i class="mdi mdi-lock"></i>')->help($isEdit ? __admin_lang('pwd_leave_blank') : __admin_lang('pwd_required_add'));
+        $form->select('role_id')->required()->optionsData($this->roleModel->select(), 'name')->disabled($isEdit && $data['id'] == 1);
 
         if (method_exists($this->groupModel, 'asTreeList')) {
-            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => '请选择'] + $this->groupModel->getOptionsData());
+            $form->select('group_id', $this->dataModel->getAdminGroupTitle())->options([0 => __admin_lang('please_select')] + $this->groupModel->getOptionsData());
         } else {
             $form->select('group_id', $this->dataModel->getAdminGroupTitle())->optionsData($this->groupModel->select(), 'name');
         }
-        $form->radio('enable', '启用')->options([0 => '禁用', 1 => '启用'])->disabled($isEdit && $admin['id'] == $data['id'])->default(1)->help('禁用后无法登录后台');
+        $form->radio('enable')->options([0 => __admin_lang('disable'), 1 => __admin_lang('enable')])->disabled($isEdit && $admin['id'] == $data['id'])->default(1)->help(__admin_lang('disabled_no_login'));
 
-        $form->tab('其他信息');
-        $form->image('avatar', '头像')->default('/assets/lightyearadmin/images/no-avatar.jpg')->imageResize(200, 200);
-        $form->text('email', '电子邮箱')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
-        $form->text('phone', '手机号')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
-        $form->tags('tags', '标签');
+        $form->tab(__admin_lang('other_info'));
+        $form->image('avatar')->default('/assets/lightyearadmin/images/no-avatar.jpg')->imageResize(200, 200);
+        $form->text('email')->beforSymbol('<i class="mdi mdi-email-variant"></i>');
+        $form->text('phone')->beforSymbol('<i class="mdi mdi-cellphone-iphone"></i>');
+        $form->tags('tags');
 
         if ($isEdit) {
             $data['password'] = '';
-            $form->show('create_time', '添加时间');
-            $form->show('update_time', '修改时间');
+            $form->show('create_time');
+            $form->show('update_time');
         }
     }
 
@@ -203,7 +206,7 @@ class Admin extends Controller
     protected function save($id = 0)
     {
         if ($id == 1 && session('admin_id') != 1) {
-            $this->error('超级管理员[id为1]，其他人不允许修改');
+            $this->error(__admin_lang('super_admin_protected'));
         }
 
         $data = request()->only([
@@ -224,16 +227,16 @@ class Admin extends Controller
         }
 
         if (!$id && $this->dataModel->where(['username' => $data['username']])->find()) {
-            $this->error('账号已存在');
+            $this->error(__admin_lang('account_exists'));
         }
 
         $result = $this->validate($data, [
-            'role_id|角色组' => 'require',
-            'username|登录帐号' => 'require',
-            'name|姓名' => 'require',
-            'email|电子邮箱' => 'email',
-            'phone|手机号' => 'mobile',
-            'errors|失败次数' => 'number',
+            'role_id|' . __admin_lang('role_id') => 'require',
+            'username|' . __admin_lang('username') => 'require',
+            'name|' . __admin_lang('name') => 'require',
+            'email|' . __admin_lang('email') => 'email',
+            'phone|' . __admin_lang('phone') => 'mobile',
+            'errors|' . __admin_lang('errors_count') => 'number',
         ]);
 
         if (true !== $result) {
@@ -245,7 +248,7 @@ class Admin extends Controller
             $len = mb_strlen($data['password']);
 
             if ($len < 6 || $len > 20) {
-                $this->error('密码长度6～20');
+                $this->error(__admin_lang('password_length_6_20'));
             }
 
             $password = $this->dataModel->passCrypt($data['password']);
@@ -257,7 +260,7 @@ class Admin extends Controller
         }
 
         if (!empty($data['phone']) && !preg_match('/^1[3-9]\d{9}$/', $data['phone'])) {
-            $this->error('手机号码格式错误');
+            $this->error(__admin_lang('phone_format_error'));
         }
 
         $res = 0;
@@ -269,16 +272,16 @@ class Admin extends Controller
             }
         } else {
             if (!isset($data['password']) || empty($data['password'])) {
-                $this->error('请输入密码');
+                $this->error(__admin_lang('please_input_password'));
             }
             $res = $this->dataModel->exists(false)->save($data);
         }
 
         if (!$res) {
-            $this->error('保存失败');
+            $this->error(__admin_lang('save_failed'));
         }
 
-        return $this->builder()->layer()->closeRefresh(1, '保存成功');
+        return $this->builder()->layer()->closeRefresh(1, __admin_lang('save_success'));
     }
 
     /**
@@ -294,7 +297,7 @@ class Admin extends Controller
         $ids = array_filter(explode(',', $ids), 'strlen');
 
         if (empty($ids)) {
-            $this->error('参数有误');
+            $this->error(__admin_lang('invalid_params'));
         }
 
         $res = 0;
@@ -306,9 +309,9 @@ class Admin extends Controller
         }
 
         if ($res) {
-            $this->success('成功重置' . $res . '个账号的登录失败次数');
+            $this->success(__admin_lang('reset_errors_success', [$res]));
         } else {
-            $this->error('重置失败');
+            $this->error(__admin_lang('reset_failed'));
         }
     }
 }
