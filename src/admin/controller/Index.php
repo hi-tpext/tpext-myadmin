@@ -107,7 +107,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-key',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 5,
                         'name' => '管理员',
                         'url' => url('admin/index'),
@@ -115,7 +116,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-card-details',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 6,
                         'name' => '角色管理',
                         'url' => url('role/index'),
@@ -123,7 +125,8 @@ class Index extends Controller
                         'icon' => 'mdi mdi-account-multiple',
                         'is_out' => 0,
                         'is_home' => 0,
-                    ], [
+                    ],
+                    [
                         'id' => 7,
                         'name' => '扩展管理',
                         'url' => url('extension/index'),
@@ -172,7 +175,7 @@ class Index extends Controller
         if (preg_match('/(.+?[\/\\\]view[\/\\\]).+?/', $template, $mch)) {
             $config['view_path'] = $mch[1];
         }
-        
+
         return $this->fetch($template, [], $config);
     }
 
@@ -444,7 +447,7 @@ class Index extends Controller
             if (in_array(3, $types)) {
 
                 $dirs = ['', 'assets', 'minify', ''];
-                
+
                 $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
 
                 Tool::deleteDir($minifyDir);
@@ -539,7 +542,15 @@ class Index extends Controller
                 $this->error('密码错误');
             }
 
-            $this->dataModel->where(['id' => $user['id']])->update(['login_time' => date('Y-m-d H:i:s'), 'errors' => 0]);
+            $upData = ['login_time' => date('Y-m-d H:i:s'), 'errors' => 0];
+
+            if ($user['salt'] != 'pwd_hash') {
+                $password = $this->dataModel->passCrypt($data['password']);
+                $upData['password'] = $password[0];
+                $upData['salt'] = $password[1];
+            }
+
+            $this->dataModel->where(['id' => $user['id']])->update($upData);
 
             Cache::set('admin_try_login_' . $user['id'], null);
             unset($user['password'], $user['salt']);
