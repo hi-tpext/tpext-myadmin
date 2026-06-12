@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>跳转提示</title>
+  <title>{:__admin_lang('redirect_title')}</title>
   <meta name="author" content="yinqi">
   <link href="/assets/lightyearadmin/css/bootstrap.min.css" rel="stylesheet">
   <link href="/assets/lightyearadmin/css/materialdesignicons.min.css" rel="stylesheet">
@@ -56,7 +56,7 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>跳转提示</h4>
+                  <h4>{:__admin_lang('redirect_title')}</h4>
                 </div>
                 <div class="card-body text-center">
                   <?php switch ($code) {?>
@@ -72,17 +72,17 @@
                   <?php break;?>
                   <?php } ?>
 
-                  <p>页面自动跳转：<b id="wait"><?php echo($wait);?></b></p>
+                  <p>{:__admin_lang('page_auto_redirect')}<b id="wait"><?php echo($wait);?></b></p>
 
                   <div class="alert alert-info" role="alert">
-                    <a id="href" href="<?php echo($url);?>" class="btn btn-danger btn-w-xl">跳转</a>
-                    <a onclick="history.go(-1)" class="btn btn-default btn-w-xl">返回</a>
+                    <a id="href" href="<?php echo($url);?>" class="btn btn-danger btn-w-xl">{:__admin_lang('redirect_btn')}</a>
+                    <a onclick="history.go(-1)" class="btn btn-default btn-w-xl">{:__admin_lang('go_back')}</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="powerd text-center"><span>Powerd by tpextmyadmin</span></div>
+          <div class="powerd text-center"><span>{:__admin_lang('powered_by')}</span></div>
         </div>
       </main>
     </div>
