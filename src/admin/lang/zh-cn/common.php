@@ -21,10 +21,4 @@ return [
     'please_use_admin_entrance' => '请从后台前置入口进入登录页面',
     'login_timeout_redirect' => '登录超时，即将自动跳转缓存的后台入口（请保存入口地址：',
     'reenter_after_browser_change' => '，更换浏览器、清除浏览器缓存、更换电脑后需要重新手动输入）...',
-    // 跳转模板 (dispatch_jump.tpl)
-    'go_back' => '返回',
-    'redirect_title' => '跳转提示',
-    'page_auto_redirect' => '页面自动跳转：',
-    'redirect_btn' => '跳转',
-    'powered_by' => 'Powerd by tpextmyadmin',
 ];
