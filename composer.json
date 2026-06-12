@@ -18,6 +18,7 @@
         "ichynul/tpext": "^4.5.0",
         "tpext/builder": "^3.0",
         "ichynul/tpextbuilder": "^3.9.191",
+        "ichynul/tpextmanager": "^3.0",
         "ichynul/lightyearadmin": "^1.1.8",
         "webman/captcha": "^1.0.5"
     },
