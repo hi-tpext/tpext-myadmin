@@ -8,18 +8,23 @@ use think\facade\Session;
 
 class Log
 {
-    protected $module = '';
-    protected $controller = '';
-    protected $action = '';
-
     public function handle($data)
     {
         $request = request();
 
         $path = strtolower(str_replace('[.html]', '', $request->path()));
         $explode = explode('/', ltrim($path, '/'));
-        $controller  = !empty($explode[1]) ? $explode[1] : 'index';
-        $action  = !empty($explode[2]) ? $explode[2] : 'index';
+
+        $controller = '';
+        $action = '';
+        if (count($explode) > 3) {
+            array_shift($explode);
+            $action = array_pop($explode) ?: 'index';
+            $controller = implode('/', $explode);
+        } else {
+            $controller = !empty($explode[1]) ? $explode[1] : 'index';
+            $action = !empty($explode[2]) ? $explode[2] : 'index';
+        }
 
         $admin_id = Session::get('admin_id');
 
@@ -35,7 +40,7 @@ class Log
 
         $config = Module::getInstance()->getConfig();
 
-        $method = request()->method();
+        $method = $request->method();
 
         $types = $config['operation_log_catch'];
 
@@ -86,8 +91,8 @@ class Log
         AdminOperationLog::create([
             'user_id' => $admin_id,
             'path' => '/' . $path,
-            'method' => request()->method(),
-            'ip' => request()->ip(),
+            'method' => $request->method(),
+            'ip' => $request->ip(),
             'data' => json_encode($param, JSON_UNESCAPED_UNICODE),
         ]);
 
