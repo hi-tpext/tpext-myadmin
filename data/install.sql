@@ -124,16 +124,17 @@ INSERT INTO `__PREFIX__admin_user` (`id`, `role_id`, `username`, `password`, `sa
 -- 菜单
 INSERT INTO `__PREFIX__admin_menu` (`id`, `parent_id`, `sort`, `title`, `url`, `icon`, `module`, `enable`, `create_time`, `update_time`) VALUES
 (1, 0, 1, '首页', '/admin/index/welcome', 'mdi mdi-home', '', 1, '2020-03-03 20:26:49', '2020-03-03 20:26:49'),
-(2, 0, 98, '权限管理', '#', 'mdi mdi-account-check', '', 1, '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
+(2, 0, 998, '权限管理', '#', 'mdi mdi-account-check', '', 1, '2020-03-03 20:27:14', '2020-03-03 20:27:14'),
 (3, 2, 1, '菜单管理', '/admin/menu/index', 'mdi mdi-arrange-send-to-back', '', 1, '2020-03-03 20:27:49', '2020-03-03 20:34:40'),
 (4, 2, 2, '权限设置', '/admin/permission/index', 'mdi mdi-account-key', '', 1, '2020-03-03 20:28:35', '2020-03-03 20:28:35'),
 (5, 2, 3, '管理员', '/admin/admin/index', 'mdi mdi-account-card-details', '', 1, '2020-03-03 20:29:07', '2020-03-03 20:34:25'),
 (6, 2, 4, '角色管理', '/admin/role/index', 'mdi mdi-account-multiple', '', 1, '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
 (7, 2, 5, '用户分组', '/admin/group/index', 'mdi mdi-account-network', '', 1, '2020-03-03 20:31:22', '2020-03-03 20:31:22'),
 (8, 2, 6, '操作记录', '/admin/operationlog/index', 'mdi mdi-playlist-check', '', 1, '2020-03-03 20:32:06', '2020-03-03 20:32:06'),
-(9, 0, 99, '系统管理', '#', 'mdi mdi-settings', '', 1, '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
+(9, 0, 999, '系统管理', '#', 'mdi mdi-settings', '', 1, '2020-03-03 20:35:11', '2020-03-03 20:35:11'),
 (10, 9, 1, '扩展管理', '/admin/extension/index', 'mdi mdi-puzzle', '', 1, '2020-03-03 20:36:54', '2020-03-03 20:36:54'),
 (11, 9, 2, '平台设置', '/admin/config/index', 'mdi mdi-settings-box', '', 1, '2020-03-03 20:37:29', '2020-03-03 20:37:29'),
 (12, 9, 3, '文件管理', '/admin/attachment/index', 'mdi mdi-folder-multiple-image', '', 1, '2020-05-23 22:43:44', '2020-05-23 22:43:44'),
 (13, 9, 4, '数据库管理', '/admin/dbtable/index', 'mdi mdi-database', '', 1, '2020-06-10 12:43:44', '2020-06-10 12:43:44'),
-(14, 9, 5, 'ui生成器', '/admin/creator/index', 'mdi mdi-sword-cross', '', 1, '2020-06-10 12:43:44', '2020-06-10 12:43:44');
+(14, 9, 5, 'ui生成器', '/admin/creator/index', 'mdi mdi-sword-cross', '', 1, '2020-06-10 12:43:44', '2020-06-10 12:43:44'),
+(15, 9, 6, 'Redis管理', '/admin/creator/redisdata', 'mdi mdi-numeric-0-box-multiple-outline', '', 1, '2020-06-10 12:43:44', '2020-06-10 12:43:44');
