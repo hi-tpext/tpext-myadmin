@@ -17,13 +17,6 @@ class Assets
         WebConfig::where('key', $key)->update(['config' => json_encode($config, JSON_UNESCAPED_UNICODE)]);
         WebConfig::clearCache($key);
 
-        if ($config['minify']) {
-            $dirs = ['', 'assets', 'minify', ''];
-
-            $minifyDir = App::getPublicPath() . implode(DIRECTORY_SEPARATOR, $dirs);
-            Tool::deleteDir($minifyDir);
-        }
-
         return true;
     }
 }
