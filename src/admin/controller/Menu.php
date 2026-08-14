@@ -98,7 +98,7 @@ class Menu extends Controller
 
                 $contrlPerm = null;
 
-                $contrl = preg_replace('/.+?\\\controller\\\(.+)$/', '$1', $controller);
+                $contrl = preg_replace('/.+?\\\controller\\\(.+?)(controller)?$/i', '$1', $controller);
                 if (strpos($contrl, '\\') !== false) {
                     $arr = explode('\\', $contrl);
                     $contrl = $arr[0] . '/' . $arr[1];
